@@ -12,7 +12,7 @@ Install `virtualenv`
     $ sudo pip install virtualenv
     $ sudo apt-get install python-dev
     
-##### CREATE THE ENVIRONMENT
+##### CREATE ENVIRONMENT
     $ virtualenv -p /usr/bin/python3.5 env
     
     # activate the new environment
@@ -21,8 +21,8 @@ Install `virtualenv`
     # install requirements
     $ pip install -r requirements.txt
     
-##### STOPPING THE ENVIRONMENT
-To stop environment for session, enter:
+##### DEACTIVATE ENVIRONMENT
+To deactivate environment for session, enter:
 
     $ deactivate
 
