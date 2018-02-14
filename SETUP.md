@@ -22,8 +22,8 @@ Install `virtualenv`
     $ pip install -r requirements.txt
     
 ##### STOPPING THE ENVIRONMENT
-The virtual env will be active for the length of your terminal session. You can manually deactivate the env when needed with:
-    
+To stop environment for session, enter:
+
     $ deactivate
 
 ## Install and Setup PostgreSQL
