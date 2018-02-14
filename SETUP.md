@@ -13,7 +13,7 @@ Install `virtualenv`
     $ sudo apt-get install python-dev
     
 ##### CREATE THE ENVIRONMENT
-    $ virtualenv -p /usr/bin/python3.6 env
+    $ virtualenv -p /usr/bin/python3.5 env
     
     # activate the new environment
     $ source env/bin/activate
