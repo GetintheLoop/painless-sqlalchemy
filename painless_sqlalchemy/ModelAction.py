@@ -4,7 +4,7 @@ from painless_sqlalchemy.ModelBase import ModelBase
 
 
 class ModelAction(ModelBase):
-    """ Simplifies common ORM Actions """
+    """ ORM Action Abstraction """
 
     def _get_session(self):
         """
