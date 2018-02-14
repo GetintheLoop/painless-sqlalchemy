@@ -5,7 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/env" />
       <excludeFolder url="file://$MODULE_DIR$/../sqlalchemy-painless/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.5 (sqlalchemy-painless)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.5 (painless-sqlalchemy)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">
