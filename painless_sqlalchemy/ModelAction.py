@@ -1,9 +1,9 @@
 from sqlalchemy import inspect
 from sqlalchemy.orm import Session
-from painless_sqlalchemy.ModelBase import ModelBase
+from painless_sqlalchemy.BaseModel import BaseModel
 
 
-class ModelAction(ModelBase):
+class ModelAction(BaseModel):
     """ ORM Action Abstraction """
 
     def _get_session(self):

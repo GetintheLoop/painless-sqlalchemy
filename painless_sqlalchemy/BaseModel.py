@@ -10,7 +10,7 @@ session = scoped_session(sessionmaker(autocommit=False, bind=engine))
 Base = declarative_base()
 
 
-class ModelBase(Base):
+class BaseModel(Base):
     # prevent creation of table
     __abstract__ = True
 
