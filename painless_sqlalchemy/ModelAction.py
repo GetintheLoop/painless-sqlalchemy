@@ -4,19 +4,19 @@ from painless_sqlalchemy.ModelBase import ModelBase
 
 
 class ModelAction(ModelBase):
-    """ Simplified Actions for Instance """
+    """ Simplifies common ORM Actions """
 
     def _get_session(self):
         """
-            Get the current session for this object.
-            :return: a valid session
+            Get current session for Instance
+            :return: valid session
         """
         return Session.object_session(self)
 
     def save(self):
         """
-            Save model to the database.
-            :return: the model
+            Save model to database
+            :return: saved model
         """
         session = self._get_session()
         session.add(self)
@@ -25,8 +25,8 @@ class ModelAction(ModelBase):
 
     def delete(self):
         """
-            Delete model from the database.
-            :return: the now deleted model
+            Delete model from database
+            :return: deleted model
         """
         session = self._get_session()
         session.delete(self)
@@ -34,7 +34,10 @@ class ModelAction(ModelBase):
         return self
 
     def update(self, **kwargs):
-        """ Update this db objects attributes with given kwargs. """
+        """
+            Update model attributes without flushing
+            :return: updated, dirty model
+        """
         inspected = inspect(self.__class__)
         all_cols = inspected.column_attrs.keys()
         all_rels = inspected.relationships.keys()
@@ -46,5 +49,9 @@ class ModelAction(ModelBase):
         return self
 
     def rollback(self):
-        """ Roll back the session attached to this object. """
+        """
+            Roll back attached session
+            :return: model
+        """
         self._get_session().rollback()
+        return self
