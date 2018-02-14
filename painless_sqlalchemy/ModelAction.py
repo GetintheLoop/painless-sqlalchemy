@@ -9,14 +9,14 @@ class ModelAction(BaseModel):
     def _get_session(self):
         """
             Get current session for Instance
-            :return: valid session
+            :return valid session
         """
         return Session.object_session(self)
 
     def save(self):
         """
             Save model to database
-            :return: saved model
+            :return saved model
         """
         session = self._get_session()
         session.add(self)
@@ -26,7 +26,7 @@ class ModelAction(BaseModel):
     def delete(self):
         """
             Delete model from database
-            :return: deleted model
+            :return deleted model
         """
         session = self._get_session()
         session.delete(self)
@@ -36,7 +36,7 @@ class ModelAction(BaseModel):
     def update(self, **kwargs):
         """
             Update model attributes without flushing
-            :return: updated, dirty model
+            :return updated, dirty model
         """
         inspected = inspect(self.__class__)
         all_cols = inspected.column_attrs.keys()
@@ -51,7 +51,7 @@ class ModelAction(BaseModel):
     def rollback(self):
         """
             Roll back attached session
-            :return: model
+            :return model
         """
         self._get_session().rollback()
         return self
