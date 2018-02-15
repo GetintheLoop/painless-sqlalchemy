@@ -25,3 +25,4 @@ class TestModelAction(object):
     def test_save(self):
         """ Test saving object """
         self.Foo(id=1).save()
+        assert self.Foo.filter({'id': 1}).one().id == 1
