@@ -50,3 +50,9 @@ fabric.properties
 
 # environment
 /env
+
+# testing
+/.pytest_cache
+
+# coverage
+/.coverage

@@ -1,17 +1,22 @@
 from sqlalchemy import inspect
-from sqlalchemy.orm import Session
-from painless_sqlalchemy.BaseModel import BaseModel
+from sqlalchemy.orm import Session, sessionmaker
+from painless_sqlalchemy.BaseModel import BaseModel, engine
 
 
 class ModelAction(BaseModel):
     """ ORM Action Abstraction """
 
+    __abstract__ = True
+
     def _get_session(self):
         """
-            Get current session for Instance
+            Get current Session for Instance or create new Session
             :return valid session
         """
-        return Session.object_session(self)
+        session = Session.object_session(self)
+        if not session:
+            session = sessionmaker(bind=engine)()
+        return session
 
     def save(self):
         """

@@ -14,6 +14,8 @@ RE_FIELD_SYNTAX_MATCHER = re.compile(r'([^,()]+?)\(([^()]+?)\)')
 class ModelSerialization(ModelFilter):
     """ Query Serialization Logic """
 
+    __abstract__ = True
+
     @classmethod
     def eager_load(cls, attributes=None, query=None):
         """

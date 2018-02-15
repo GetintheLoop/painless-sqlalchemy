@@ -16,6 +16,8 @@ from painless_sqlalchemy.column.MapColumn import MapColumn
 class ModelFilter(ModelAction):
     """ ORM Filter Abstraction """
 
+    __abstract__ = True
+
     @classmethod
     def _iterate_path(cls, path):
         """
