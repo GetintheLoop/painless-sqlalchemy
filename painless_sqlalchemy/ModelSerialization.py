@@ -119,3 +119,21 @@ class ModelSerialization(ModelFilter):
                     else:  # if None
                         result[key] = value
         return result
+
+    @staticmethod
+    def get_attr_hierarchy(attributes):
+        """
+            Unflatten attributes list to dict
+            - Attributes are *not* auto expanded
+            - Attributes expected in dot notation
+            return: dict representation
+        """
+        attr_hierarchy = {}
+        for attr in attributes:
+            hierarchy = attr.split(".")
+            cur_level = attr_hierarchy
+            for ele in hierarchy:
+                if ele not in cur_level:
+                    cur_level[ele] = {}
+                cur_level = cur_level[ele]
+        return attr_hierarchy
