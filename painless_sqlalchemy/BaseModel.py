@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -15,3 +15,6 @@ class BaseModel(Base):
     __abstract__ = True
 
     query = session.query_property()
+
+    # Id is always required but can be overwritten
+    id = Column(Integer, primary_key=True)

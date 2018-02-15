@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, sql, distinct, case
 from sqlalchemy.orm import aliased, RelationshipProperty
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.annotation import Annotated
@@ -209,3 +209,109 @@ class ModelQuery(ModelAction):
         else:  # pragma: no cover
             print(type(clause), clause)
             raise NotImplementedError
+
+    @classmethod
+    def _is_to_many(cls, path):
+        """
+            Check if path represents a "*_to_many" relationship.
+            - Does not resolve MapColumn
+        :return: True iff "*_to_many_" relationship
+        """
+        rel = cls
+        # Note: No need to consider the last relationship, since this
+        # is always a class attribute (and hence a *_to_one relationship)
+        for attr in path[:-1]:
+            rel = getattr(aliased(rel), attr)
+            if rel.property.uselist:
+                return True
+        return False
+
+    @classmethod
+    def filter(cls, attributes=None, query=None, skip_nones=False):
+        """
+            Overloaded filter abstraction. Supported scenarios:
+
+            (1) Pass attributes as dict.
+            Less powerful, but very easy to use and "good enough" in many cases.
+            - Keys reference (relationship) columns using dot notation
+            - Values are objects that the keys get filtered by
+            - Multiple filter conditions use "and" logic but can reference
+            separate relationship models in case of *_to_many
+            - Values that are lists are considered as "and" joints
+            if they are on *_to_many relationship and "or" joints otherwise
+            - Values that are lists are expected to only have unique elements
+            - None values are pruned if skip_nones is set to True.
+
+            (2) Pass attributes as SQLAlchemy filter
+            Full SQLAlchemy power, but more complex to use.
+            - Clause is used as given
+            - Special ColumnClause can be used to reference relationship paths
+            - Relationship paths are resolved automatically minimizing amount
+            of joins added to the query
+
+        :param attributes: dict *or* SQLAlchemy filter
+        :param query: Optional (pre-filtered) query used as base
+        :param skip_nones: Skip None-values dict entries iff true
+        :return: filtered query
+        """
+        # todo: attributes with list values only unique if dict (add assert)
+        # todo: ensure query class is same as current cls (add assert)
+        assert skip_nones is False or isinstance(attributes, dict)
+        if query is None:
+            query = cls.query
+
+        and_info = cls._get_and_info(query)
+
+        # Handle SqlAlchemy filter
+        if not isinstance(attributes, dict):
+            data = {'query': query}
+            clause = cls._substitute_clause(data, attributes)
+            return data['query'].filter(clause)
+
+        if skip_nones:
+            attributes = {
+                key: value for key, value in attributes.items()
+                if value is not None
+            }
+        if attributes:
+            # true if this query is already grouped
+            grouped = False
+            and_info['depth'] += 1
+            if len(and_info['counts']) <= and_info['depth']:
+                and_info['counts'].append(0)
+            for attribute, value in attributes.items():
+                # make sure this lives now in a list
+                if not isinstance(value, list):
+                    value = [value]
+                value = list(set(value))  # make list unique
+                length = len(value)
+
+                attr_hierarchy = attribute.split(".")
+                to_many_rel = cls._is_to_many(attr_hierarchy)
+
+                # to-one relationship and empty list means no result
+                if not to_many_rel and length == 0:
+                    return cls.query.filter(sql.false())
+
+                query, final_attr = cls._get_joined_attr(query, attr_hierarchy)
+                and_info['counts'][and_info['depth']] += 1
+                if length == 1:
+                    query = query.filter(final_attr == value[0])
+                elif length > 1:
+                    if to_many_rel:
+                        # group by so we can use count for filter
+                        if not grouped:
+                            query = query.group_by(cls.id)
+                            grouped = True
+                        # count the unique entries and check that this is
+                        # equal to the length of the "value" list
+                        # Note: Could possibly result in undesired behaviour
+                        # when using duplicate entries in "value" list
+                        query = query.having(func.count(distinct(case(
+                            [(final_attr.in_(value), final_attr)],
+                            else_=None
+                        ))) == length)
+                    else:
+                        query = query.filter(final_attr.in_(value))
+            and_info['depth'] -= 1
+        return query
