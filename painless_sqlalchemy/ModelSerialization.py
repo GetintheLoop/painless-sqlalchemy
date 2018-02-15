@@ -1,9 +1,14 @@
+import re
 import functools
 from sqlalchemy import inspect
 from sqlalchemy.orm import load_only, undefer, joinedload
 from sqlalchemy.sql.elements import Label
+from painless_sqlalchemy.BaseModel import BaseModel
 from painless_sqlalchemy.ModelFilter import ModelFilter
 from painless_sqlalchemy.column.MapColumn import MapColumn
+from painless_sqlalchemy.util import DictUtil
+
+RE_FIELD_SYNTAX_MATCHER = re.compile(r'([^,()]+?)\(([^()]+?)\)')
 
 
 class ModelSerialization(ModelFilter):
@@ -149,3 +154,49 @@ class ModelSerialization(ModelFilter):
         """
         attr_hierarchy = cls.get_attr_hierarchy(attributes)
         return [res.as_dict(res, attr_hierarchy) for res in query]
+
+    @classmethod
+    def expand(cls, key):
+        """
+                Recursively expand given paths
+                - support bracket notation e.g. "rel(field1,field2)"
+                - support star notation e.g. "rel.*" which uses
+                defined default_serialization
+                - supports multiple fields e.g. "rel.field1,rel.field2"
+                - Handles MapColumns correctly
+            :param key: comma separated paths (dot notation)
+            :return list of expanded paths (dot notation)
+        """
+        if "(" in key:  # expand rel(field,...)-syntax
+            replaced = -1
+            while replaced != 0:
+                key, replaced = RE_FIELD_SYNTAX_MATCHER.subn(
+                    lambda m: ",".join([
+                        "%s.%s" % (m.group(1), e)
+                        for e in m.group(2).split(",")
+                    ]),
+                    key
+                )
+
+        result = []
+        if "," in key:  # contains multiple keys
+            for k in key.split(","):
+                result += cls.expand(k)
+        else:
+            path = key.split(".")
+            if path[-1] == "*":  # path ends in relationship
+                class_, end = next(
+                    (cl, c) for cl, c, last in cls._iterate_path(path[:-1])
+                    if last is True
+                )
+                if isinstance(end, dict):
+                    for f in DictUtil.flatten_dict(end):
+                        result += cls.expand(key[:-1] + f)
+                else:
+                    assert issubclass(end, BaseModel)
+                    for f in end.default_serialization:
+                        result += cls.expand(key[:-1] + f)
+            else:  # ordinary field, no expansion needed
+                result.append(key)
+
+        return result
