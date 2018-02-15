@@ -9,6 +9,8 @@ from painless_sqlalchemy.column.MapColumn import MapColumn
 class ModelSerialization(ModelFilter):
     """ Query Serialization Logic """
 
+    __abstract__ = True
+
     @classmethod
     def eager_load(cls, attributes=None, query=None):
         """
