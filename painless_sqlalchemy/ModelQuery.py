@@ -8,7 +8,8 @@ class ModelQuery(ModelAction):
 
     @classmethod
     def _iterate_path(cls, path):
-        """ Iterate over relationship path
+        """
+            Iterate over relationship path
             - For MapColumn the final column is string or list
             :return generator (
                 (current class, relationship column, bool last iteration),
@@ -31,7 +32,8 @@ class ModelQuery(ModelAction):
 
     @classmethod
     def _get_column(cls, path):
-        """ Get column from relationship path
+        """
+            Get column from relationship path
             - Resolves final target for MapColumn
             - Can return list of columns for MapColumn
             :return column or list of columns
@@ -55,3 +57,45 @@ class ModelQuery(ModelAction):
             # todo: this should merge list of lists (!)
             cur = [class_._get_column(e.split(".")) for e in cur]
         return cur
+
+    @classmethod
+    def _get_joined_attr(cls, query, path):
+        """
+            Join path relationships to query
+            - Ensures that the join exist or create it
+            - Information about existing joins stored in "__aliases"
+            - Creates unique join if there is *_to_many relationship and "and"
+            is used. Relies on "and_info" meta
+            Note: query attributes persist across .join, .filter, etc
+            :return (modified query, final alias.column)
+        """
+        # known joined aliases for this query
+        joined_aliases = getattr(query, '__aliases', {})
+        setattr(query, '__aliases', joined_aliases)
+
+        # prep data
+        alias = cls  # current alias for the joined model
+        alias_name = "alias"
+        unique_join = False  # true if the join is already unique
+
+        # iterate over path and join classes when necessary
+        for attr in path[:-1]:
+            alias_name += "." + attr
+            rel = getattr(alias, attr)
+            if not unique_join and rel.property.uselist:
+                # make join unique if and_ used since *_to_many
+                and_info = getattr(query, 'and_info')
+                # create and join the "and_" hierarchy
+                if and_info['depth'] > -1:
+                    and_path = and_info['counts'][:and_info['depth'] + 1]
+                    alias_name += ".%s" % "-".join(str(e) for e in and_path)
+                unique_join = True
+            if alias_name not in joined_aliases:
+                # create a join alias
+                alias = aliased(rel, name=alias_name)
+                query = query.outerjoin(alias, rel)
+                joined_aliases[alias_name] = alias
+            else:
+                alias = joined_aliases[alias_name]
+
+        return query, getattr(alias, path[-1])
