@@ -137,3 +137,15 @@ class ModelSerialization(ModelFilter):
                     cur_level[ele] = {}
                 cur_level = cur_level[ele]
         return attr_hierarchy
+
+    @classmethod
+    def as_list(cls, query, attributes):
+        """
+            Serialize query results using attributes as template.
+            - Only contains fetched relationships from query
+            :param query: query to serialize
+            :param attributes: attribute list in dot notation
+            :return list of serialized query results
+        """
+        attr_hierarchy = cls.get_attr_hierarchy(attributes)
+        return [res.as_dict(res, attr_hierarchy) for res in query]
