@@ -111,6 +111,20 @@ class ModelQuery(ModelAction):
         return query, getattr(alias, path[-1])
 
     @classmethod
+    def _get_and_info(cls, query):
+        """
+            Get the "and_" information for query
+            - Attaches new "and_" information if not present
+            The "and_" information contains depth information for and_ clauses.
+            This ensures we can uniquely join tables for "and_" clauses, but
+            prevent redundant joins for "or_" clauses.
+        :return: "and_" information for query
+        """
+        if not hasattr(query, 'and_info'):
+            setattr(query, 'and_info', {'depth': -1, 'counts': []})
+        return getattr(query, 'and_info')
+
+    @classmethod
     def _substitute_clause(cls, data, clause):
         """
             Substitute easy annotation in clause using query joins
@@ -119,7 +133,7 @@ class ModelQuery(ModelAction):
             - Easy notation expected as "is_custom=true"-ColumnClause
             :return substituted clause
         """
-        and_info = cls.get_and_info(data['query'])
+        and_info = cls._get_and_info(data['query'])
         if isinstance(clause, BooleanClauseList):
             assert clause.operator.__name__ in ('or_', 'and_')
             if clause.operator.__name__ == 'or_':
