@@ -13,8 +13,8 @@ from painless_sqlalchemy.ModelAction import ModelAction
 from painless_sqlalchemy.column.MapColumn import MapColumn
 
 
-class ModelQuery(ModelAction):
-    """ ORM Query Abstraction """
+class ModelFilter(ModelAction):
+    """ ORM Filter Abstraction """
 
     @classmethod
     def _iterate_path(cls, path):
@@ -59,11 +59,11 @@ class ModelQuery(ModelAction):
             cur = cur[None]
         # handle MapColumn map targets
         if isinstance(cur, str):
-            assert issubclass(class_, ModelQuery)
+            assert issubclass(class_, ModelFilter)
             cur = class_._get_column(cur.split("."))
         if isinstance(cur, list):
             assert all(isinstance(e, str) for e in cur)
-            assert issubclass(class_, ModelQuery)
+            assert issubclass(class_, ModelFilter)
             # todo: this should merge list of lists (!)
             cur = [class_._get_column(e.split(".")) for e in cur]
         return cur
