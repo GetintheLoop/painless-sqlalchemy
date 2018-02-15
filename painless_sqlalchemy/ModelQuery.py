@@ -99,3 +99,89 @@ class ModelQuery(ModelAction):
                 alias = joined_aliases[alias_name]
 
         return query, getattr(alias, path[-1])
+
+    @classmethod
+    def _substitute_clause(cls, data, clause):
+        """
+            Substitute easy annotation in clause using query joins
+            - Missing joins for clause are applied to data["query"]
+            - Entries in clause are recursively resolved
+            - Easy notation expected as "is_custom=true"-ColumnClause
+            :return substituted clause
+        """
+        and_info = cls.get_and_info(data['query'])
+        if isinstance(clause, BooleanClauseList):
+            assert clause.operator.__name__ in ('or_', 'and_')
+            if clause.operator.__name__ == 'or_':
+                clause.clauses = [
+                    cls._substitute_clause(data, c)
+                    for c in clause.clauses
+                ]
+            else:  # and_
+                and_info['depth'] += 1
+                if len(and_info['counts']) <= and_info['depth']:
+                    and_info['counts'].append(0)
+                result = []
+                for c in clause.clauses:
+                    result.append(cls._substitute_clause(data, c))
+                    and_info['counts'][and_info['depth']] += 1
+                clause.clauses = result
+                and_info['depth'] -= 1
+            return clause
+        elif isinstance(clause, Annotated):
+            clause.proxy_set = set([
+                cls._substitute_clause(data, c) for c in clause.proxy_set])
+            return clause
+        elif isinstance(clause, ClauseList):
+            clause.clauses = [
+                cls._substitute_clause(data, c)
+                for c in clause.clauses
+            ]
+            return clause
+        elif isinstance(clause, Case):
+            clause.value = cls._substitute_clause(data, clause.value)
+            clause.whens = [(
+                cls._substitute_clause(data, x),
+                cls._substitute_clause(data, y)
+            ) for x, y in clause.whens]
+            clause.else_ = cls._substitute_clause(data, clause.else_)
+            return clause
+        elif isinstance(clause, (
+            Grouping, UnaryExpression, FromGrouping, Label
+        )):
+            clause.element = cls._substitute_clause(data, clause.element)
+            return clause
+        elif isinstance(clause, FunctionElement):
+            return getattr(func, clause.name)(*[
+                cls._substitute_clause(data, c)
+                for c in clause.clause_expr.element
+            ])
+        elif isinstance(clause, Select):
+            clause._raw_columns = [
+                cls._substitute_clause(data, c) for c in clause._raw_columns]
+            return clause
+        elif isinstance(clause, BinaryExpression):
+            clause.left = cls._substitute_clause(data, clause.left)
+            clause.right = cls._substitute_clause(data, clause.right)
+            return clause
+        elif isinstance(clause, tuple):
+            return tuple(cls._substitute_clause(data, c) for c in clause)
+        elif isinstance(clause, ColumnClause):
+            if getattr(clause, 'is_custom', False) is True:
+                query, attr = cls._get_joined_attr(
+                    data['query'], clause.name.split("."))
+                data['query'] = query
+                return attr.self_group()
+            else:
+                return clause
+        elif isinstance(clause, (
+            BindParameter, InstrumentedAttribute,
+            Null, True_, False_, NoneType, TextClause
+        )):
+            return clause
+        elif isinstance(clause, Cast):
+            clause.clause = cls._substitute_clause(data, clause.clause)
+            return clause
+        else:  # pragma: no cover
+            print(type(clause), clause)
+            raise NotImplementedError
