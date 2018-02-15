@@ -121,3 +121,33 @@ class ModelSerialization(ModelFilter):
                     else:  # if None
                         result[key] = value
         return result
+
+    @staticmethod
+    def get_attr_hierarchy(attributes):
+        """
+            Unflatten attributes list to dict
+            - Attributes are *not* auto expanded
+            - Attributes expected in dot notation
+            return: dict representation
+        """
+        attr_hierarchy = {}
+        for attr in attributes:
+            hierarchy = attr.split(".")
+            cur_level = attr_hierarchy
+            for ele in hierarchy:
+                if ele not in cur_level:
+                    cur_level[ele] = {}
+                cur_level = cur_level[ele]
+        return attr_hierarchy
+
+    @classmethod
+    def as_list(cls, query, attributes):
+        """
+            Serialize query results using attributes as template.
+            - Only contains fetched relationships from query
+            :param query: query to serialize
+            :param attributes: attribute list in dot notation
+            :return list of serialized query results
+        """
+        attr_hierarchy = cls.get_attr_hierarchy(attributes)
+        return [res.as_dict(res, attr_hierarchy) for res in query]
