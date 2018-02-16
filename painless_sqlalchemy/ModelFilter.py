@@ -183,6 +183,7 @@ class ModelFilter(ModelAction):
                 for c in clause.clause_expr.element
             ])
         elif isinstance(clause, Select):
+            # noinspection PyProtectedMember
             clause._raw_columns = [
                 cls._substitute_clause(data, c) for c in clause._raw_columns]
             return clause
@@ -234,7 +235,7 @@ class ModelFilter(ModelAction):
             Overloaded filter abstraction. Supported scenarios:
 
             (1) Pass attributes as dict.
-            Less powerful, but very easy to use and "good enough" in many cases.
+            Less powerful, but easy to use and "good enough" in most cases.
             - Keys reference (relationship) columns using dot notation
             - Values are objects that the keys get filtered by
             - Multiple filter conditions use "and" logic but can reference
