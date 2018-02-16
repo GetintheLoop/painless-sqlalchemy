@@ -2,7 +2,6 @@
 branch = True
 
 [report]
-omit = tests/*
 show_missing = True
 
 [html]
