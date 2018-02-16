@@ -31,7 +31,7 @@ To deactivate environment for session, enter:
 
 (# TODO automate next section):
 
-Connect to psql with the newly created `postgres` user and create the test db
+To connect to psql with the newly created `postgres` user and create the test db
 
     $ sudo -u postgres psql
     ...
