@@ -3,7 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 
-engine = create_engine('sqlite://')
+engine = create_engine(
+    'postgresql://postgres:password@localhost:5432/painless_tmp')
 session = scoped_session(sessionmaker(autocommit=False, bind=engine))
 
 
