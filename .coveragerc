@@ -1,0 +1,10 @@
+[run]
+branch = True
+
+[report]
+omit = tests/*
+show_missing = True
+
+[html]
+directory = coverage_report
+title = cov
