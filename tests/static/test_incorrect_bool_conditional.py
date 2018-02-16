@@ -2,13 +2,13 @@ import re
 from tests import list_project_files
 
 
-class TestBoolVariableValidation(object):
+class TestIncorrectBoolConditional(object):
     """
         Test asserts don't check 'in (True, False)' (false positives)
         Use `isinstance(val, bool)` instead
     """
 
-    def test_bool_variable_validation(self):
+    def test_incorrect_bool_conditional(self):
         assert_regex_compiled = re.compile(
             r'.*?\sin\s[\[(][^)\]]*?(True|False)[^)\]]*?[\])]'
         )
