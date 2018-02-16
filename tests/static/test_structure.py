@@ -1,19 +1,19 @@
-import os
+from os import path, walk, listdir
 import ast
 from tests import ROOT_DIR
 
 
 class TestStructure(object):
 
-    test_dir = os.path.join(ROOT_DIR, "tests")
-    lib_dir = os.path.join(ROOT_DIR, "painless_sqlalchemy")
+    test_dir = path.join(ROOT_DIR, "tests")
+    lib_dir = path.join(ROOT_DIR, "painless_sqlalchemy")
 
-    def test_test_class_names(self):
+    def test_class_names_match(self):
         """ Test that test class names are correct."""
-        for root, dirs, files in os.walk(self.test_dir):
+        for root, dirs, files in walk(self.test_dir):
             for a_file in files:
                 if a_file.startswith("test_") and a_file.endswith(".py"):
-                    path = os.path.join(root, a_file)
+                    filepath = path.join(root, a_file)
 
                     # extract camel case class name from file name
                     name = a_file[5:][:-3]
@@ -23,7 +23,7 @@ class TestStructure(object):
                     name = "Test" + camel_case
 
                     # extract class in test file (assuming it has exactly one)
-                    source = open(path, 'r').read()
+                    source = open(filepath, 'r').read()
                     p = ast.parse(source)
                     classes = [node.name for node in ast.walk(p)
                                if isinstance(node, ast.ClassDef)]
@@ -34,22 +34,22 @@ class TestStructure(object):
                         assert class_name == name, (
                             "Class name and file name don't match for %s. "
                             "They are \"%s\" vs \"%s\"." % (
-                                path, name, class_name)
+                                filepath, name, class_name)
                         )
 
-    def test_test_structure(self):
-        """ Check that that test files are in correct position. """
+    def test_related_lib_file_exists(self):
+        """ Check test files have corresponding lib file if folder exists. """
 
         # find directories in the app folder
         dirs = [
-            name for name in os.listdir(self.lib_dir)
-            if os.path.isdir(os.path.join(self.lib_dir, name))
+            name for name in listdir(self.lib_dir)
+            if path.isdir(path.join(self.lib_dir, name))
         ]
 
         # check for all files in test folder
         for a_dir in dirs:
-            test_sub_dir = os.path.join(self.test_dir, a_dir)
-            for root, dirs, files in os.walk(test_sub_dir):
+            test_sub_dir = path.join(self.test_dir, a_dir)
+            for root, dirs, files in walk(test_sub_dir):
                 for a_file in files:
                     if a_file.endswith(".py") and a_file != "__init__.py":
                         assert a_file.startswith("test_"), (
@@ -57,21 +57,21 @@ class TestStructure(object):
                         ref_file = a_file[5:]
                         if ref_file != '__init__.py':
                             ref_file = ref_file.lstrip('_')
-                        app_file = os.path.join(
+                        app_file = path.join(
                             self.lib_dir,
-                            os.path.relpath(root, self.test_dir),
+                            path.relpath(root, self.test_dir),
                             ref_file
                         )
-                        assert os.path.isfile(app_file), (
+                        assert path.isfile(app_file), (
                             "Test file " + a_file + " needs to have "
                             "corresponding file in the gitl folder."
                         )
 
-    def test_test_init_files(self):
+    def test_init_files_exist(self):
         """ Check that each test folder has an init file """
-        assert os.path.isfile(os.path.join(self.test_dir, "__init__.py"))
+        assert path.isfile(path.join(self.test_dir, "__init__.py"))
         # loop over all sub directories
-        for root, dirs, files in os.walk(self.test_dir):
+        for root, dirs, files in walk(self.test_dir):
             has_tests = False
             for a_file in files:
                 if a_file.startswith("test_") and a_file.endswith(".py"):
@@ -79,12 +79,9 @@ class TestStructure(object):
             if has_tests:
                 # check all parent directories for init files as well
                 cur_dir = root
-                while (
-                    os.path.normpath(cur_dir) !=
-                    os.path.normpath(self.test_dir)
-                ):
-                    init_file = os.path.join(cur_dir, "__init__.py")
-                    assert os.path.isfile(init_file), (
+                while path.normpath(cur_dir) != path.normpath(self.test_dir):
+                    init_file = path.join(cur_dir, "__init__.py")
+                    assert path.isfile(init_file), (
                         "Directory " + cur_dir + " is missing __init__ file."
                     )
-                    cur_dir = os.path.join(cur_dir, "..")
+                    cur_dir = path.join(cur_dir, "..")
