@@ -2,6 +2,14 @@
 branch = True
 
 [report]
+# Regex to exclude form coverage
+exclude_lines =
+    pragma: no cover
+
+    raise AssertionError
+    raise NotImplementedError
+
+# display missing lines in summary
 show_missing = True
 
 [html]

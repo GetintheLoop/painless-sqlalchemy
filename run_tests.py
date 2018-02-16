@@ -5,8 +5,9 @@ def run_tests():
     pytest.main([
         '--cov=painless_sqlalchemy',
         '--cov=tests',
-        '--cov-report',
-        'html'
+        '--cov-report=html',
+        '--cov-report=term-missing:skip-covered',
+        '--cov-config=.coveragerc'
     ])
 
 
