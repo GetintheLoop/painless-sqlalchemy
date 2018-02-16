@@ -1,4 +1,5 @@
 import pytest
+import sqlalchemy
 from sqlalchemy import Column, String
 from painless_sqlalchemy.BaseModel import Base, engine
 from painless_sqlalchemy.Model import Model
@@ -22,6 +23,20 @@ def Student():
 
 @pytest.fixture(scope='session', autouse=True)
 def init_db(Teacher, Student):
+    uri, db = engine.url.__str__().rsplit("/", 1)
+
+    _engine = sqlalchemy.engine.create_engine(uri + "/postgres")
+    conn = _engine.connect()
+    conn.execute(
+        "SELECT pg_terminate_backend(pid) "
+        "FROM pg_stat_activity WHERE datname = '%s';" % db
+    )
+    conn.execute("commit")
+    conn.execute('DROP DATABASE IF EXISTS "%s";' % db)
+    conn.execute("commit")
+    conn.execute('CREATE DATABASE "%s";' % db)
+    conn.close()
+
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 

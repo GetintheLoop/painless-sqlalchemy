@@ -7,7 +7,8 @@ def run_tests():
         '--cov=tests',
         '--cov-report=html',
         '--cov-report=term-missing:skip-covered',
-        '--cov-config=.coveragerc'
+        '--cov-config=.coveragerc',
+        '-s'
     ])
 
 
