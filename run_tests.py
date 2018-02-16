@@ -4,8 +4,8 @@ import pytest
 def run_tests():
     pytest.main([
         '--cov=painless_sqlalchemy',
-        # '--cov-report',
-        # 'html'
+        '--cov-report',
+        'html'
     ])
 
 
