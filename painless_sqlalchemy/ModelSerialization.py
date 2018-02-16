@@ -202,3 +202,48 @@ class ModelSerialization(ModelFilter):
                 result.append(key)
 
         return result
+
+    @classmethod
+    def get_query_columns(cls, attributes):
+        """
+            Obtain all required attributes to query for passed attributes
+            These might be difference because:
+            - MapColumn point to the appropriate column and are not queryable
+            - Relationships can require additional fields. Only auto fetched
+            for primary keys or foreign key constraints (http://tiny.cc/ccg6fy)
+        :return attributes required to query for passed attributes
+        """
+        result = []
+        for field in attributes:
+            chain = []
+            for class_, attr, last in cls._iterate_path(field.split(".")):
+                if last:
+                    if isinstance(attr, MapColumn):
+                        assert None in attr and len(attr) == 1
+                        attr = attr[None]
+                    if isinstance(attr, str):  # MapColumn
+                        result += [
+                            ".".join(chain + attr.split(".")) for attr in
+                            class_.get_query_columns([attr])
+                        ]
+                    elif isinstance(attr, list):  # MapColumn
+                        for e in attr:
+                            result += [
+                                ".".join(chain + e.split(".")) for e in
+                                class_.get_query_columns([e])
+                            ]
+                    else:  # regular column
+                        result.append(field)
+                else:
+                    key = attr.key
+                    prop = attr.property
+                    target_table = prop.mapper.class_.__table__
+                    # check relationships
+                    for p in prop.local_remote_pairs:
+                        # force fetching of "both sides"
+                        if p[0].table == class_.__table__:
+                            result.append(".".join(chain + [p[0].name]))
+                        if p[1].table == target_table:
+                            result.append(".".join(chain + [key, p[1].name]))
+                    chain.append(key)
+        return result
