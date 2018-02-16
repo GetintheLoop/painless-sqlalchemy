@@ -20,7 +20,7 @@ def Student():
 
 
 @pytest.fixture(scope='session', autouse=True)
-def _test_config(Teacher, Student):
+def init_db():
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
