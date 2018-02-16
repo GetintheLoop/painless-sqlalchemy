@@ -1,15 +1,18 @@
 import pytest
+import sys
 
 
 def run_tests():
-    pytest.main([
+    args = [
         '--cov=painless_sqlalchemy',
         '--cov=tests',
         '--cov-report=html',
         '--cov-report=term-missing:skip-covered',
-        '--cov-config=.coveragerc',
-        '-s'
-    ])
+        '--cov-config=.coveragerc'
+    ]
+    if '--verbose' in sys.argv:
+        args.append('-s')
+    pytest.main(args)
 
 
 if __name__ == '__main__':

@@ -1,28 +1,103 @@
 import pytest
 import sqlalchemy
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Table, ForeignKey, Integer
+from sqlalchemy.orm import relationship
 from painless_sqlalchemy.BaseModel import Base, engine
 from painless_sqlalchemy.Model import Model
 
 
 @pytest.fixture(scope='session')
-def Teacher():
+def School():
+    class School(Model):
+        __tablename__ = 'school'
+
+        classrooms = relationship(
+            'Classroom',
+            secondary='school_to_classroom',
+            primaryjoin='School.id == school_to_classroom.c.school_id',
+            secondaryjoin='school_to_classroom.c.classroom_id == Classroom.id'
+        )
+
+    return School
+
+
+@pytest.fixture(scope='session')
+def Classroom(School):
+    class Classroom(Model):
+        __tablename__ = 'classroom'
+
+        teacher_id = Column(Integer, ForeignKey('teacher.id'), nullable=False)
+        teacher = relationship(
+            "Teacher", foreign_keys=teacher_id,
+            primaryjoin="Teacher.id == Classroom.teacher_id"
+        )
+
+    Table(
+        'school_to_classroom',
+        Base.metadata,
+        Column(
+            'school_id',
+            ForeignKey(School.id, ondelete='cascade'),
+            primary_key=True
+        ),
+        Column(
+            'classroom_id',
+            ForeignKey(Classroom.id, ondelete='cascade'),
+            primary_key=True
+        )
+    )
+
+    return Classroom
+
+
+@pytest.fixture(scope='session')
+def Teacher(Classroom):
     class Teacher(Model):
         __tablename__ = 'teacher'
+
+        students = relationship(
+            'Student',
+            secondary='teacher_to_student',
+            primaryjoin='Teacher.id == teacher_to_student.c.teacher_id',
+            secondaryjoin='teacher_to_student.c.student_id == Student.id'
+        )
+
     return Teacher
 
 
 @pytest.fixture(scope='session')
-def Student():
+def Student(Teacher):
     class Student(Model):
         __tablename__ = 'student'
 
         name = Column(String(64), index=True, nullable=False)
+        teacher_id = Column(Integer, ForeignKey(Teacher.id), nullable=True)
+        teacher = relationship(
+            "Teacher", foreign_keys=teacher_id,
+            primaryjoin="Teacher.id == Student.teacher_id"
+        )
+
+    # teacher_to_student linkage table
+    Table(
+        'teacher_to_student',
+        Base.metadata,
+        Column(
+            'teacher_id',
+            ForeignKey(Teacher.id, ondelete='cascade'),
+            primary_key=True
+        ),
+        Column(
+            'student_id',
+            ForeignKey(Student.id, ondelete='cascade'),
+            primary_key=True
+        )
+    )
+
     return Student
 
 
 @pytest.fixture(scope='session', autouse=True)
-def init_db(Teacher, Student):
+def init_db(School, Classroom, Teacher, Student):
     uri, db = engine.url.__str__().rsplit("/", 1)
 
     _engine = sqlalchemy.engine.create_engine(uri + "/postgres")
