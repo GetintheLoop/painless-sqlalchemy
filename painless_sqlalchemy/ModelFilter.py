@@ -183,7 +183,6 @@ class ModelFilter(ModelAction):
                 for c in clause.clause_expr.element
             ])
         elif isinstance(clause, Select):
-            # noinspection PyProtectedMember
             clause._raw_columns = [
                 cls._substitute_clause(data, c) for c in clause._raw_columns]
             return clause
