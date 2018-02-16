@@ -13,9 +13,7 @@ def School():
 
         classrooms = relationship(
             'Classroom',
-            secondary='school_to_classroom',
-            primaryjoin='School.id == school_to_classroom.c.school_id',
-            secondaryjoin='school_to_classroom.c.classroom_id == Classroom.id'
+            primaryjoin='School.id == Classroom.school_id'
         )
 
     return School
@@ -26,26 +24,17 @@ def Classroom(School):
     class Classroom(Model):
         __tablename__ = 'classroom'
 
+        school_id = Column(Integer, ForeignKey(School.id))
+        school = relationship(
+            School, foreign_keys=school_id,
+            primaryjoin="School.id == Classroom.school_id"
+        )
+
         teacher_id = Column(Integer, ForeignKey('teacher.id'), nullable=False)
         teacher = relationship(
             "Teacher", foreign_keys=teacher_id,
             primaryjoin="Teacher.id == Classroom.teacher_id"
         )
-
-    Table(
-        'school_to_classroom',
-        Base.metadata,
-        Column(
-            'school_id',
-            ForeignKey(School.id, ondelete='cascade'),
-            primary_key=True
-        ),
-        Column(
-            'classroom_id',
-            ForeignKey(Classroom.id, ondelete='cascade'),
-            primary_key=True
-        )
-    )
 
     return Classroom
 
@@ -55,6 +44,11 @@ def Teacher(Classroom):
     class Teacher(Model):
         __tablename__ = 'teacher'
 
+        classroom_id = Column(Integer, ForeignKey(Classroom.id))
+        classroom = relationship(
+            Classroom, foreign_keys=classroom_id,
+            primaryjoin="Classroom.id == Teacher.classroom_id"
+        )
         students = relationship(
             'Student',
             secondary='teacher_to_student',
@@ -71,10 +65,11 @@ def Student(Teacher):
         __tablename__ = 'student'
 
         name = Column(String(64), index=True, nullable=False)
-        teacher_id = Column(Integer, ForeignKey(Teacher.id), nullable=True)
-        teacher = relationship(
-            "Teacher", foreign_keys=teacher_id,
-            primaryjoin="Teacher.id == Student.teacher_id"
+
+        teachers = relationship(
+            "Teacher", secondary='teacher_to_student',
+            primaryjoin="Teacher.id == teacher_to_student.c.teacher_id",
+            secondaryjoin="teacher_to_student.c.student_id == Student.id"
         )
 
     # teacher_to_student linkage table
