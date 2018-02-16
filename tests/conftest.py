@@ -76,16 +76,8 @@ def Student(Teacher):
     Table(
         'teacher_to_student',
         Base.metadata,
-        Column(
-            'teacher_id',
-            ForeignKey(Teacher.id, ondelete='cascade'),
-            primary_key=True
-        ),
-        Column(
-            'student_id',
-            ForeignKey(Student.id, ondelete='cascade'),
-            primary_key=True
-        )
+        Column('teacher_id', ForeignKey(Teacher.id), primary_key=True),
+        Column('student_id', ForeignKey(Student.id), primary_key=True)
     )
 
     return Student
