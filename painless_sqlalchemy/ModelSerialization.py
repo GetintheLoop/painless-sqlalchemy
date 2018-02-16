@@ -1,6 +1,6 @@
 import re
 import functools
-from sqlalchemy import inspect
+from sqlalchemy import inspect, func
 from sqlalchemy.orm import load_only, undefer, joinedload
 from sqlalchemy.sql.elements import Label
 from painless_sqlalchemy.BaseModel import BaseModel
@@ -280,3 +280,117 @@ class ModelSerialization(ModelFilter):
 
         # this field can be exposed
         return True
+
+    @classmethod
+    def serialize(cls, to_return=None, filter_by=None, limit=None, offset=None,
+                  query=None, skip_nones=False, order_by=None, session=None,
+                  filter_ids=True, params=None):
+        """
+                Convert to serializable representation
+                - Only necessary fields are being queried
+            :param to_return: list of fields to return
+            :param filter_by: dict of SQLAlchemy clause to filter by
+            :param limit: maximum amount of objects fetched
+            :param offset: offset value for the result
+            :param query: optional base query
+            :param skip_nones: Skip filter_by entries that have a "None" value
+            :param order_by: enforce result ordering, multiple via tuple
+            :param session: Explict session to use for query
+            :param filter_ids: Whether to filter not exposed fields
+            :param params: Query parameters
+            :return: Json serializable representation
+        """
+        assert params is None or isinstance(params, dict)
+        assert to_return is None or isinstance(to_return, (list, tuple))
+
+        if to_return is None:
+            assert isinstance(cls.default_serialization, tuple)
+            to_return = list(cls.default_serialization)
+
+        assert len(to_return) == len(set(to_return)), [
+            x for x in to_return if to_return.count(x) > 1
+        ]
+
+        # expand relationships to default fields
+        expanded = []
+        for path in to_return:
+            expanded += cls.expand(path)
+        to_return = expanded
+
+        # remove not white listed ids
+        if filter_ids is not False:
+            to_return = filter(cls.is_exposed_id, to_return)
+
+        # remove duplicated and store so we know what to populate
+        json_to_populate = list(set(to_return))
+        # obtain all columns that need fetching from db
+        to_fetch = list(set(cls.get_query_columns(to_return)))
+
+        if query is None:
+            query = cls.query
+        if session is not None:
+            query = query.with_session(session)
+        if params is not None:
+            query = query.params(**params)
+        # ensure that fresh data is loaded
+        query = query.populate_existing()
+        if filter_by is not None:
+            query = cls.filter(filter_by, query, skip_nones=skip_nones)
+
+        # handle consistent ordering and tuple in all cases
+        if order_by is None:
+            order_by = cls.id
+        if isinstance(order_by, tuple):
+            if order_by[-1] != cls.id:
+                order_by = order_by + (cls.id,)
+        else:
+            if order_by != cls.id:
+                order_by = order_by, cls.id
+            else:
+                order_by = order_by,
+        assert isinstance(order_by, tuple)
+
+        # join columns in order_by where necessary
+        data = {'query': query}
+        order_by = cls._substitute_clause(data, order_by)
+        query = data['query']
+
+        # we only need foreign key and request columns
+        # Note: Primary keys are loaded automatically by sqlalchemy
+        fks = [col.name for col in cls.__table__.columns if col.foreign_keys]
+        eager_cols = [col for col in to_fetch if "." not in col]
+        to_load = [getattr(cls, e) for e in list(set(fks + eager_cols))]
+        assert all(hasattr(e, 'type') for e in to_load)
+        query = query.options(load_only(*to_load))
+        # only return one line per result model so we can use limit and offset
+        query = query.distinct(cls.id)
+        dense_rank = func.dense_rank().over(  # remember the actual order
+            order_by=order_by).label("dense_rank")
+        query = query.add_columns(dense_rank)
+        query = query.from_self(cls)
+        query = query.order_by(dense_rank)
+
+        if limit is not None:
+            query = query.limit(limit)
+        if offset is not None:
+            query = query.offset(offset)
+
+        query = cls.eager_load(to_fetch, query)
+
+        # for query debugging use
+        # import warnings
+        # warnings.simplefilter('default')
+        # import sqlalchemy.dialects.postgresql as postgresql
+        # print query.statement.compile(dialect=postgresql.dialect())
+        # print "==========="
+        # warnings.simplefilter('error')
+
+        # for executable query debugging
+        # import warnings
+        # warnings.simplefilter('default')
+        # from gitl.util.debug.literalquery import literalquery
+        # print literalquery(query)
+        # print "==========="
+        # warnings.simplefilter('error')
+
+        return cls.as_list(query, json_to_populate)
