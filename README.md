@@ -30,7 +30,7 @@
       
       Options:
         --verbose
-        Output all debug information (warning: interferes with test progress output)
+        Output debug information (warning: interferes with test progress output)
 
     ~ Where can I get help?
 
