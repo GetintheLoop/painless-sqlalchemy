@@ -10,3 +10,4 @@ class TestModelSerialization:
             filter_ids=False
         )
         assert len(teacher) == 1
+        assert teacher[0]['id'] == teacher_id
