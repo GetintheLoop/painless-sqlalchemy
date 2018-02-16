@@ -8,6 +8,10 @@ class ModelAction(BaseModel):
 
     __abstract__ = True
 
+    def __init__(self, **kwargs):
+        super(ModelAction, self).__init__()
+        self.update(**kwargs)
+
     def _get_session(self):
         """
             Get current Session for Instance or create new Session
@@ -47,7 +51,7 @@ class ModelAction(BaseModel):
         all_cols = inspected.column_attrs.keys()
         all_rels = inspected.relationships.keys()
         all_cols_and_rels = all_cols + all_rels
-        for key, value in kwargs:
+        for key, value in kwargs.items():
             if key not in all_cols_and_rels:
                 raise AttributeError("Key \"%s\" is not a valid column." % key)
             setattr(self, key, value)
