@@ -378,19 +378,8 @@ class ModelSerialization(ModelFilter):
         query = cls.eager_load(to_fetch, query)
 
         # for query debugging use
-        # import warnings
-        # warnings.simplefilter('default')
         # import sqlalchemy.dialects.postgresql as postgresql
         # print query.statement.compile(dialect=postgresql.dialect())
         # print "==========="
-        # warnings.simplefilter('error')
-
-        # for executable query debugging
-        # import warnings
-        # warnings.simplefilter('default')
-        # from gitl.util.debug.literalquery import literalquery
-        # print literalquery(query)
-        # print "==========="
-        # warnings.simplefilter('error')
 
         return cls.as_list(query, json_to_populate)
