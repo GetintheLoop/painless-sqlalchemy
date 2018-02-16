@@ -1,3 +1,5 @@
+[![Build Status](https://img.shields.io/travis/GetintheLoop/painless-sqlalchemy/master.svg)](https://travis-ci.org/GetintheLoop/painless-sqlalchemy)
+
 
                           // Painless-SQLAlchemy //
 
