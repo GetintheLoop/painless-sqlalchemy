@@ -6,6 +6,10 @@
 
       Painless-SQLAlchemy is a if a wrapper for SQLAlchemy that add support
       for convenient serialization and filtering of SQLAlchemy models.
+     
+    - Supported Databases:
+      [x] Postgres 9.6.X
+      [ ] MySQL - Future support intended
 
     ~ What do I need?
 

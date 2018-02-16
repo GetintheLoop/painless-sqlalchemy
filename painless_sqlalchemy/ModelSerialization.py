@@ -379,7 +379,7 @@ class ModelSerialization(ModelFilter):
 
         # for query debugging use
         # import sqlalchemy.dialects.postgresql as postgresql
-        # print query.statement.compile(dialect=postgresql.dialect())
-        # print "==========="
+        # print(query.statement.compile(dialect=postgresql.dialect()))
+        # print("===========")
 
         return cls._as_list(query, json_to_populate)

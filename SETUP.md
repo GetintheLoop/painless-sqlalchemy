@@ -28,3 +28,17 @@ To deactivate environment for session, enter:
 
 ## Install and Setup PostgreSQL
 [Instructions](https://github.com/simlu/xmonad/blob/master/programs/postgresql.md)
+
+(# TODO automate next section):
+
+To connect to psql with the newly created `postgres` user and create the test db
+
+    $ sudo -u postgres psql
+    ...
+    postgres=# CREATE DATABASE painless_tmp;
+
+## Running the tests
+
+Ensure your env is activated and run:
+
+    $ python run_tests.py

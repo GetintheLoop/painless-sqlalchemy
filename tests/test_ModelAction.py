@@ -1,28 +1,13 @@
-from sqlalchemy import Column, Integer
-from painless_sqlalchemy.BaseModel import Base, engine
-from painless_sqlalchemy.ModelSerialization import ModelSerialization
 
 
 class TestModelAction(object):
 
-    @classmethod
-    def setup_class(cls):
-        class Foo(ModelSerialization):
-            __tablename__ = 'foo'
-            id = Column(Integer, primary_key=True)
-
-        cls.Foo = Foo
-        Base.metadata.create_all(engine)
-
-    @classmethod
-    def teardown_class(cls):
-        Base.metadata.drop_all(engine)
-
-    def test_get_session(self):
+    def test_get_session(self, Student):
         """ Test session always exists """
-        assert self.Foo()._get_session() is not None
+        assert Student()._get_session() is not None
 
-    def test_save(self):
+    def test_save(self, Teacher):
         """ Test saving object """
-        self.Foo(id=1).save()
-        assert self.Foo.filter({'id': 1}).one().id == 1
+        teacher_id = Teacher().save().id
+        teacher = Teacher.filter({'id': teacher_id}).one()
+        assert teacher.id == teacher_id
