@@ -247,3 +247,36 @@ class ModelSerialization(ModelFilter):
                             result.append(".".join(chain + [key, p[1].name]))
                     chain.append(key)
         return result
+
+    @classmethod
+    def is_exposed_id(cls, field):
+        """
+            Check field is exposed, i.e.
+            - not white listed id column
+            - column referencing not white listed id column
+            Uses BaseModel.__expose_id__ for white listing
+            :return True iff column is exposed
+        """
+        path = field.split(".")
+        cols = cls._get_column(path)
+        if not isinstance(cols, list):
+            cols = [cols]
+        for col in cols:
+            # check for foreign key id reference that is not white listed
+            for fk in getattr(col, 'foreign_keys', set()):
+                table = fk.column.table
+                fk_column = fk.column.key
+                fk_table = fk.column.table.name
+                assert fk_table.quote is None
+                if fk_column == 'id':  # referencing an id column
+                    if getattr(table, '__expose_id__', False) is not True:
+                        return False
+
+            # check if id and not white listed
+            if col.key == "id":
+                assert col.class_.__table__.name.quote is None
+                if getattr(col.class_, '__expose_id__', False) is not True:
+                    return False  # id columns is white listed
+
+        # this field can be exposed
+        return True
