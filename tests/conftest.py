@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy import Column, String
 from painless_sqlalchemy.BaseModel import Base, engine
 from painless_sqlalchemy.Model import Model
 
@@ -14,11 +15,13 @@ def Teacher():
 def Student():
     class Student(Model):
         __tablename__ = 'student'
+
+        name = Column(String(64), index=True, nullable=False)
     return Student
 
 
 @pytest.fixture(scope='session', autouse=True)
-def init_db():
+def init_db(Teacher, Student):
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
