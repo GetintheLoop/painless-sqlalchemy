@@ -4,13 +4,25 @@ from painless_sqlalchemy.ModelSerialization import ModelSerialization
 
 
 @pytest.fixture(scope='session')
-def Foo():
+def Teacher():
     # noinspection PyShadowingNames
-    class Foo(ModelSerialization):
-        __tablename__ = 'foo'
+    class Teacher(ModelSerialization):
+        __tablename__ = 'teacher'
+    return Teacher
+
+
+@pytest.fixture(scope='session')
+def Student():
+    # noinspection PyShadowingNames
+    class Student(ModelSerialization):
+        __tablename__ = 'student'
+    return Student
+
+
+@pytest.fixture(scope='session', autouse=True)
+def _test_config(Teacher, Student):
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
-    return Foo
 
 
 def pytest_itemcollected(item):

@@ -2,12 +2,12 @@
 
 class TestModelAction(object):
 
-    def test_get_session(self, Foo):
+    def test_get_session(self, Student):
         """ Test session always exists """
-        assert Foo()._get_session() is not None
+        assert Student()._get_session() is not None
 
-    def test_save(self, Foo):
+    def test_save(self, Teacher):
         """ Test saving object """
-        foo_id = Foo().save().id
-        foo = Foo.filter({'id': foo_id}).one()
-        assert foo.id == foo_id
+        teacher_id = Teacher().save().id
+        teacher = Teacher.filter({'id': teacher_id}).one()
+        assert teacher.id == teacher_id
