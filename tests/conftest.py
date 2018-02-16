@@ -4,16 +4,14 @@ from painless_sqlalchemy.ModelSerialization import ModelSerialization
 
 
 @pytest.fixture(scope='session')
-def Teacher():
-    # noinspection PyShadowingNames
+def Teacher_():
     class Teacher(ModelSerialization):
         __tablename__ = 'teacher'
     return Teacher
 
 
 @pytest.fixture(scope='session')
-def Student():
-    # noinspection PyShadowingNames
+def Student_():
     class Student(ModelSerialization):
         __tablename__ = 'student'
     return Student
