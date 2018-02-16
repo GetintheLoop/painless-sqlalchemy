@@ -57,3 +57,4 @@ fabric.properties
 # coverage
 /.coverage
 /coverage_report
+/tests/.pytest_cache

@@ -17,7 +17,7 @@ class ModelSerialization(ModelFilter):
     __abstract__ = True
 
     @classmethod
-    def eager_load(cls, attributes=None, query=None):
+    def _eager_load(cls, attributes=None, query=None):
         """
                 Alter query to only load provided attributes
                 - Attributes are *not* auto expanded
@@ -64,7 +64,7 @@ class ModelSerialization(ModelFilter):
 
         return query
 
-    def as_dict(self, obj, dict_):
+    def _as_dict(self, obj, dict_):
         """
                 Convert SQLAlchemy object hierarchy into new dict
                 - Elements that are not loaded are not returned (!)
@@ -82,13 +82,13 @@ class ModelSerialization(ModelFilter):
                 self
             )
         if isinstance(obj, list):
-            return [self.as_dict(e, dict_) for e in obj]
+            return [self._as_dict(e, dict_) for e in obj]
 
         result = {}
         if isinstance(obj, dict):
             for k, v in dict_.iteritems():
                 assert k in obj
-                result[k] = self.as_dict(obj[k], v)
+                result[k] = self._as_dict(obj[k], v)
         else:
             assert isinstance(obj, ModelSerialization)
             inspected = inspect(obj.__class__)
@@ -99,7 +99,7 @@ class ModelSerialization(ModelFilter):
             for key in filter(lambda e: e not in obj.__dict__, dict_.keys()):
                 map_column = getattr(obj.__class__, key)
                 if isinstance(map_column, MapColumn):
-                    result[key] = self.as_dict(map_column, dict_[key])
+                    result[key] = self._as_dict(map_column, dict_[key])
 
             # only return valid arguments, this is necessary since
             # primary keys can not be deferred and objects could be
@@ -112,7 +112,7 @@ class ModelSerialization(ModelFilter):
                     # recursively fetch data from other objects
                     if isinstance(value, list):
                         result[key] = [
-                            rel_obj.as_dict(rel_obj, dict_[key])
+                            rel_obj._as_dict(rel_obj, dict_[key])
                             for rel_obj in value
                         ]
                         remap_on = rels[key].remap_on
@@ -122,13 +122,13 @@ class ModelSerialization(ModelFilter):
                                 if remap_on in e
                             }
                     elif isinstance(value, ModelSerialization):
-                        result[key] = value.as_dict(value, dict_[key])
+                        result[key] = value._as_dict(value, dict_[key])
                     else:  # if None
                         result[key] = value
         return result
 
     @staticmethod
-    def get_attr_hierarchy(attributes):
+    def _get_attr_hierarchy(attributes):
         """
             Unflatten attributes list to dict
             - Attributes are *not* auto expanded
@@ -146,7 +146,7 @@ class ModelSerialization(ModelFilter):
         return attr_hierarchy
 
     @classmethod
-    def as_list(cls, query, attributes):
+    def _as_list(cls, query, attributes):
         """
             Serialize query results using attributes as template.
             - Only contains fetched relationships from query
@@ -154,11 +154,11 @@ class ModelSerialization(ModelFilter):
             :param attributes: attribute list in dot notation
             :return list of serialized query results
         """
-        attr_hierarchy = cls.get_attr_hierarchy(attributes)
-        return [res.as_dict(res, attr_hierarchy) for res in query]
+        attr_hierarchy = cls._get_attr_hierarchy(attributes)
+        return [res._as_dict(res, attr_hierarchy) for res in query]
 
     @classmethod
-    def expand(cls, key):
+    def _expand(cls, key):
         """
                 Recursively expand given paths
                 - support bracket notation e.g. "rel(field1,field2)"
@@ -183,7 +183,7 @@ class ModelSerialization(ModelFilter):
         result = []
         if "," in key:  # contains multiple keys
             for k in key.split(","):
-                result += cls.expand(k)
+                result += cls._expand(k)
         else:
             path = key.split(".")
             if path[-1] == "*":  # path ends in relationship
@@ -193,18 +193,18 @@ class ModelSerialization(ModelFilter):
                 )
                 if isinstance(end, dict):
                     for f in DictUtil.flatten_dict(end):
-                        result += cls.expand(key[:-1] + f)
+                        result += cls._expand(key[:-1] + f)
                 else:
                     assert issubclass(end, BaseModel)
                     for f in end.default_serialization:
-                        result += cls.expand(key[:-1] + f)
+                        result += cls._expand(key[:-1] + f)
             else:  # ordinary field, no expansion needed
                 result.append(key)
 
         return result
 
     @classmethod
-    def get_query_columns(cls, attributes):
+    def _get_query_columns(cls, attributes):
         """
             Obtain all required attributes to query for passed attributes
             These might be difference because:
@@ -224,13 +224,13 @@ class ModelSerialization(ModelFilter):
                     if isinstance(attr, str):  # MapColumn
                         result += [
                             ".".join(chain + attr.split(".")) for attr in
-                            class_.get_query_columns([attr])
+                            class_._get_query_columns([attr])
                         ]
                     elif isinstance(attr, list):  # MapColumn
                         for e in attr:
                             result += [
                                 ".".join(chain + e.split(".")) for e in
-                                class_.get_query_columns([e])
+                                class_._get_query_columns([e])
                             ]
                     else:  # regular column
                         result.append(field)
@@ -249,7 +249,7 @@ class ModelSerialization(ModelFilter):
         return result
 
     @classmethod
-    def is_exposed_id(cls, field):
+    def _is_exposed_id(cls, field):
         """
             Check field is exposed, i.e.
             - not white listed id column
@@ -314,17 +314,17 @@ class ModelSerialization(ModelFilter):
         # expand relationships to default fields
         expanded = []
         for path in to_return:
-            expanded += cls.expand(path)
+            expanded += cls._expand(path)
         to_return = expanded
 
         # remove not white listed ids
         if filter_ids is not False:
-            to_return = filter(cls.is_exposed_id, to_return)
+            to_return = filter(cls._is_exposed_id, to_return)
 
         # remove duplicated and store so we know what to populate
         json_to_populate = list(set(to_return))
         # obtain all columns that need fetching from db
-        to_fetch = list(set(cls.get_query_columns(to_return)))
+        to_fetch = list(set(cls._get_query_columns(to_return)))
 
         if query is None:
             query = cls.query
@@ -375,11 +375,11 @@ class ModelSerialization(ModelFilter):
         if offset is not None:
             query = query.offset(offset)
 
-        query = cls.eager_load(to_fetch, query)
+        query = cls._eager_load(to_fetch, query)
 
         # for query debugging use
         # import sqlalchemy.dialects.postgresql as postgresql
         # print query.statement.compile(dialect=postgresql.dialect())
         # print "==========="
 
-        return cls.as_list(query, json_to_populate)
+        return cls._as_list(query, json_to_populate)
