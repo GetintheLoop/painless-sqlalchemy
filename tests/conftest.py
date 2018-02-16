@@ -1,18 +1,18 @@
 import pytest
 from painless_sqlalchemy.BaseModel import Base, engine
-from painless_sqlalchemy.ModelSerialization import ModelSerialization
+from painless_sqlalchemy.Model import Model
 
 
 @pytest.fixture(scope='session')
-def Teacher_():
-    class Teacher(ModelSerialization):
+def Teacher():
+    class Teacher(Model):
         __tablename__ = 'teacher'
     return Teacher
 
 
 @pytest.fixture(scope='session')
-def Student_():
-    class Student(ModelSerialization):
+def Student():
+    class Student(Model):
         __tablename__ = 'student'
     return Student
 
