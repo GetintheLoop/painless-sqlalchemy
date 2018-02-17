@@ -44,7 +44,7 @@ def Teacher(Classroom):
     class Teacher(Model):
         __tablename__ = 'teacher'
 
-        classroom_id = Column(Integer, ForeignKey(Classroom.id))
+        classroom_id = Column(Integer, ForeignKey(Classroom.id), unique=True)
         classroom = relationship(
             Classroom, foreign_keys=classroom_id,
             primaryjoin="Classroom.id == Teacher.classroom_id"
