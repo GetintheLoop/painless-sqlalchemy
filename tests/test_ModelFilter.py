@@ -1,28 +1,47 @@
+import pytest
+from sqlalchemy.orm import sessionmaker
+from painless_sqlalchemy.BaseModel import engine
 
 
 class TestModelFilter(object):
 
+    @classmethod
+    @pytest.fixture(scope='class', autouse=True)
+    def setup(cls, Classroom, Teacher, Student):
+        student1 = Student(name='foo')
+        student2 = Student(name='baz')
+
+        teacher = Teacher(students=[student1, student2])
+        classroom = Classroom(teacher=teacher)
+
+        session = sessionmaker(engine)()
+        session.add_all([student1, student2, teacher, classroom])
+        session.commit()
+
+        cls.student1 = {
+            'id': student1.id,
+            'name': student1.name
+        }
+        cls.student2_id = student2.id
+        cls.teacher_id = teacher.id
+        cls.classroom_id = classroom.id
+
     def test_filter_by_id(self, Teacher):
-        teacher_id = Teacher().save().id
-        assert Teacher.filter({'id': teacher_id}).one().id == teacher_id
-
-    def test_filter_by_one_to_many_relationship(self, Teacher, Student):
-        student = Student(name='foo')
-        teacher_id = Teacher(students=[student]).save().id
         assert Teacher.filter({
-            'students.name': student.name
-        }).one().id == teacher_id
+            'id': self.teacher_id
+        }).one().id == self.teacher_id
 
-    def test_filter_by_one_to_one_relationship(self, Classroom, Teacher):
-        teacher = Teacher()
-        classroom_id = Classroom(teacher=teacher).save().id
-        assert Classroom.filter({
-            'teacher.id': teacher.id
-        }).one().id == classroom_id
+    def test_filter_by_many_to_many_relationship(self, Teacher):
+        assert Teacher.filter({
+            'students.name': self.student1['name']
+        }).one().id == self.teacher_id
 
-    def test_filter_by_foreign_key(self, Classroom, Teacher):
-        teacher = Teacher()
-        classroom_id = Classroom(teacher=teacher).save().id
+    def test_filter_by_one_to_one_relationship(self, Classroom):
         assert Classroom.filter({
-            'teacher_id': teacher.id
-        }).one().id == classroom_id
+            'teacher.id': self.teacher_id
+        }).one().id == self.classroom_id
+
+    def test_filter_by_foreign_key(self, Classroom):
+        assert Classroom.filter({
+            'teacher_id': self.teacher_id
+        }).one().id == self.classroom_id
