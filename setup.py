@@ -10,7 +10,7 @@ Links
 from setuptools import setup
 
 setup(
-    name='Flask-SQLAlchemy',
+    name='Painless-SQLAlchemy',
     version='0.1',
     url='https://github.com/GetintheLoop/painless-sqlalchemy',
     license='MIT',
