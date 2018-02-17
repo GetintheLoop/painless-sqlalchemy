@@ -30,10 +30,10 @@ def Classroom(School):
             primaryjoin="School.id == Classroom.school_id"
         )
 
-        teacher_id = Column(Integer, ForeignKey('teacher.id'), nullable=False)
         teacher = relationship(
-            "Teacher", foreign_keys=teacher_id,
-            primaryjoin="Teacher.id == Classroom.teacher_id"
+            "Teacher",
+            primaryjoin="Classroom.id == Teacher.classroom_id",
+            uselist=False
         )
 
     return Classroom
