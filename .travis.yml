@@ -21,3 +21,11 @@ script:
 
 after_success:
   if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then coveralls; fi
+
+deploy:
+  provider: testpypi
+  user: vinc.py
+  password:
+    secure: UmDd1gKtOhBfDMWSWcmYEBzbdyt1FE4koE+vJJIFdmCx+9BJBgxSzBwvT4FdaKLp2ozJY9rNljaYRhWII5/WWNQXirAZ7tB23cwaA+xhl3KN1Ezm8C9Xbb1BZ9eJnEklpn+s3s4WIyN1FZgfDwh45pKNoFJTTsDeNvza/ixf4zatIF98Kw6NSKvVsgYnop1dAshAJsoUnwbKavYhCwOvoQJaKRzqCWr6dTZe5txhMfU29/50J2VUC1LUvOluJuUMfJCip7KadTGaNBHIOYV4Zy0Plj7HjWUVNOd2DB+rpM/tdCiEtOXTxuscUF4BeJMYYGIJcyNNkTaQbG4F5aV0477iKAGnoI2oKAG1ZQJrw+/k+mXwKYp2nQYZkN/tZZQQjO84dcVL7hFxq+DXS21n1XrLfxq+rZqU3hO/79zhtCZaAtmDzrE35MpjMgzYjga1O0H2rC4FaUCoU+eqlZD7VFZf0ELa+OEs8nZizNXEiRhr3J5hq+Ta6G+dl+07DyPZDQIpNBb+SXmNFZYy1p7NSB1rHViTRCBn+1GENoslVWMbg0qEKDMQOeFv50IgjMmbXTfRVl6zuN6fqezCSbXQWcGShrIbzxjfbxfTF7wfcv1gSMFZjTKJkc9sHYhq6fntBNmNUrUCBJTrK8SvoADxDUtRpxY1+z6y4l1lwx5TwAQ=
+  on:
+    branch: master
