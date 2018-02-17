@@ -24,7 +24,13 @@
 
     ~ Where are the tests?
 
-      ....
+      Start the tests with:
+      
+      $ python run_tests.py [options]
+      
+      Options:
+        --verbose
+        Output debug information (warning: interferes with test progress output)
 
     ~ Where can I get help?
 
