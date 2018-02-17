@@ -1,4 +1,4 @@
-SQLAlchemy==1.2.2
+SQLAlchemy==1.2.3
 pytest==3.4.0
 pytest-cov==2.5.1
 psycopg2==2.7.4
