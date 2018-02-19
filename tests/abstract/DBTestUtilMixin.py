@@ -1,3 +1,4 @@
+import functools
 from sqlalchemy import and_
 from sqlalchemy.dialects.postgresql import insert
 from painless_sqlalchemy.BaseModel import Base, session, engine
@@ -13,6 +14,19 @@ class DBTestUtilMixin(object):
         """
         session.add_all(args)
         session.commit()
+
+    @staticmethod
+    def check_constraint(err, constraint):
+        """
+            Test Helper: Validate Database Constraint
+            - raises exception if not matched
+            :param err: exception raised
+            :param constraint: the constraint name to check for
+        """
+        assert constraint == functools.reduce(
+            lambda e, a: getattr(e, a, None),
+            [err.exception, 'orig', 'diag', 'constraint_name']
+        )
 
     @staticmethod
     def get_tables():
