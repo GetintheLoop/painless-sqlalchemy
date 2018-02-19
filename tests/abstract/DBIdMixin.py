@@ -6,10 +6,11 @@ class DBIdMixin(object):
 
     @classmethod
     def extract(cls, *args, **kwargs):
-        """ Extract ids for passed Models recursively
-        :param args Starting Models to extract ids from
-        :param kwargs Pass in ignore=tuple(table name, ...) to skip tables
-        :return dict mapping {table name -> tuple of ids}
+        """
+            Extract ids for passed Models recursively
+            :param args Starting Models to extract ids from
+            :param kwargs Pass in ignore=tuple(table name, ...) to skip tables
+            :return dict mapping {table name -> tuple of ids}
         """
         ignore = kwargs.get('ignore', set())
         result = {}
