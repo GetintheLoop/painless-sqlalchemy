@@ -89,18 +89,18 @@ class TestModelFilter(object):
         student = Student.filter({
             'id': self.student2_id,
             'address': None
-        }, skip_nones=True).one()
-        assert student.id == self.student2_id
-
-    def test_filter_for_null_value(self, Student):
-        student = Student.filter({
-            'id': self.student1['id'],
-            'address': None
-        }).first()
+        }, skip_nones=True).first()
         assert student is not None
 
         student = Student.filter({
             'id': self.student2_id,
             'address': None
-        }).first()
+        }, skip_nones=False).first()
         assert student is None
+
+    def test_filter_by_null_value(self, Student):
+        student = Student.filter({
+            'id': self.student1['id'],
+            'address': None
+        }).first()
+        assert student is not None

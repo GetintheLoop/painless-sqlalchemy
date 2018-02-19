@@ -115,7 +115,7 @@ class ModelSerialization(ModelFilter):
                             rel_obj._as_dict(rel_obj, dict_[key])
                             for rel_obj in value
                         ]
-                        remap_on = rels[key].remap_on
+                        remap_on = getattr(rels[key], 'remap_on', None)
                         if remap_on is not None:
                             result[key] = {
                                 e[remap_on]: e for e in result[key]

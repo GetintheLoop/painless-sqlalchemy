@@ -1,3 +1,4 @@
+from functools import reduce
 import pytest
 from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
@@ -72,12 +73,31 @@ class TestModelSerialization:
         assert len(student) == 1
         assert student[0]['id'] == self.student2_id
 
-    def test_ids_filtered_on_relationship(self, School):
+    def test_ids_filtered_on_relationship(self, School, Student):
+        assert Student.__expose_id__ is False
+        assert School.__expose_id__ is True
+
         schools = School.serialize(
             to_return=['id', 'classrooms.teacher.students.id'],
             filter_by={
                 'classrooms.teacher.students.id': self.student1['id']
-            }
+            },
+            filter_ids=True
         )
         assert len(schools) == 1
         assert schools[0] == {'id': self.school_id}
+
+        schools = School.serialize(
+            to_return=['id', 'classrooms.teacher.students.id'],
+            filter_by={
+                'classrooms.teacher.students.id': self.student1['id']
+            },
+            filter_ids=False
+        )
+        assert 'id' in schools[0]
+        assert reduce(
+            lambda o, key:
+            o[0].get(key, False) if isinstance(o, list) else o.get(key, False),
+            ['classrooms', 'teacher', 'students', 'id'],
+            schools
+        )
