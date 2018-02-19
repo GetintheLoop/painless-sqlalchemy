@@ -65,19 +65,22 @@ def Student(Teacher):
         __tablename__ = 'student'
 
         name = Column(String(64), index=True, nullable=False)
+        address = Column(String(64), index=False, nullable=True)
 
         teachers = relationship(
             "Teacher", secondary='teacher_to_student',
-            primaryjoin="Teacher.id == teacher_to_student.c.teacher_id",
-            secondaryjoin="teacher_to_student.c.student_id == Student.id"
+            primaryjoin="Student.id == teacher_to_student.c.student_id",
+            secondaryjoin="teacher_to_student.c.teacher_id == Teacher.id"
         )
 
     # teacher_to_student linkage table
     Table(
         'teacher_to_student',
         Base.metadata,
-        Column('teacher_id', ForeignKey(Teacher.id), primary_key=True),
-        Column('student_id', ForeignKey(Student.id), primary_key=True)
+        Column('teacher_id', ForeignKey(Teacher.id, ondelete='CASCADE'),
+               primary_key=True),
+        Column('student_id', ForeignKey(Student.id, ondelete='CASCADE'),
+               primary_key=True)
     )
 
     return Student
