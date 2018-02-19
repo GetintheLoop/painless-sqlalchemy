@@ -1,7 +1,8 @@
 import pytest
-from sqlalchemy import literal_column as lc, and_
+from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
 from painless_sqlalchemy.BaseModel import engine
+from painless_sqlalchemy.column.RefColumn import RefColumn as ref
 
 
 class TestModelFilter(object):
@@ -75,11 +76,11 @@ class TestModelFilter(object):
         assert len(classrooms) == 1
         assert classrooms[0].id == self.classroom_id
 
-    def test_filter_by_literal_column(self, Student):
+    def test_ref_filter(self, Student):
         student = Student.filter(
             and_(*[
-                lc('id') == self.student1['id'],
-                lc('name') == self.student1['name']
+                ref('id') == self.student1['id'],
+                ref('name') == self.student1['name']
             ])
         ).one()
         assert student.id == self.student1['id']

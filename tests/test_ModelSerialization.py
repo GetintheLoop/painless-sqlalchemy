@@ -1,7 +1,8 @@
 import pytest
-from sqlalchemy import literal_column as lc, and_
+from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
 from painless_sqlalchemy.BaseModel import engine
+from painless_sqlalchemy.column.RefColumn import RefColumn as ref
 
 
 class TestModelSerialization:
@@ -40,12 +41,12 @@ class TestModelSerialization:
         assert len(teacher) == 1
         assert teacher[0]['id'] == self.teacher_id
 
-    def test_filter_by_literal_column(self, Student):
+    def test_filter_by_ref_column(self, Student):
         student = Student.serialize(
             to_return=['id'],
             filter_by=and_(*[
-                lc('id') == self.student1['id'],
-                lc('name') == self.student1['name']
+                ref('id') == self.student1['id'],
+                ref('name') == self.student1['name']
             ]),
             filter_ids=False
         )
