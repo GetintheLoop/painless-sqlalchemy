@@ -115,12 +115,6 @@ class ModelSerialization(ModelFilter):
                             rel_obj._as_dict(rel_obj, dict_[key])
                             for rel_obj in value
                         ]
-                        remap_on = getattr(rels[key], 'remap_on', None)
-                        if remap_on is not None:
-                            result[key] = {
-                                e[remap_on]: e for e in result[key]
-                                if remap_on in e
-                            }
                     elif isinstance(value, ModelSerialization):
                         result[key] = value._as_dict(value, dict_[key])
                     else:  # if None
