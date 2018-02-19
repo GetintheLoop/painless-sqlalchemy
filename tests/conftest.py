@@ -10,6 +10,7 @@ from painless_sqlalchemy.Model import Model
 def School():
     class School(Model):
         __tablename__ = 'school'
+        __expose_id__ = True
 
         classrooms = relationship(
             'Classroom',
