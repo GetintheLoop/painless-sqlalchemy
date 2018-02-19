@@ -1,3 +1,4 @@
+import os
 import pytest
 import sys
 
@@ -12,6 +13,8 @@ def run_tests():
     ]
     if '--verbose' in sys.argv:
         args.append('-s')
+    if '--batch' in sys.argv:
+        os.environ['BATCH_RUN'] = "1"
     pytest.main(args)
 
 
