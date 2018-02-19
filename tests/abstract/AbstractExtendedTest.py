@@ -27,7 +27,11 @@ class AbstractExtendedTest(object):
 
     @staticmethod
     def persist(obj):
-        """ Clone model top-level fields into SQLAlchemy-independent object """
+        """
+            Clone model top-level fields into SQLAlchemy-independent object
+            :param obj SQLAlchemy object
+            :return copy of object that is session independent
+        """
         # todo: only use fields that are loaded (prevent additional queries)
         assert isinstance(obj, Model)
         keys = [
