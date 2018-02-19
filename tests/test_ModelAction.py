@@ -1,8 +1,9 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
+from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
 
 
-class TestModelAction(object):
+class TestModelAction(AbstractDatabaseTest):
 
     def test_get_session(self, Student):
         """ Test session always exists """

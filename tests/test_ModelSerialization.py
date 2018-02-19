@@ -1,27 +1,25 @@
 import pytest
 from sqlalchemy import and_
-from sqlalchemy.orm import sessionmaker
-from painless_sqlalchemy.BaseModel import engine
-from painless_sqlalchemy.column.RefColumn import RefColumn as ref
 from faker import Faker
+from painless_sqlalchemy.column.RefColumn import RefColumn as ref
+from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
 
 fake = Faker()
 
 
-class TestModelSerialization:
+class TestModelSerialization(AbstractDatabaseTest):
 
     @classmethod
     @pytest.fixture(scope='class', autouse=True)
     def setup_class(cls, School, Classroom, Teacher, Student):
+        super(TestModelSerialization, cls).setup_class()
         student1 = Student(name=fake.name())
         student2 = Student(name=fake.name(), address=fake.address())
         teacher = Teacher(students=[student1, student2])
         classroom = Classroom(teacher=teacher)
         school = School(classrooms=[classroom])
 
-        session = sessionmaker(engine)()
-        session.add_all([student1, student2, teacher, classroom, school])
-        session.commit()
+        cls.checkin(student1, student2, teacher, classroom, school)
 
         cls.student1 = {
             'id': student1.id,
@@ -30,13 +28,6 @@ class TestModelSerialization:
         cls.student2_id = student2.id
         cls.teacher_id = teacher.id
         cls.school_id = school.id
-
-        yield  # run tests
-        # cleanup
-        session = sessionmaker(engine)()
-        session.query(Student).delete()
-        session.query(Teacher).delete()
-        session.commit()
 
     def test_serialize(self, Teacher):
         teacher = Teacher.serialize(
