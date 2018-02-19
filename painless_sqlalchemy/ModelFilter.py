@@ -11,6 +11,7 @@ from sqlalchemy.sql.elements import (
 from sqlalchemy.util import NoneType
 from painless_sqlalchemy.ModelAction import ModelAction
 from painless_sqlalchemy.column.MapColumn import MapColumn
+from painless_sqlalchemy.column.RefColumn import RefColumn
 
 
 class ModelFilter(ModelAction):
@@ -192,17 +193,14 @@ class ModelFilter(ModelAction):
             return clause
         elif isinstance(clause, tuple):
             return tuple(cls._substitute_clause(data, c) for c in clause)
-        elif isinstance(clause, ColumnClause):
-            if getattr(clause, 'is_custom', False) is True:
-                query, attr = cls._get_joined_attr(
-                    data['query'], clause.name.split("."))
-                data['query'] = query
-                return attr.self_group()
-            else:
-                return clause
+        elif isinstance(clause, RefColumn):
+            query, attr = cls._get_joined_attr(
+                data['query'], clause.name.split("."))
+            data['query'] = query
+            return attr.self_group()
         elif isinstance(clause, (
             BindParameter, InstrumentedAttribute,
-            Null, True_, False_, NoneType, TextClause
+            Null, True_, False_, NoneType, TextClause, ColumnClause
         )):
             return clause
         elif isinstance(clause, Cast):
