@@ -72,12 +72,12 @@ class TestModelSerialization:
         assert len(student) == 1
         assert student[0]['id'] == self.student2_id
 
-    def test_filter_by_nested_relationship(self, School):
+    def test_ids_filtered_on_relationship(self, School):
         schools = School.serialize(
-            to_return=['id'],
+            to_return=['id', 'classrooms.teacher.students.id'],
             filter_by={
                 'classrooms.teacher.students.id': self.student1['id']
             }
         )
         assert len(schools) == 1
-        assert schools[0]['id'] == self.school_id
+        assert schools[0] == {'id': self.school_id}
