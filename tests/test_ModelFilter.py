@@ -1,15 +1,15 @@
 import pytest
 from sqlalchemy import and_
-from sqlalchemy.orm import sessionmaker
-from painless_sqlalchemy.BaseModel import engine
 from painless_sqlalchemy.column.RefColumn import RefColumn as ref
+from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
 
 
-class TestModelFilter(object):
+class TestModelFilter(AbstractDatabaseTest):
 
     @classmethod
     @pytest.fixture(scope='class', autouse=True)
-    def setup(cls, School, Classroom, Teacher, Student):
+    def setup_class(cls, School, Classroom, Teacher, Student):
+        super(TestModelFilter, cls).setup_class()
         student1 = Student(name='foo')
         student2 = Student(name='bar', address='baz')
 
@@ -17,9 +17,7 @@ class TestModelFilter(object):
         classroom = Classroom(teacher=teacher)
         school = School(classrooms=[classroom])
 
-        session = sessionmaker(engine)()
-        session.add_all([student1, student2, teacher, classroom, school])
-        session.commit()
+        cls.checkin(student1, student2, teacher, classroom, school)
 
         cls.student1 = {
             'id': student1.id,
@@ -29,15 +27,6 @@ class TestModelFilter(object):
         cls.teacher_id = teacher.id
         cls.classroom_id = classroom.id
         cls.school_id = school.id
-
-        yield  # run tests in class
-        # cleanup
-        session = sessionmaker(engine)()
-        session.query(Student).delete()
-        session.query(Teacher).delete()
-        session.query(Classroom).delete()
-        session.query(School).delete()
-        session.commit()
 
     def test_filter_by_id(self, Teacher):
         assert Teacher.filter({

@@ -29,7 +29,7 @@ class DBTestUtilMixin(object):
         )
 
     @staticmethod
-    def get_tables():
+    def _get_tables():
         """
             List defined database tables.
             :return Dict mapping {table name -> table}
@@ -37,13 +37,13 @@ class DBTestUtilMixin(object):
         return {t.name: t for t in Base.metadata.tables.values()}
 
     @classmethod
-    def get_dump(cls):
+    def _get_dump(cls):
         """
             Get a database dump (for comparison purposes only)
             :return: database dump
         """
         result = []
-        tables = cls.get_tables()
+        tables = cls._get_tables()
         for tbl in tables:
             data = engine.execute(tables[tbl].select()).fetchall()
             for a in data:
@@ -56,14 +56,14 @@ class DBTestUtilMixin(object):
         return result
 
     @classmethod
-    def get_table_rel_table_map(cls):
+    def _get_table_rel_table_map(cls):
         """
             List tables relationship.
             :return dict of form {table -> [relationship table, foreign key]}
         """
         # extract relationship tables
         result = {}
-        for tbl in cls.get_tables():
+        for tbl in cls._get_tables():
             if "_to_" not in tbl:
                 continue
             left, right = tbl.split("_to_")
@@ -80,7 +80,7 @@ class DBTestUtilMixin(object):
         return result
 
     @classmethod
-    def get_relationship_table(cls, *args):
+    def _get_relationship_table(cls, *args):
         """
             Retrieve relationship table for two tables passed.
             :param args: two tables
@@ -89,7 +89,7 @@ class DBTestUtilMixin(object):
         assert len(args) == 2
         assert all(not k.endswith("_id") for k in args)
         target = set()
-        table_map = cls.get_tables()
+        table_map = cls._get_tables()
         for direction in [(args[0], args[1]), (args[1], args[0])]:
             tbl = "%s_to_%s" % direction
             if tbl in table_map:
@@ -105,7 +105,7 @@ class DBTestUtilMixin(object):
             :param kwargs: tables of form table1=id1, table2=id2
         """
         assert meta is None or isinstance(meta, dict)
-        table = cls.get_relationship_table(*kwargs.keys())
+        table = cls._get_relationship_table(*kwargs.keys())
         values = {k + "_id": v for k, v in kwargs.items()}
         if meta is None:
             session.execute(insert(table).values(**values))
@@ -128,7 +128,7 @@ class DBTestUtilMixin(object):
             Remove entry from relationship table.
             :param kwargs: tables of form table1=id1, table2=id2
         """
-        target = cls.get_relationship_table(*kwargs.keys())
+        target = cls._get_relationship_table(*kwargs.keys())
         args = [
             getattr(target.c, k + "_id") == v
             for k, v in kwargs.items()

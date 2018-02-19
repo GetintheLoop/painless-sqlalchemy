@@ -2,8 +2,12 @@ import pytest
 import sqlalchemy
 from sqlalchemy import Column, String, Table, ForeignKey, Integer
 from sqlalchemy.orm import relationship
-from painless_sqlalchemy.BaseModel import Base, engine
+from painless_sqlalchemy.BaseModel import Base, engine, session
 from painless_sqlalchemy.Model import Model
+
+table_hierarchy = [
+    'student', 'teacher', 'classroom', 'school'
+]
 
 
 @pytest.fixture(scope='session')
@@ -89,6 +93,13 @@ def Student(Teacher):
 
 @pytest.fixture(scope='session', autouse=True)
 def init_db(School, Classroom, Teacher, Student):
+    recreate_db()
+
+
+def recreate_db():
+    engine.dispose()
+    session.close()
+
     uri, db = engine.url.__str__().rsplit("/", 1)
 
     _engine = sqlalchemy.engine.create_engine(uri + "/postgres")
