@@ -3,19 +3,24 @@ from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
 from painless_sqlalchemy.BaseModel import engine
 from painless_sqlalchemy.column.RefColumn import RefColumn as ref
+from faker import Faker
+
+fake = Faker()
 
 
 class TestModelSerialization:
 
     @classmethod
     @pytest.fixture(scope='class', autouse=True)
-    def setup(cls, Student, Teacher):
-        student1 = Student(name='foo')
-        student2 = Student(name='bar', address='baz')
-        teacher = Teacher()
+    def setup_class(cls, School, Classroom, Teacher, Student):
+        student1 = Student(name=fake.name())
+        student2 = Student(name=fake.name(), address=fake.address())
+        teacher = Teacher(students=[student1, student2])
+        classroom = Classroom(teacher=teacher)
+        school = School(classrooms=[classroom])
 
         session = sessionmaker(engine)()
-        session.add_all([student1, student2, teacher])
+        session.add_all([student1, student2, teacher, classroom, school])
         session.commit()
 
         cls.student1 = {
@@ -24,6 +29,7 @@ class TestModelSerialization:
         }
         cls.student2_id = student2.id
         cls.teacher_id = teacher.id
+        cls.school_id = school.id
 
         yield  # run tests
         # cleanup
@@ -65,3 +71,13 @@ class TestModelSerialization:
         )
         assert len(student) == 1
         assert student[0]['id'] == self.student2_id
+
+    def test_ids_filtered_on_relationship(self, School):
+        schools = School.serialize(
+            to_return=['id', 'classrooms.teacher.students.id'],
+            filter_by={
+                'classrooms.teacher.students.id': self.student1['id']
+            }
+        )
+        assert len(schools) == 1
+        assert schools[0] == {'id': self.school_id}

@@ -319,7 +319,7 @@ class ModelSerialization(ModelFilter):
 
         # remove not white listed ids
         if filter_ids is not False:
-            to_return = filter(cls._is_exposed_id, to_return)
+            to_return = list(filter(cls._is_exposed_id, to_return))
 
         # remove duplicated and store so we know what to populate
         json_to_populate = list(set(to_return))
