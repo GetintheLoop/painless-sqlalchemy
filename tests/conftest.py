@@ -5,6 +5,7 @@ from sqlalchemy import Column, String, Table, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from painless_sqlalchemy.BaseModel import Base, engine, session
 from painless_sqlalchemy.Model import Model
+from painless_sqlalchemy.elements.MapColumn import MapColumn
 
 table_hierarchy = [
     'student', 'teacher', 'classroom', 'school'
@@ -72,6 +73,17 @@ def Student(Teacher):
 
         name = Column(String(64), index=True, nullable=False)
         address = Column(String(64), index=False, nullable=True)
+        phone = Column(String(35), nullable=True)
+        home_phone = Column(String(35), nullable=True)
+        email = Column(String(64), nullable=True)
+
+        phone_numbers = MapColumn(['phone', 'home_phone'])
+
+        contact_info = MapColumn({
+            'phone': 'phone',
+            'home_phone': 'home_phone',
+            'email': 'email'
+        })
 
         teachers = relationship(
             "Teacher", secondary='teacher_to_student',
