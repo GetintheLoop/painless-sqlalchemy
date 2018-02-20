@@ -10,8 +10,8 @@ from sqlalchemy.sql.elements import (
     TextClause)
 from sqlalchemy.util import NoneType
 from painless_sqlalchemy.ModelAction import ModelAction
-from painless_sqlalchemy.column.MapColumn import MapColumn
-from painless_sqlalchemy.column.RefColumn import RefColumn
+from painless_sqlalchemy.elements.MapColumn import MapColumn
+from painless_sqlalchemy.elements.ColumnReference import ColumnReference
 
 
 class ModelFilter(ModelAction):
@@ -193,7 +193,7 @@ class ModelFilter(ModelAction):
             return clause
         elif isinstance(clause, tuple):
             return tuple(cls._substitute_clause(data, c) for c in clause)
-        elif isinstance(clause, RefColumn):
+        elif isinstance(clause, ColumnReference):
             query, attr = cls._get_joined_attr(
                 data['query'], clause.name.split("."))
             data['query'] = query

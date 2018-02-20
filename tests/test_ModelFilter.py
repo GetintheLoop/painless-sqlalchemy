@@ -1,6 +1,6 @@
 import pytest
 from sqlalchemy import and_
-from painless_sqlalchemy.column.RefColumn import RefColumn as ref
+from painless_sqlalchemy.elements.ColumnReference import ref
 from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
 
 

@@ -5,7 +5,7 @@ from sqlalchemy.orm import load_only, undefer, joinedload
 from sqlalchemy.sql.elements import Label
 from painless_sqlalchemy.BaseModel import BaseModel
 from painless_sqlalchemy.ModelFilter import ModelFilter
-from painless_sqlalchemy.column.MapColumn import MapColumn
+from painless_sqlalchemy.elements.MapColumn import MapColumn
 from painless_sqlalchemy.util import DictUtil
 
 RE_FIELD_SYNTAX_MATCHER = re.compile(r'([^,()]+?)\(([^()]+?)\)')
