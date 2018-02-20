@@ -64,15 +64,15 @@ class TestModelSerialization(AbstractDatabaseTest):
         assert len(student) == 1
         assert student[0]['id'] == self.student2_id
 
-    def test_ids_filtered_on_relationship(self, School, Student):
-        assert Student.__expose_id__ is False
-        assert School.__expose_id__ is True
+    def test_primary_keys_filtered_on_relationship(self, School, Student):
+        assert Student.id.primary_key is True
+        assert Student.id.info.get('exposed', False) is False
+        assert School.id.primary_key is True
+        assert School.id.info.get('exposed', False) is True
 
         schools = School.serialize(
             to_return=['id', 'classrooms.teacher.students.id'],
-            filter_by={
-                'classrooms.teacher.students.id': self.student1['id']
-            },
+            filter_by={'classrooms.teacher.students.id': self.student1['id']},
             filter_ids=True
         )
         assert len(schools) == 1
@@ -80,9 +80,7 @@ class TestModelSerialization(AbstractDatabaseTest):
 
         schools = School.serialize(
             to_return=['id', 'classrooms.teacher.students.id'],
-            filter_by={
-                'classrooms.teacher.students.id': self.student1['id']
-            },
+            filter_by={'classrooms.teacher.students.id': self.student1['id']},
             filter_ids=False
         )
         assert 'id' in schools[0]

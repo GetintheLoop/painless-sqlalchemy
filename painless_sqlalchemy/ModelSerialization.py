@@ -243,12 +243,13 @@ class ModelSerialization(ModelFilter):
         return result
 
     @classmethod
-    def _is_exposed_id(cls, field):
+    def _is_exposed_column(cls, field):
         """
             Check field is exposed, i.e.
-            - not white listed id column
-            - column referencing not white listed id column
-            Uses BaseModel.__expose_id__ for white listing
+            - not exposed columns
+            - column referencing not exposed columns
+            - exposure is specified explicitly in "exposed" info dict
+            - exposure default to false iff column is primary key
             :return True iff column is exposed
         """
         path = field.split(".")
@@ -256,21 +257,18 @@ class ModelSerialization(ModelFilter):
         if not isinstance(cols, list):
             cols = [cols]
         for col in cols:
-            # check for foreign key id reference that is not white listed
+            # check for foreign key id reference that is not exposed
             for fk in getattr(col, 'foreign_keys', set()):
-                table = fk.column.table
-                fk_column = fk.column.key
+                is_primary_key = fk.column.primary_key
                 fk_table = fk.column.table.name
                 assert fk_table.quote is None
-                if fk_column == 'id':  # referencing an id column
-                    if getattr(table, '__expose_id__', False) is not True:
-                        return False
+                if not fk.column.info.get("exposed", not is_primary_key):
+                    return False
 
-            # check if id and not white listed
-            if col.key == "id":
+            # check if exposed
+            if not col.info.get("exposed", not col.primary_key):
                 assert col.class_.__table__.name.quote is None
-                if getattr(col.class_, '__expose_id__', False) is not True:
-                    return False  # id columns is white listed
+                return False
 
         # this field can be exposed
         return True
@@ -311,9 +309,9 @@ class ModelSerialization(ModelFilter):
             expanded += cls._expand(path)
         to_return = expanded
 
-        # remove not white listed ids
+        # remove not exposed columns
         if filter_ids is not False:
-            to_return = list(filter(cls._is_exposed_id, to_return))
+            to_return = list(filter(cls._is_exposed_column, to_return))
 
         # remove duplicated and store so we know what to populate
         json_to_populate = list(set(to_return))

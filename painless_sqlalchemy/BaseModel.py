@@ -14,7 +14,6 @@ Base = declarative_base()
 class BaseModel(Base):
     # prevent creation of table
     __abstract__ = True
-    __expose_id__ = False
 
     default_serialization = ["id"]
 

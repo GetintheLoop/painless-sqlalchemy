@@ -15,7 +15,7 @@ table_hierarchy = [
 def School():
     class School(Model):
         __tablename__ = 'school'
-        __expose_id__ = True
+        id = Column(Integer, primary_key=True, info={"exposed": True})
 
         classrooms = relationship(
             'Classroom',
