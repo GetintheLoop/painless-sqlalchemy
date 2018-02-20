@@ -86,7 +86,7 @@ class ModelSerialization(ModelFilter):
 
         result = {}
         if isinstance(obj, dict):
-            for k, v in dict_.iteritems():
+            for k, v in dict_.items():
                 assert k in obj
                 result[k] = self._as_dict(obj[k], v)
         else:
