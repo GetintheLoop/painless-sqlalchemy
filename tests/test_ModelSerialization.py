@@ -18,7 +18,7 @@ class TestModelSerialization(AbstractDatabaseTest):
             name=fake.name(), phone=fake.phone_number(),
             home_phone=fake.phone_number(), email=fake.email())
         student2 = Student(name=fake.name(), address=fake.address())
-        teacher = Teacher(students=[student1, student2])
+        teacher = Teacher(name=fake.name(), students=[student1, student2])
         classroom = Classroom(teacher=teacher)
         school = School(classrooms=[classroom])
 
@@ -159,3 +159,31 @@ class TestModelSerialization(AbstractDatabaseTest):
         with pytest.raises(AssertionError) as e:
             School.serialize(to_return=['id', 'id'])
         assert e.value.args == (['id', 'id'],)
+
+    def test_foreign_key_not_exposed(self, Teacher):
+        teacher = Teacher.serialize(
+            to_return=['name', 'classroom_id'],
+            filter_by={'id': self.teacher.id},
+            suppress=True
+        )
+        assert len(teacher) == 1
+        assert 'name' in teacher[0]
+        assert 'classroom_id' not in teacher[0]
+
+        teacher = Teacher.serialize(
+            to_return=['name', 'classroom_id'],
+            filter_by={'id': self.teacher.id},
+            suppress=False
+        )
+        assert len(teacher) == 1
+        assert 'name' in teacher[0]
+        assert 'classroom_id' in teacher[0]
+
+    def test_foreign_key_exposed(self, Classroom):
+        classroom = Classroom.serialize(
+            to_return=['school_id'],
+            filter_by={'id': self.classroom.id},
+            suppress=True
+        )
+        assert len(classroom) == 1
+        assert classroom[0]['school_id'] == self.school.id

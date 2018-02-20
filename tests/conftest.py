@@ -51,6 +51,8 @@ def Teacher(Classroom):
     class Teacher(Model):
         __tablename__ = 'teacher'
 
+        name = Column(String(64), index=True, nullable=False)
+
         classroom_id = Column(Integer, ForeignKey(Classroom.id), unique=True)
         classroom = relationship(
             Classroom, foreign_keys=classroom_id,

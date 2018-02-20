@@ -13,7 +13,7 @@ class TestModelAction(AbstractDatabaseTest):
     def setup_class(cls, Teacher, Student):
         super(TestModelAction, cls).setup_class()
         student = Student(name=fake.name())
-        teacher = Teacher()
+        teacher = Teacher(name=fake.name())
 
         cls.checkin(student, teacher)
 
@@ -26,7 +26,7 @@ class TestModelAction(AbstractDatabaseTest):
 
     def test_save(self, Teacher):
         """ Test saving object """
-        teacher_id = Teacher().save().id
+        teacher_id = Teacher(name=fake.name()).save().id
         teacher = Teacher.filter({'id': teacher_id}).one()
         assert teacher.id == teacher_id
         self.register(teacher=teacher_id)
