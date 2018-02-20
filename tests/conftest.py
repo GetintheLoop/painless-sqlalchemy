@@ -97,7 +97,7 @@ def init_db(School, Classroom, Teacher, Student):
     recreate_db()
 
     from tests.abstract.AbstractDatabaseTest import batch_testing
-    if not batch_testing:
+    if not batch_testing:  # pragma: no cover
         warnings.warn(
             "Running in Check Mode. This is expensive and should "
             "not be used to execute the whole test suite!"
