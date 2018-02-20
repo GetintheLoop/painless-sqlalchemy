@@ -17,7 +17,7 @@ class ModelSerialization(ModelFilter):
     __abstract__ = True
 
     @classmethod
-    def _eager_load(cls, attributes=None, query=None):
+    def _eager_load(cls, attributes, query):
         """
                 Alter query to only load provided attributes
                 - Attributes are *not* auto expanded
@@ -26,9 +26,6 @@ class ModelSerialization(ModelFilter):
             :return: altered query
         """
         assert isinstance(attributes, list)
-
-        if query is None:
-            query = cls.query
 
         # collect table columns (not relationships)
         all_cols = inspect(cls).column_attrs
