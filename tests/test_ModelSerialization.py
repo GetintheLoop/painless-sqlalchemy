@@ -135,7 +135,7 @@ class TestModelSerialization(AbstractDatabaseTest):
             }
         }
 
-    def test_serialize_ending_in_relationship(self, Classroom, Teacher):
+    def test_serialize_relationship(self, Classroom, Teacher):
         classroom = Classroom.serialize(
             to_return=['teacher.*'],
             filter_by={'id': self.classroom.id},
