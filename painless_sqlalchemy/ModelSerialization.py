@@ -276,7 +276,7 @@ class ModelSerialization(ModelFilter):
     @classmethod
     def serialize(cls, to_return=None, filter_by=None, limit=None, offset=None,
                   query=None, skip_nones=False, order_by=None, session=None,
-                  filter_ids=True, params=None):
+                  suppress=True, params=None):
         """
                 Convert to serializable representation
                 - Only necessary fields are being queried
@@ -288,7 +288,7 @@ class ModelSerialization(ModelFilter):
             :param skip_nones: Skip filter_by entries that have a "None" value
             :param order_by: enforce result ordering, multiple via tuple
             :param session: Explict session to use for query
-            :param filter_ids: Whether to filter not exposed fields
+            :param suppress: Whether to filter not exposed fields
             :param params: Query parameters
             :return: Json serializable representation
         """
@@ -310,7 +310,7 @@ class ModelSerialization(ModelFilter):
         to_return = expanded
 
         # remove not exposed columns
-        if filter_ids is not False:
+        if suppress is not False:
             to_return = list(filter(cls._is_exposed_column, to_return))
 
         # remove duplicated and store so we know what to populate
