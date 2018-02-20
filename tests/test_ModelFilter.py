@@ -1,7 +1,10 @@
 import pytest
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
+from faker import Faker
 from painless_sqlalchemy.elements.ColumnReference import ref
 from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
+
+fake = Faker()
 
 
 class TestModelFilter(AbstractDatabaseTest):
@@ -10,10 +13,10 @@ class TestModelFilter(AbstractDatabaseTest):
     @pytest.fixture(scope='class', autouse=True)
     def setup_class(cls, School, Classroom, Teacher, Student):
         super(TestModelFilter, cls).setup_class()
-        student1 = Student(name='foo')
-        student2 = Student(name='bar', address='baz')
+        student1 = Student(name=fake.name())
+        student2 = Student(name=fake.name(), address=fake.address())
 
-        teacher = Teacher(students=[student1, student2])
+        teacher = Teacher(name=fake.name(), students=[student1, student2])
         classroom = Classroom(teacher=teacher)
         school = School(classrooms=[classroom])
 
@@ -92,3 +95,12 @@ class TestModelFilter(AbstractDatabaseTest):
             'address': None
         }).first()
         assert student is not None
+
+    def test_filter_by_or_condition(self, Student):
+        students = Student.filter(or_(
+            ref('id') == self.student1.id,
+            ref('name') == self.student2.name
+        )).all()
+        assert len(students) == 2
+        assert self.get(students, 'id', self.student1.id) is not None
+        assert self.get(students, 'id', self.student2.id) is not None
