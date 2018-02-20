@@ -24,46 +24,46 @@ class TestModelFilter(AbstractDatabaseTest):
 
         cls.student1 = cls.persist(student1)
         cls.student2 = cls.persist(student2)
-        cls.teacher_id = teacher.id
-        cls.classroom_id = classroom.id
-        cls.school_id = school.id
+        cls.teacher = cls.persist(teacher)
+        cls.classroom = cls.persist(classroom)
+        cls.school = cls.persist(school)
 
     def test_filter_by_id(self, Teacher):
         assert Teacher.filter({
-            'id': self.teacher_id
-        }).one().id == self.teacher_id
+            'id': self.teacher.id
+        }).one().id == self.teacher.id
 
     def test_filter_by_many_to_many_relationship(self, Teacher):
         assert Teacher.filter({
             'students.name': self.student1.name
-        }).one().id == self.teacher_id
+        }).one().id == self.teacher.id
 
     def test_filter_by_one_to_one_relationship(self, Classroom):
         assert Classroom.filter({
-            'teacher.id': self.teacher_id
-        }).one().id == self.classroom_id
+            'teacher.id': self.teacher.id
+        }).one().id == self.classroom.id
 
     def test_filter_by_foreign_key(self, Teacher):
         assert Teacher.filter({
-            'classroom_id': self.classroom_id
-        }).one().id == self.teacher_id
+            'classroom_id': self.classroom.id
+        }).one().id == self.teacher.id
 
     def test_filter_by_nested_relationship(self, School):
         assert School.filter({
-            'classrooms.teacher.id': self.teacher_id
-        }).one().id == self.school_id
+            'classrooms.teacher.id': self.teacher.id
+        }).one().id == self.school.id
 
     def test_filter_one_to_many_relationship(self, School):
         assert School.filter({
-            'classrooms.id': self.classroom_id
-        }).one().id == self.school_id
+            'classrooms.id': self.classroom.id
+        }).one().id == self.school.id
 
     def test_filter_many_to_one_relationship(self, Classroom):
         classrooms = Classroom.filter({
-            'school.id': self.school_id
+            'school.id': self.school.id
         }).all()
         assert len(classrooms) == 1
-        assert classrooms[0].id == self.classroom_id
+        assert classrooms[0].id == self.classroom.id
 
     def test_ref_filter(self, Student):
         student = Student.filter(
