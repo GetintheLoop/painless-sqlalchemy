@@ -19,11 +19,8 @@ class TestModelFilter(AbstractDatabaseTest):
 
         cls.checkin(student1, student2, teacher, classroom, school)
 
-        cls.student1 = {
-            'id': student1.id,
-            'name': student1.name
-        }
-        cls.student2_id = student2.id
+        cls.student1 = cls.persist(student1)
+        cls.student2 = cls.persist(student2)
         cls.teacher_id = teacher.id
         cls.classroom_id = classroom.id
         cls.school_id = school.id
@@ -35,7 +32,7 @@ class TestModelFilter(AbstractDatabaseTest):
 
     def test_filter_by_many_to_many_relationship(self, Teacher):
         assert Teacher.filter({
-            'students.name': self.student1['name']
+            'students.name': self.student1.name
         }).one().id == self.teacher_id
 
     def test_filter_by_one_to_one_relationship(self, Classroom):
@@ -68,28 +65,30 @@ class TestModelFilter(AbstractDatabaseTest):
     def test_ref_filter(self, Student):
         student = Student.filter(
             and_(*[
-                ref('id') == self.student1['id'],
-                ref('name') == self.student1['name']
+                ref('id') == self.student1.id,
+                ref('name') == self.student1.name
             ])
         ).one()
-        assert student.id == self.student1['id']
+        assert student.id == self.student1.id
 
     def test_filter_skip_nones(self, Student):
+        assert self.student2.address is not None
         student = Student.filter({
-            'id': self.student2_id,
+            'id': self.student2.id,
             'address': None
-        }, skip_nones=True).one()
-        assert student.id == self.student2_id
-
-    def test_filter_for_null_value(self, Student):
-        student = Student.filter({
-            'id': self.student1['id'],
-            'address': None
-        }).first()
+        }, skip_nones=True).first()
         assert student is not None
 
         student = Student.filter({
-            'id': self.student2_id,
+            'id': self.student2.id,
+            'address': None
+        }, skip_nones=False).first()
+        assert student is None
+
+    def test_filter_by_null_value(self, Student):
+        assert self.student1.address is None
+        student = Student.filter({
+            'id': self.student1.id,
             'address': None
         }).first()
-        assert student is None
+        assert student is not None

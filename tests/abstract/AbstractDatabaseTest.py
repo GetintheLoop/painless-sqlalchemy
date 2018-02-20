@@ -183,7 +183,7 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
         if not batch_testing:  # pragma: no cover
             cls._match_db_snapshot('test_class')
 
-    @pytest.fixture(scope='class', autouse=True)
+    @pytest.fixture(scope='function', autouse=True)
     def setup_method(self):
         # overwrite instance method
         self.register = (

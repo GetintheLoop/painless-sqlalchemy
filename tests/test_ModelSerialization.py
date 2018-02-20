@@ -2,6 +2,7 @@ import pytest
 from sqlalchemy import and_
 from faker import Faker
 from painless_sqlalchemy.column.RefColumn import RefColumn as ref
+from painless_sqlalchemy.util.DictUtil import flatten_dict
 from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
 
 fake = Faker()
@@ -63,12 +64,26 @@ class TestModelSerialization(AbstractDatabaseTest):
         assert len(student) == 1
         assert student[0]['id'] == self.student2_id
 
-    def test_ids_filtered_on_relationship(self, School):
+    def test_ids_filtered_on_relationship(self, School, Student):
+        assert Student.__expose_id__ is False
+        assert School.__expose_id__ is True
+
         schools = School.serialize(
             to_return=['id', 'classrooms.teacher.students.id'],
             filter_by={
                 'classrooms.teacher.students.id': self.student1['id']
-            }
+            },
+            filter_ids=True
         )
         assert len(schools) == 1
         assert schools[0] == {'id': self.school_id}
+
+        schools = School.serialize(
+            to_return=['id', 'classrooms.teacher.students.id'],
+            filter_by={
+                'classrooms.teacher.students.id': self.student1['id']
+            },
+            filter_ids=False
+        )
+        assert 'id' in schools[0]
+        assert 'classrooms.teacher.students.id' in flatten_dict(schools)
