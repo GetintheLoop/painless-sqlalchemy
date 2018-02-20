@@ -104,3 +104,28 @@ class TestModelFilter(AbstractDatabaseTest):
         assert len(students) == 2
         assert self.get(students, 'id', self.student1.id) is not None
         assert self.get(students, 'id', self.student2.id) is not None
+
+    def test_filter_by_list_single_value(self, Student):
+        assert Student.filter({
+            'id': [self.student1.id]
+        }).one().id == self.student1.id
+
+    def test_filter_by_list_multiple_values(self, Student):
+        assert len(Student.filter({
+            'id': [self.student1.id, self.student2.id]
+        }).all()) == 2
+
+    def test_filter_by_list_multiple_values_relationship(self, Teacher):
+        assert Teacher.filter({
+            'students.id': [self.student1.id, self.student2.id],
+            'students.name': [self.student1.name, self.student2.name]
+        }).one().id == self.teacher.id
+
+    def test_filter_by_empty_list(self, Student):
+        assert Student.filter({'id': []}).first() is None
+
+    def test_filter_by_empty_list_relationship(self, Teacher):
+        assert Teacher.filter({
+            'id': self.teacher.id,
+            'students.id': []
+        }).one().id == self.teacher.id
