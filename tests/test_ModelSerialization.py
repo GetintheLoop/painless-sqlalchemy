@@ -1,8 +1,8 @@
-from functools import reduce
 import pytest
 from sqlalchemy import and_
 from faker import Faker
 from painless_sqlalchemy.column.RefColumn import RefColumn as ref
+from painless_sqlalchemy.util.DictUtil import flatten_dict
 from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
 
 fake = Faker()
@@ -86,9 +86,4 @@ class TestModelSerialization(AbstractDatabaseTest):
             filter_ids=False
         )
         assert 'id' in schools[0]
-        assert reduce(
-            lambda o, key:
-            o[0].get(key, False) if isinstance(o, list) else o.get(key, False),
-            ['classrooms', 'teacher', 'students', 'id'],
-            schools
-        )
+        assert 'classrooms.teacher.students.id' in flatten_dict(schools)
