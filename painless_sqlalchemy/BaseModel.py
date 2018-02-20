@@ -15,7 +15,7 @@ class BaseModel(Base):
     # prevent creation of table
     __abstract__ = True
 
-    default_serialization = ["id"]
+    default_serialization = "id",
 
     query = session.query_property()
 

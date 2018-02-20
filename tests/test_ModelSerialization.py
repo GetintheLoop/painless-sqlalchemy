@@ -25,18 +25,19 @@ class TestModelSerialization(AbstractDatabaseTest):
         cls.checkin(student1, student2, teacher, classroom, school)
 
         cls.student1 = cls.persist(student1)
-        cls.student2_id = student2.id
-        cls.teacher_id = teacher.id
-        cls.school_id = school.id
+        cls.student2 = cls.persist(student2)
+        cls.teacher = cls.persist(teacher)
+        cls.classroom = cls.persist(classroom)
+        cls.school = cls.persist(school)
 
     def test_serialize(self, Teacher):
         teacher = Teacher.serialize(
             to_return=['id'],
-            filter_by={'id': self.teacher_id},
+            filter_by={'id': self.teacher.id},
             suppress=False
         )
         assert len(teacher) == 1
-        assert teacher[0]['id'] == self.teacher_id
+        assert teacher[0]['id'] == self.teacher.id
 
     def test_filter_by_ref_column(self, Student):
         student = Student.serialize(
@@ -54,14 +55,14 @@ class TestModelSerialization(AbstractDatabaseTest):
         student = Student.serialize(
             to_return=['id', 'name', 'address'],
             filter_by={
-                'id': self.student2_id,
+                'id': self.student2.id,
                 'address': None
             },
             skip_nones=True,
             suppress=False
         )
         assert len(student) == 1
-        assert student[0]['id'] == self.student2_id
+        assert student[0]['id'] == self.student2.id
 
     def test_primary_keys_filtered_on_relationship(self, School, Student):
         assert Student.id.primary_key is True
@@ -75,7 +76,7 @@ class TestModelSerialization(AbstractDatabaseTest):
             suppress=True
         )
         assert len(schools) == 1
-        assert schools[0] == {'id': self.school_id}
+        assert schools[0] == {'id': self.school.id}
 
         schools = School.serialize(
             to_return=['id', 'classrooms.teacher.students.id'],
@@ -109,7 +110,7 @@ class TestModelSerialization(AbstractDatabaseTest):
             'phone_numbers': [self.student1.phone, self.student1.home_phone]
         }
 
-    def test_serialize_map_column_dict_subset(self, Student):
+    def test_serialize_map_column_dict_subset_dot_notation(self, Student):
         student = Student.serialize(
             to_return=['contact_info.phone'],
             filter_by={'id': self.student1.id}
@@ -120,3 +121,40 @@ class TestModelSerialization(AbstractDatabaseTest):
                 'phone': self.student1.phone
             }
         }
+
+    def test_serialize_map_column_dict_subset_bracket_notation(self, Student):
+        student = Student.serialize(
+            to_return=['contact_info(phone,home_phone)'],
+            filter_by={'id': self.student1.id}
+        )
+        assert len(student) == 1
+        assert student[0] == {
+            'contact_info': {
+                'phone': self.student1.phone,
+                'home_phone': self.student1.home_phone,
+            }
+        }
+
+    def test_serialize_ending_in_relationship(self, Classroom, Teacher):
+        classroom = Classroom.serialize(
+            to_return=['teacher.*'],
+            filter_by={'id': self.classroom.id},
+            suppress=False
+        )
+        assert len(classroom) == 1
+        assert set(
+            classroom[0]['teacher'].keys()
+        ) == set(Teacher.default_serialization)
+
+    def test_duplicates_in_to_return(self, School):
+        with pytest.raises(AssertionError) as e:
+            School.serialize(to_return=['id', 'id'])
+        assert e.value.args == (['id', 'id'],)
+
+    def test_default_serialization(self, Teacher):
+        teacher = Teacher.serialize(
+            filter_by={'id': self.teacher.id},
+            suppress=False
+        )
+        assert len(teacher) == 1
+        assert set(teacher[0].keys()) == set(Teacher.default_serialization)
