@@ -172,10 +172,6 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
     @pytest.fixture(scope='class', autouse=True)
     def setup_class(cls):
         if not batch_testing:  # pragma: no cover
-            warnings.warn(
-                "Running in Check Mode. This is expensive and should "
-                "not be used to execute the whole test suite!"
-            )
             recreate_db()
             cls._snapshot_db('test_class')
 
