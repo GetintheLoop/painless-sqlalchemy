@@ -160,7 +160,7 @@ class TestModelSerialization(AbstractDatabaseTest):
             School.serialize(to_return=['id', 'id'])
         assert e.value.args == (['id', 'id'],)
 
-    def test_not_exposed_foreign_key(self, Teacher):
+    def test_foreign_key_not_exposed(self, Teacher):
         teacher = Teacher.serialize(
             to_return=['name', 'classroom_id'],
             filter_by={'id': self.teacher.id},
@@ -170,7 +170,16 @@ class TestModelSerialization(AbstractDatabaseTest):
         assert 'name' in teacher[0]
         assert 'classroom_id' not in teacher[0]
 
-    def test_exposed_foreign_key(self, Classroom):
+        teacher = Teacher.serialize(
+            to_return=['name', 'classroom_id'],
+            filter_by={'id': self.teacher.id},
+            suppress=False
+        )
+        assert len(teacher) == 1
+        assert 'name' in teacher[0]
+        assert 'classroom_id' in teacher[0]
+
+    def test_foreign_key_exposed(self, Classroom):
         classroom = Classroom.serialize(
             to_return=['school_id'],
             filter_by={'id': self.classroom.id},
