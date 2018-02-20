@@ -276,7 +276,7 @@ class ModelFilter(ModelAction):
                 key: value for key, value in attributes.items()
                 if value is not None
             }
-        if attributes:
+        if len(attributes) != 0:
             # true if this query is already grouped
             grouped = False
             and_info['depth'] += 1
