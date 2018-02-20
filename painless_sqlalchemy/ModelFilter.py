@@ -260,6 +260,9 @@ class ModelFilter(ModelAction):
         if query is None:
             query = cls.query
 
+        if attributes is None:
+            return query
+
         and_info = cls._get_and_info(query)
 
         # Handle SqlAlchemy filter
