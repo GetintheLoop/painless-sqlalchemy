@@ -155,7 +155,7 @@ class TestModelSerialization(AbstractDatabaseTest):
             classroom[0]['teacher'].keys()
         ) == set(Teacher.default_serialization)
 
-    def test_duplicates_in_to_return(self, School):
+    def test_to_return_duplicate_exception(self, School):
         with pytest.raises(AssertionError) as e:
             School.serialize(to_return=['id', 'id'])
         assert e.value.args == (['id', 'id'],)
