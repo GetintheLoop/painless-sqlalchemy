@@ -15,15 +15,17 @@ class TestModelFilter(AbstractDatabaseTest):
         super(TestModelFilter, cls).setup_class()
         student1 = Student(name=fake.name())
         student2 = Student(name=fake.name(), address=fake.address())
+        student3 = Student(name=fake.name(), address=fake.address())
 
         teacher = Teacher(name=fake.name(), students=[student1, student2])
         classroom = Classroom(teacher=teacher)
         school = School(classrooms=[classroom])
 
-        cls.checkin(student1, student2, teacher, classroom, school)
+        cls.checkin(student1, student2, student3, teacher, classroom, school)
 
         cls.student1 = cls.persist(student1)
         cls.student2 = cls.persist(student2)
+        cls.student3 = cls.persist(student3)
         cls.teacher = cls.persist(teacher)
         cls.classroom = cls.persist(classroom)
         cls.school = cls.persist(school)
@@ -110,15 +112,18 @@ class TestModelFilter(AbstractDatabaseTest):
             'id': [self.student1.id]
         }).one().id == self.student1.id
 
-    def test_filter_by_list_multiple_values(self, Student):
+    def test_filter_list_column_or_query(self, Student):
         assert len(Student.filter({
             'id': [self.student1.id, self.student2.id]
         }).all()) == 2
 
-    def test_filter_by_list_multiple_values_relationship(self, Teacher):
+    def test_filter_relationship_and_query(self, Teacher):
         assert Teacher.filter({
             'students.id': [self.student1.id, self.student2.id]
-        }).one().id == self.teacher.id
+        }).first() is not None
+        assert Teacher.filter({
+            'students.id': [self.student1.id, self.student3.id]
+        }).first() is None
 
     def test_filter_by_empty_list(self, Student):
         assert Student.filter({'id': []}).first() is None
