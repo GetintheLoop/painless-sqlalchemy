@@ -204,13 +204,6 @@ class TestModelSerialization(AbstractDatabaseTest):
         assert students[0]['name'] <= students[1]['name']
 
     def test_serialize_with_limit_and_offset(self, Student):
-        Student.filter({'id': self.student1.id}).one().update(
-            name='a'
-        ).save()
-        Student.filter({'id': self.student2.id}).one().update(
-            name='b'
-        ).save()
-
         result_a = Student.serialize(
             to_return=['name'],
             limit=1,
@@ -218,7 +211,6 @@ class TestModelSerialization(AbstractDatabaseTest):
             order_by=Student.name
         )
         assert len(result_a) == 1
-        assert result_a[0]['name'] == 'a'
         result_b = Student.serialize(
             to_return=['name'],
             limit=1,
@@ -226,12 +218,4 @@ class TestModelSerialization(AbstractDatabaseTest):
             order_by=Student.name
         )
         assert len(result_b) == 1
-        assert result_b[0]['name'] == 'b'
-
-        # revert
-        Student.filter({'id': self.student1.id}).one().update(
-            name=self.student1.name
-        ).save()
-        Student.filter({'id': self.student2.id}).one().update(
-            name=self.student2.name
-        ).save()
+        assert result_a[0]['name'] <= result_b[0]['name']

@@ -114,7 +114,7 @@ class TestModelFilter(AbstractDatabaseTest):
         assert self.get(students, 'id', self.student1.id) is not None
         assert self.get(students, 'id', self.student2.id) is not None
 
-    def test_filter_by_list_single_value(self, Student):
+    def test_filter_list_single_value(self, Student):
         assert Student.filter({
             'id': [self.student1.id]
         }).one().id == self.student1.id
