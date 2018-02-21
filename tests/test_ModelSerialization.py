@@ -290,3 +290,12 @@ class TestModelSerialization(AbstractDatabaseTest):
         assert len(result_b) == 1
         assert result_b[0]['name'] in [self.student1.name, self.student2.name]
         assert result_a[0]['name'] != result_b[0]['name']
+
+    def test_serialize_with_limit_and_offset_returns_to_many(self, Teacher):
+        result_a = Teacher.serialize(
+            to_return=['students.name'],
+            limit=1,
+            offset=0
+        )
+        assert len(result_a) == 1
+        assert len(result_a['students']) == 2
