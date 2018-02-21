@@ -79,6 +79,7 @@ def Student(Teacher):
         home_phone = Column(String(35), nullable=True)
         email = Column(String(64), nullable=True)
 
+        guardian_number = MapColumn('home_phone')
         phone_numbers = MapColumn(['phone', 'home_phone'])
 
         contact_info = MapColumn({
