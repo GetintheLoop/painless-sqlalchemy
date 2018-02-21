@@ -117,6 +117,11 @@ class TestModelFilter(AbstractDatabaseTest):
 
     def test_filter_by_list_multiple_values_relationship(self, Teacher):
         assert Teacher.filter({
+            'students.id': [self.student1.id, self.student2.id]
+        }).one().id == self.teacher.id
+
+    def test_single_group_by_for_relationship_list_filter(self, Teacher):
+        assert Teacher.filter({
             'students.id': [self.student1.id, self.student2.id],
             'students.name': [self.student1.name, self.student2.name]
         }).one().id == self.teacher.id
