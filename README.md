@@ -4,25 +4,24 @@
 
 # Painless-SQLAlchemy
 
-### What is Painless-SQLAlchemy?
+#### What is Painless-SQLAlchemy?
 
-Painless-SQLAlchemy is a if a wrapper for SQLAlchemy that add support
-for convenient serialization and filtering of SQLAlchemy models.
+Painless-SQLAlchemy adds simplified serialization and filtering to SQLAlchemy.
      
-### Supported Databases:
-Tests are using Postgres 9.6.X. MySQL should work in theory but is not tested.
+#### Supported Databases:
+Tests run Postgres 9.6.X. MySQL should work, but is not tested yet.
 
-### Where are the tests?
+#### Where are the tests?
 
 Check out [SETUP.md](SETUP.md)
 
-### Where can I get help?
+#### Where can I get help?
 
 Please open a github issue
 
 ---------------------
 
-## Overview
+# Overview
 
 *Note:* This section is just intended to give an overview. Not all functionality is described.
 
