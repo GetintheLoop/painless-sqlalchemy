@@ -204,35 +204,37 @@ class TestModelSerialization(AbstractDatabaseTest):
             order_by=Student.name
         )
         assert len(students) == 2
-        assert students[0]['name'] < students[1]['name']
+        assert students[0]['name'] <= students[1]['name']
 
     def test_serialize_order_by_tuple(self, Student):
-        Student.serialize(
+        students = Student.serialize(
             to_return=['name', 'email'],
             order_by=(Student.name, Student.email)
         )
+        assert students[0]['name'] <= students[1]['name']
 
     def test_serialize_order_by_tuple_with_id(self, Student):
-        Student.serialize(
+        students = Student.serialize(
             to_return=['name', 'email'],
             order_by=(Student.name, Student.email, Student.id)
         )
+        assert students[0]['name'] <= students[1]['name']
 
     def test_serialize_with_limit_and_offset(self, Student):
-        student_a = Student.serialize(
+        result_a = Student.serialize(
             to_return=['name'],
             limit=1,
             offset=0,
             order_by=Student.name
         )
-        assert len(student_a) == 1
-        assert student_a[0]['name'] in [self.student1.name, self.student2.name]
-        student_b = Student.serialize(
+        assert len(result_a) == 1
+        assert result_a[0]['name'] in [self.student1.name, self.student2.name]
+        result_b = Student.serialize(
             to_return=['name'],
             limit=1,
             offset=1,
             order_by=Student.name
         )
-        assert len(student_b) == 1
-        assert student_b[0]['name'] in [self.student1.name, self.student2.name]
-        assert student_a[0]['name'] != student_b[0]['name']
+        assert len(result_b) == 1
+        assert result_b[0]['name'] in [self.student1.name, self.student2.name]
+        assert result_a[0]['name'] != result_b[0]['name']
