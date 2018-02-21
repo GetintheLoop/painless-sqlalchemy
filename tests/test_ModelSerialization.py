@@ -3,7 +3,7 @@ from sqlalchemy import and_
 from faker import Faker
 from painless_sqlalchemy.elements.ColumnReference import ref
 from painless_sqlalchemy.util.DictUtil import flatten_dict
-from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
+from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
 
 fake = Faker()
 
