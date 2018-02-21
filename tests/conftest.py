@@ -1,8 +1,8 @@
 import warnings
 import pytest
 import sqlalchemy
-from sqlalchemy import Column, String, Table, ForeignKey, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, Table, ForeignKey, Integer, func
+from sqlalchemy.orm import relationship, column_property
 from painless_sqlalchemy.BaseModel import Base, engine, session
 from painless_sqlalchemy.Model import Model
 from painless_sqlalchemy.elements.MapColumn import MapColumn
@@ -92,6 +92,10 @@ def Student(Teacher):
             "Teacher", secondary='teacher_to_student',
             primaryjoin="Student.id == teacher_to_student.c.student_id",
             secondaryjoin="teacher_to_student.c.teacher_id == Teacher.id"
+        )
+
+        first_name = column_property(
+            func.split_part(func.trim(name), " ", 1)
         )
 
     # teacher_to_student linkage table
