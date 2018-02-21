@@ -110,6 +110,16 @@ class TestModelSerialization(AbstractDatabaseTest):
             'phone_numbers': [self.student1.phone, self.student1.home_phone]
         }
 
+    def test_serialize_map_column_string(self, Student):
+        student = Student.serialize(
+            to_return=['guardian_number'],
+            filter_by={'id': self.student1.id}
+        )
+        assert len(student) == 1
+        assert student[0] == {
+            'guardian_number': self.student1.home_phone
+        }
+
     def test_serialize_map_column_dict_subset(self, Student):
         student = Student.serialize(
             to_return=['contact_info.phone'],
@@ -187,3 +197,25 @@ class TestModelSerialization(AbstractDatabaseTest):
         )
         assert len(classroom) == 1
         assert classroom[0]['school_id'] == self.school.id
+
+    def test_serialize_order_by(self, Student):
+        students = Student.serialize(to_return=['name'], order_by=Student.name)
+        assert len(students) == 2
+        assert students[0]['name'] <= students[1]['name']
+
+    def test_serialize_with_limit_and_offset(self, Student):
+        result_a = Student.serialize(
+            to_return=['name'],
+            limit=1,
+            offset=0,
+            order_by=Student.name
+        )
+        assert len(result_a) == 1
+        result_b = Student.serialize(
+            to_return=['name'],
+            limit=1,
+            offset=1,
+            order_by=Student.name
+        )
+        assert len(result_b) == 1
+        assert result_a[0]['name'] <= result_b[0]['name']
