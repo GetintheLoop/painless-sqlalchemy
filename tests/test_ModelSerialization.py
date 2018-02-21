@@ -34,7 +34,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         teacher = Teacher.serialize(
             to_return=['id'],
             filter_by={'id': self.teacher.id},
-            suppress=False
+            expose_all=True
         )
         assert len(teacher) == 1
         assert teacher[0]['id'] == self.teacher.id
@@ -46,7 +46,7 @@ class TestModelSerialization(AbstractDatabaseTest):
                 ref('id') == self.student1.id,
                 ref('name') == self.student1.name
             ]),
-            suppress=False
+            expose_all=True
         )
         assert len(student) == 1
         assert student[0]['id'] == self.student1.id
@@ -59,7 +59,7 @@ class TestModelSerialization(AbstractDatabaseTest):
                 'address': None
             },
             skip_nones=True,
-            suppress=False
+            expose_all=True
         )
         assert len(student) == 1
         assert student[0]['id'] == self.student2.id
@@ -73,7 +73,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         schools = School.serialize(
             to_return=['id', 'classrooms.teacher.students.id'],
             filter_by={'classrooms.teacher.students.id': self.student1.id},
-            suppress=True
+            expose_all=False
         )
         assert len(schools) == 1
         assert schools[0] == {'id': self.school.id}
@@ -81,7 +81,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         schools = School.serialize(
             to_return=['id', 'classrooms.teacher.students.id'],
             filter_by={'classrooms.teacher.students.id': self.student1.id},
-            suppress=False
+            expose_all=True
         )
         assert 'id' in schools[0]
         assert 'classrooms.teacher.students.id' in flatten_dict(schools)
@@ -136,7 +136,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         student = Student.serialize(
             to_return=['teachers(id,classroom_id)'],
             filter_by={'id': self.student1.id},
-            suppress=False
+            expose_all=True
         )
         assert len(student) == 1
         assert student[0] == {
@@ -149,7 +149,7 @@ class TestModelSerialization(AbstractDatabaseTest):
     def test_default_serialization(self, Teacher):
         teacher = Teacher.serialize(
             filter_by={'id': self.teacher.id},
-            suppress=False
+            expose_all=True
         )
         assert len(teacher) == 1
         assert set(teacher[0].keys()) == set(Teacher.default_serialization)
@@ -158,7 +158,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         classroom = Classroom.serialize(
             to_return=['teacher.*'],
             filter_by={'id': self.classroom.id},
-            suppress=False
+            expose_all=True
         )
         assert len(classroom) == 1
         assert set(
@@ -174,7 +174,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         teacher = Teacher.serialize(
             to_return=['name', 'classroom_id'],
             filter_by={'id': self.teacher.id},
-            suppress=True
+            expose_all=False
         )
         assert len(teacher) == 1
         assert 'name' in teacher[0]
@@ -183,7 +183,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         teacher = Teacher.serialize(
             to_return=['name', 'classroom_id'],
             filter_by={'id': self.teacher.id},
-            suppress=False
+            expose_all=True
         )
         assert len(teacher) == 1
         assert 'name' in teacher[0]
@@ -193,7 +193,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         classroom = Classroom.serialize(
             to_return=['school_id'],
             filter_by={'id': self.classroom.id},
-            suppress=True
+            expose_all=False
         )
         assert len(classroom) == 1
         assert classroom[0]['school_id'] == self.school.id

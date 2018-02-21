@@ -273,7 +273,7 @@ class ModelSerialization(ModelFilter):
     @classmethod
     def _ser(cls, to_return=None, filter_by=None, limit=None, offset=None,
              query=None, skip_nones=False, order_by=None, session=None,
-             suppress=True, params=None):
+             expose_all=False, params=None):
         """
                 Prepare query and fields to fetch obtain (from it)
                 The query only fetches necessary fields.
@@ -285,7 +285,7 @@ class ModelSerialization(ModelFilter):
             :param skip_nones: Skip filter_by entries that have a "None" value
             :param order_by: enforce result ordering, multiple via tuple
             :param session: Explict session to use for query
-            :param suppress: Whether to filter not exposed fields
+            :param expose_all: Whether to Return not exposed fields
             :param params: Query parameters
             :return: tuple(query, json_to_serialize)
         """
@@ -307,7 +307,7 @@ class ModelSerialization(ModelFilter):
         to_return = expanded
 
         # remove not exposed columns
-        if suppress is not False:
+        if expose_all is not True:
             to_return = list(filter(cls._is_exposed_column, to_return))
 
         # remove duplicated and store so we know what to populate
