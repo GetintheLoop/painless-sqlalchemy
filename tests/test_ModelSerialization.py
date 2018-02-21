@@ -252,15 +252,15 @@ class TestModelSerialization(AbstractDatabaseTest):
         ).save()
         Student.filter({'id': self.student2.id}).one().update(
             name='a',
-            email='b@gmail.com'
+            email='a@gmail.com'
         ).save()
 
         students = Student.serialize(
-            to_return=['name', 'email'],
-            order_by=(Student.name, Student.email, Student.id)
+            to_return=['id', 'name', 'email'],
+            order_by=(Student.name, Student.email, Student.id),
+            suppress=False
         )
-        assert students[0] == {'name': 'a', 'email': 'a@gmail.com'}
-        assert students[1] == {'name': 'a', 'email': 'b@gmail.com'}
+        assert students[0]['id'] < students[1]['id']
 
         # revert
         Student.filter({'id': self.student1.id}).one().update(
