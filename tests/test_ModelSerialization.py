@@ -219,3 +219,11 @@ class TestModelSerialization(AbstractDatabaseTest):
         )
         assert len(result_b) == 1
         assert result_a[0]['name'] <= result_b[0]['name']
+
+    def test_serialize_column_property(self, Student):
+        students = Student.serialize(
+            to_return=['first_name'],
+            filter_by={'id': self.student1.id}
+        )
+        assert len(students) == 1
+        assert students[0]['first_name'] == self.student1.name.split(' ')[0]
