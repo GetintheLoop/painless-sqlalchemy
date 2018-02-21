@@ -140,7 +140,13 @@ class TestModelFilter(AbstractDatabaseTest):
     def test_filter_by_empty_list(self, Student):
         assert Student.filter({'id': []}).first() is None
 
-    def test_filter_by_empty_list_relationship(self, Teacher):
+    def test_filter_by_empty_list_relationship_to_one(self, Teacher):
+        assert Teacher.filter({
+            'id': self.teacher1.id,
+            'classroom.id': []
+        }).first() is None
+
+    def test_filter_by_empty_list_relationship_to_many(self, Teacher):
         assert Teacher.filter({
             'id': self.teacher1.id,
             'students.id': []

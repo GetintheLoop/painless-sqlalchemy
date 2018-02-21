@@ -198,79 +198,10 @@ class TestModelSerialization(AbstractDatabaseTest):
         assert len(classroom) == 1
         assert classroom[0]['school_id'] == self.school.id
 
-    def test_serialize_order_by_single_column(self, Student):
-        Student.filter({'id': self.student1.id}).one().update(
-            name='a'
-        ).save()
-        Student.filter({'id': self.student2.id}).one().update(
-            name='b'
-        ).save()
-
+    def test_serialize_order_by(self, Student):
         students = Student.serialize(to_return=['name'], order_by=Student.name)
-        assert students[0]['name'] == 'a'
-        assert students[1]['name'] == 'b'
-
-        # revert
-        Student.filter({'id': self.student1.id}).one().update(
-            name=self.student1.name
-        ).save()
-        Student.filter({'id': self.student2.id}).one().update(
-            name=self.student2.name
-        ).save()
-
-    def test_serialize_order_by_tuple(self, Student):
-        Student.filter({'id': self.student1.id}).one().update(
-            name='a',
-            email='a@gmail.com'
-        ).save()
-        Student.filter({'id': self.student2.id}).one().update(
-            name='a',
-            email='b@gmail.com'
-        ).save()
-
-        students = Student.serialize(
-            to_return=['name', 'email'],
-            order_by=(Student.name, Student.email)
-        )
-        assert students[0] == {'name': 'a', 'email': 'a@gmail.com'}
-        assert students[1] == {'name': 'a', 'email': 'b@gmail.com'}
-
-        # revert
-        Student.filter({'id': self.student1.id}).one().update(
-            name=self.student1.name,
-            email=self.student1.email
-        ).save()
-        Student.filter({'id': self.student2.id}).one().update(
-            name=self.student2.name,
-            email=self.student2.email
-        ).save()
-
-    def test_serialize_order_by_tuple_with_id(self, Student):
-        Student.filter({'id': self.student1.id}).one().update(
-            name='a',
-            email='a@gmail.com'
-        ).save()
-        Student.filter({'id': self.student2.id}).one().update(
-            name='a',
-            email='a@gmail.com'
-        ).save()
-
-        students = Student.serialize(
-            to_return=['id', 'name', 'email'],
-            order_by=(Student.name, Student.email, Student.id),
-            suppress=False
-        )
-        assert students[0]['id'] < students[1]['id']
-
-        # revert
-        Student.filter({'id': self.student1.id}).one().update(
-            name=self.student1.name,
-            email=self.student1.email
-        ).save()
-        Student.filter({'id': self.student2.id}).one().update(
-            name=self.student2.name,
-            email=self.student2.email
-        ).save()
+        assert len(students) == 2
+        assert students[0]['name'] <= students[1]['name']
 
     def test_serialize_with_limit_and_offset(self, Student):
         Student.filter({'id': self.student1.id}).one().update(
@@ -304,12 +235,3 @@ class TestModelSerialization(AbstractDatabaseTest):
         Student.filter({'id': self.student2.id}).one().update(
             name=self.student2.name
         ).save()
-
-    def test_serialize_with_limit_and_offset_returns_to_many(self, Teacher):
-        result_a = Teacher.serialize(
-            to_return=['students.name'],
-            limit=1,
-            offset=0
-        )
-        assert len(result_a) == 1
-        assert len(result_a[0]['students']) == 2
