@@ -2,9 +2,9 @@ import os
 import warnings
 import pytest
 from painless_sqlalchemy.BaseModel import engine
-from tests.abstract.AbstractExtendedTest import AbstractExtendedTest
-from tests.abstract.DBIdMixin import DBIdMixin
-from tests.abstract.DBTestUtilMixin import DBTestUtilMixin
+from tests.helper.AbstractExtendedTest import AbstractExtendedTest
+from tests.helper.DBIdMixin import DBIdMixin
+from tests.helper.DBTestUtilMixin import DBTestUtilMixin
 from tests.conftest import recreate_db, table_hierarchy
 
 # check if we are running in batch test mode

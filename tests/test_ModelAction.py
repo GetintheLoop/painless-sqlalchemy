@@ -1,6 +1,6 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
-from tests.abstract.AbstractDatabaseTest import AbstractDatabaseTest
+from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
 from faker import Faker
 
 fake = Faker()
