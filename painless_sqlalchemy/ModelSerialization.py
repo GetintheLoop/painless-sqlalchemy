@@ -271,12 +271,12 @@ class ModelSerialization(ModelFilter):
         return True
 
     @classmethod
-    def serialize(cls, to_return=None, filter_by=None, limit=None, offset=None,
-                  query=None, skip_nones=False, order_by=None, session=None,
-                  suppress=True, params=None):
+    def _ser(cls, to_return=None, filter_by=None, limit=None, offset=None,
+             query=None, skip_nones=False, order_by=None, session=None,
+             suppress=True, params=None):
         """
-                Convert to serializable representation
-                - Only necessary fields are being queried
+                Prepare query and fields to fetch obtain (from it)
+                The query only fetches necessary fields.
             :param to_return: list of fields to return
             :param filter_by: dict of SQLAlchemy clause to filter by
             :param limit: maximum amount of objects fetched
@@ -287,7 +287,7 @@ class ModelSerialization(ModelFilter):
             :param session: Explict session to use for query
             :param suppress: Whether to filter not exposed fields
             :param params: Query parameters
-            :return: Json serializable representation
+            :return: tuple(query, json_to_serialize)
         """
         assert params is None or isinstance(params, dict)
         assert to_return is None or isinstance(to_return, (list, tuple))
@@ -371,4 +371,14 @@ class ModelSerialization(ModelFilter):
         # print(query.statement.compile(dialect=postgresql.dialect()))
         # print("===========")
 
-        return cls._as_list(query, json_to_populate)
+        return query, json_to_populate
+
+    @classmethod
+    def serialize(cls, *args, **kwargs):
+        """
+                Convert to serializable representation
+            :param args: See _ser for details
+            :param kwargs: See _ser for details
+            :return: Json serializable representation
+        """
+        return cls._as_list(*cls._ser(*args, **kwargs))
