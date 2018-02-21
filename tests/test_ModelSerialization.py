@@ -298,4 +298,4 @@ class TestModelSerialization(AbstractDatabaseTest):
             offset=0
         )
         assert len(result_a) == 1
-        assert len(result_a['students']) == 2
+        assert len(result_a[0]['students']) == 2
