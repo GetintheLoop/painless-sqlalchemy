@@ -4,6 +4,8 @@
 
 # Painless-SQLAlchemy
 
+Released on [pypi](https://pypi.python.org/pypi/Painless-SQLAlchemy). Install with
+
 `pip install painless-sqlalchemy`
 
 ### What is Painless-SQLAlchemy?
