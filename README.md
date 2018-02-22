@@ -14,7 +14,7 @@ Painless-SQLAlchemy adds simplified serialization and filtering to SQLAlchemy.
 
 Tests run Postgres 9.6.X. MySQL should work, but is not tested yet.
 
-#### Where are the tests?
+#### Run Tests
 
 Check out [SETUP.md](SETUP.md)
 
