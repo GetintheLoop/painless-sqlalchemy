@@ -48,8 +48,8 @@ Student.filter({
 }).all()
 ```
 
-Ok, but what about really hard stuff. How about all Students that are taught by
-a specific teacher or have a gmail address? Easy!
+*Ok, but what about really hard stuff. How about all Students that are taught by
+a specific teacher or have a gmail address? Easy!*
 
 ```python
 Student.filter(_or(
@@ -60,13 +60,13 @@ Student.filter(_or(
 
 ### Serialization
 
-Serializing Models is easy now. Let's get all teachers and their students:
+*Serializing Models is easy now. Let's get all teachers and their students:*
 ```python
 Teacher.serialize(['name', 'students.name'])
 ```
 
-returns
-```json
+*returns*
+```
 [
   {
     "name": "Nichole Copeland",
@@ -80,7 +80,7 @@ returns
 ]
 ```
 
-You can obviously combine serialize with filtering:
+*You can obviously combine serialize with filtering:*
 ```python
 Teacher.serialize(
     ['name', 'students.name'],
