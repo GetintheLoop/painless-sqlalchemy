@@ -26,5 +26,5 @@ Plese open a github issue.
 
 # Overview
 
-*Note:* This section is just intended to give an overview. Not all functionality is described.
+*This section is just intended to give an overview. Not all functionality is described.*
 
