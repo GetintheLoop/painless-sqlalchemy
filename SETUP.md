@@ -41,4 +41,4 @@ Ensure your env is activated and run:
 
 `--verbose`: Output debug information (warning: interferes with test progress output)
 
-`--batch`: Run in batch mode. Faster but does not check for tests with side effects.
+`--batch`: Run in batch mode. Faster but does not check for tests with side effects. Should be used to check for coverage!
