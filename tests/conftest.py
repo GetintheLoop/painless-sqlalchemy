@@ -1,7 +1,8 @@
 import warnings
 import pytest
 import sqlalchemy
-from sqlalchemy import Column, String, Table, ForeignKey, Integer, func
+from sqlalchemy import (
+    Column, String, Table, ForeignKey, Integer, func, DateTime)
 from sqlalchemy.orm import relationship, column_property
 from painless_sqlalchemy.BaseModel import Base, engine, session
 from painless_sqlalchemy.Model import Model
@@ -74,10 +75,12 @@ def Student(Teacher):
         __tablename__ = 'student'
 
         name = Column(String(64), index=True, nullable=False)
-        address = Column(String(64), index=False, nullable=True)
+        address = Column(String(128), index=False, nullable=True)
         phone = Column(String(35), nullable=True)
         home_phone = Column(String(35), nullable=True)
         email = Column(String(64), nullable=True)
+
+        created = Column(DateTime, server_default='now()')
 
         guardian_number = MapColumn('home_phone')
         phone_numbers = MapColumn(['phone', 'home_phone'])

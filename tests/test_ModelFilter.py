@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, func
 from faker import Faker
 from painless_sqlalchemy.elements.ColumnReference import ref
 from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
@@ -151,3 +151,13 @@ class TestModelFilter(AbstractDatabaseTest):
             'id': self.teacher1.id,
             'students.id': []
         }).one().id == self.teacher1.id
+
+    def test_filter_ref_in(self, Student):
+        assert Student.filter(
+            ref('id').in_([self.student1.id, self.student2.id])
+        ).first() is not None
+
+    def test_filter_ref_func(self, Student):
+        assert Student.filter(
+            ref('created') <= func.now()
+        ).first() is not None
