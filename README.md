@@ -49,7 +49,7 @@ Student.filter({
 ```
 
 *Ok, but what about all Students taught by
-a specific teacher or with a gmail address? Easy!*
+a specific teacher or with a gmail address?*
 
 ```python
 Student.filter(_or(
