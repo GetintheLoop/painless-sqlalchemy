@@ -177,10 +177,7 @@ class TestModelFilter(AbstractDatabaseTest):
     def test_filter_ref_select(self, Teacher, Student, teacher_to_student):
         teacher = Teacher.filter(
             exists([1]).select_from(
-                outerjoin(
-                    Student,
-                    teacher_to_student
-                )
+                outerjoin(Student, teacher_to_student)
             ).where(
                 and_(
                     Student.name == self.student1.name,
