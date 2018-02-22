@@ -48,8 +48,8 @@ Student.filter({
 }).all()
 ```
 
-*Ok, but what about really hard stuff. How about all Students that are taught by
-a specific teacher or have a gmail address? Easy!*
+*Ok, but what about all Students taught by
+a specific teacher or with a gmail address? Easy!*
 
 ```python
 Student.filter(_or(
