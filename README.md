@@ -80,7 +80,7 @@ Teacher.serialize(['name', 'students.name'])
 ]
 ```
 
-*You can obviously combine serialize with filtering:*
+*And we can combine that with filtering:*
 ```python
 Teacher.serialize(
     ['name', 'students.name'],
