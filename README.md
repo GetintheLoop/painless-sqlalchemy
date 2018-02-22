@@ -4,6 +4,8 @@
 
 # Painless-SQLAlchemy
 
+`pip install painless-sqlalchemy`
+
 #### What is Painless-SQLAlchemy?
 
 Painless-SQLAlchemy adds simplified serialization and filtering to SQLAlchemy.
