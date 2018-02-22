@@ -28,7 +28,7 @@ Plese open a github issue.
 
 Examples use Models described in [conftest.py](tests/conftest.py).
 
-### Filtering
+### Filter
 
 *Looking for all Teachers teaching a specific Student?*
 ```python
@@ -58,7 +58,7 @@ Student.filter(_or(
 )).all()
 ```
 
-### Serialization
+### Serialize
 
 *Let's get all teachers and their students:*
 ```python
@@ -90,4 +90,25 @@ Teacher.serialize(
 
 # Documentation
 
-...
+### Filter
+
+- parameters
+- resolution for and / or clauses (information stored on query)
+
+#### Dictionary Filtering
+
+- list filtering on to many vs to one relationship / column
+- None values
+
+#### Clause Filtering
+
+- ref
+
+### Serialize
+
+- parameters
+- exposure of columns
+- only loading what is required (eager loading)
+- MapColumn
+- default serialization
+- ordering / limit offset (how is this accomplished)
