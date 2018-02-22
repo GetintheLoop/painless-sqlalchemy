@@ -1,7 +1,7 @@
 import functools
 from sqlalchemy import and_
 from sqlalchemy.dialects.postgresql import insert
-from painless_sqlalchemy.BaseModel import Base, session, engine
+from painless_sqlalchemy.core.BaseModel import Base, session, engine
 
 
 class DBTestUtilMixin(object):

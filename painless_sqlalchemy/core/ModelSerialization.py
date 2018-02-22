@@ -3,8 +3,8 @@ import functools
 from sqlalchemy import inspect, func
 from sqlalchemy.orm import load_only, undefer, joinedload
 from sqlalchemy.sql.elements import Label
-from painless_sqlalchemy.BaseModel import BaseModel
-from painless_sqlalchemy.ModelFilter import ModelFilter
+from painless_sqlalchemy.core.BaseModel import BaseModel
+from painless_sqlalchemy.core.ModelFilter import ModelFilter
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 from painless_sqlalchemy.util import DictUtil
 
