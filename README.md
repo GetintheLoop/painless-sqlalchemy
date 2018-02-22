@@ -60,7 +60,7 @@ Student.filter(_or(
 
 ### Serialization
 
-*Serializing Models is easy now. Let's get all teachers and their students:*
+*Let's get all teachers and their students:*
 ```python
 Teacher.serialize(['name', 'students.name'])
 ```
