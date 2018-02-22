@@ -26,5 +26,66 @@ Plese open a github issue.
 
 # Overview
 
-*This section is just intended to give an overview. Not all functionality is described.*
+Examples use Models described in [conftest.py](tests/conftest.py).
 
+### Filtering
+
+*Looking for all Teachers teaching a specific Student?*
+```python
+Teacher.filter({'students.id': student_id}).all()
+```
+
+*How about all Students frequenting a specific Classroom...*
+```python
+Student.filter({'teachers.classroom.id': classroom_id}).all()
+```
+
+*...who's first name is also Alex or John?*
+```python
+Student.filter({
+    'teachers.classroom.id': classroom_id,
+    'first_name': ["Alex", "John"]
+}).all()
+```
+
+Ok, but what about really hard stuff. How about all Students that are taught by
+a specific teacher or have a gmail address? Easy!
+
+```python
+Student.filter(_or(
+    ref('teachers.id') == teacher_id,
+    ref('email').ilike("%@gmail.com")
+)).all()
+```
+
+### Serialization
+
+Serializing Models is easy now. Let's get all teachers and their students:
+```python
+Teacher.serialize(['name', 'students.name'])
+```
+
+returns
+```json
+[
+  {
+    "name": "Nichole Copeland",
+    "students": [
+      {"name": "Margaret Anderson"},
+      {"name": "Laura Smith"},
+      ...
+    ]
+  },
+  ...
+]
+```
+
+You can obviously combine serialize with filtering:
+```python
+Teacher.serialize(
+    ['name', 'students.name'],
+    {"id": teacher_id}
+)
+```
+
+# Documentation
