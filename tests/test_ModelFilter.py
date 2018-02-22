@@ -192,9 +192,9 @@ class TestModelFilter(AbstractDatabaseTest):
         ).one()
         assert student.id == self.student1.id
 
-    def test_filter_ref_nested_and_conditions(self, Teacher):
+    def test_filter_ref_concurrent_and_conditions(self, Teacher):
         assert Teacher.filter(
-            and_(
+            or_(
                 and_(
                     ref('students.id') == self.student1.id,
                     ref('students.name') == self.student1.name
