@@ -1,8 +1,7 @@
 import pytest
 from sqlalchemy import and_, or_, func, case
-from faker import Faker
 from sqlalchemy.dialects.postgresql import INTERVAL
-
+from faker import Faker
 from painless_sqlalchemy.elements.ColumnReference import ref
 from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
 
