@@ -80,7 +80,7 @@ def Student(Teacher):
         home_phone = Column(String(35), nullable=True)
         email = Column(String(64), nullable=True)
 
-        enrolled = Column(DateTime, server_default='now()')
+        created = Column(DateTime, server_default='now()')
 
         guardian_number = MapColumn('home_phone')
         phone_numbers = MapColumn(['phone', 'home_phone'])

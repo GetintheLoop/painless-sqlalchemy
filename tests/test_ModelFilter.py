@@ -159,5 +159,5 @@ class TestModelFilter(AbstractDatabaseTest):
 
     def test_filter_ref_func(self, Student):
         assert Student.filter(
-            ref('enrolled') <= func.now()
+            ref('created') <= func.now()
         ).first() is not None
