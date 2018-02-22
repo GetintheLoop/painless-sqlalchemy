@@ -8,7 +8,7 @@
 
 ### What is Painless-SQLAlchemy?
 
-Painless-SQLAlchemy adds simplified serialization and filtering to SQLAlchemy.
+Painless-SQLAlchemy adds simplified querying and serialization to SQLAlchemy.
      
 ### Supported Databases
 
