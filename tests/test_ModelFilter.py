@@ -75,14 +75,11 @@ class TestModelFilter(AbstractDatabaseTest):
         }).all()
         assert len(classrooms) == 2
 
-    def test_ref_filter(self, Student):
-        student = Student.filter(
-            and_(*[
-                ref('id') == self.student1.id,
-                ref('name') == self.student1.name
-            ])
-        ).one()
-        assert student.id == self.student1.id
+    def test_filter_to_one_relationship_multiple_columns(self, Classroom):
+        assert Classroom.filter({
+            'teacher.id': self.teacher1.id,
+            'teacher.name': self.teacher1.name
+        }).one().id == self.classroom1.id
 
     def test_filter_skip_nones(self, Student):
         assert self.student2.address is not None
@@ -175,3 +172,36 @@ class TestModelFilter(AbstractDatabaseTest):
                 'junior'
             )], else_='freshman') == 'freshman'
         ).all()) == 3
+
+    def test_filter_ref(self, Student):
+        assert Student.filter(
+            ref('id') == self.student1.id
+        ).one().id == self.student1.id
+
+    def test_filter_ref_to_many_relationship(self, Teacher):
+        assert Teacher.filter(
+            ref('students.id') == self.student1.id
+        ).one().id == self.teacher1.id
+
+    def test_filter_ref_and_condition(self, Student):
+        student = Student.filter(
+            and_(
+                ref('id') == self.student1.id,
+                ref('name') == self.student1.name
+            )
+        ).one()
+        assert student.id == self.student1.id
+
+    def test_filter_ref_concurrent_and_conditions(self, Teacher):
+        assert Teacher.filter(
+            or_(
+                and_(
+                    ref('students.id') == self.student1.id,
+                    ref('students.name') == self.student1.name
+                ),
+                and_(
+                    ref('students.id') == self.student2.id,
+                    ref('students.name') == self.student2.name
+                )
+            )
+        ).one().id == self.teacher1.id
