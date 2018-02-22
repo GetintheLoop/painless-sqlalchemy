@@ -18,7 +18,7 @@ setup(
     author_email='painless@blackflux.com',
     maintainer='Lukas Siemon',
     maintainer_email='painless@blackflux.com',
-    description='Easy serialization and filtering for SQLAlchemy',
+    description='Simplified filtering and serialization for SQLAlchemy',
     long_description=__doc__,
     packages=['painless_sqlalchemy'],
     zip_safe=False,
