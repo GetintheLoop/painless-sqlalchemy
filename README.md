@@ -6,20 +6,13 @@
 
 `pip install painless-sqlalchemy`
 
-#### What is Painless-SQLAlchemy?
-
-Painless-SQLAlchemy adds simplified serialization and filtering to SQLAlchemy.
+**What is Painless-SQLAlchemy?** Painless-SQLAlchemy adds simplified serialization and filtering to SQLAlchemy.
      
-#### Supported Databases:
-Tests run Postgres 9.6.X. MySQL should work, but is not tested yet.
+**Supported Databases** Tests run Postgres 9.6.X. MySQL should work, but is not tested yet.
 
-#### Where are the tests?
+**Where are the tests?** Check out [SETUP.md](SETUP.md)
 
-Check out [SETUP.md](SETUP.md)
-
-#### Where can I get help?
-
-Please open a github issue
+**Where can I get help?** Please open a github issue
 
 ---------------------
 
