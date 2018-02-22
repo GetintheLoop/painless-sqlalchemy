@@ -2,36 +2,29 @@
 [![Coverage Status](https://coveralls.io/repos/github/GetintheLoop/painless-sqlalchemy/badge.svg?branch=master)](https://coveralls.io/github/GetintheLoop/painless-sqlalchemy?branch=master)
 [![Dependencies](https://pyup.io/repos/github/GetintheLoop/painless-sqlalchemy/shield.svg?t=1518818417448)](https://pyup.io)
 
-                          // Painless-SQLAlchemy //
+# Painless-SQLAlchemy
 
+`pip install painless-sqlalchemy`
 
-    ~ What is Painless-SQLAlchemy?
+### What is Painless-SQLAlchemy?
 
-      Painless-SQLAlchemy is a if a wrapper for SQLAlchemy that add support
-      for convenient serialization and filtering of SQLAlchemy models.
+Painless-SQLAlchemy adds simplified serialization and filtering to SQLAlchemy.
      
-    - Supported Databases:
-      [x] Postgres 9.6.X
-      [ ] MySQL - Future support intended
+### Supported Databases
 
-    ~ What do I need?
+Tests run Postgres 9.6.X. MySQL should work, but is not tested yet.
 
-      SQLAlchemy, and ....?
+### Run Tests
 
-    ~ Where are the docs?
+Check out [SETUP.md](SETUP.md)
 
-      ....
+### Where can I get help?
 
-    ~ Where are the tests?
+Plese open a github issue.
 
-      Start the tests with:
-      
-      $ python run_tests.py [options]
-      
-      Options:
-        --verbose
-        Output debug information (warning: interferes with test progress output)
+---------------------
 
-    ~ Where can I get help?
+# Overview
 
-      Just open a github issue!
+*This section is just intended to give an overview. Not all functionality is described.*
+

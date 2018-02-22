@@ -35,4 +35,10 @@ Important: Tests will (re)create database `painless_tmp`.
 
 Ensure your env is activated and run:
 
-    $ python run_tests.py
+    $ python run_tests.py [options]
+      
+### Options
+
+`--verbose`: Output debug information (warning: interferes with test progress output)
+
+`--batch`: Run in batch mode. Faster but does not check for tests with side effects.
