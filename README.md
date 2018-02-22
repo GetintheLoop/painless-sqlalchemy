@@ -165,6 +165,12 @@ Returns JSON serializable representation of fetched data.
 #### Limit and Offset
 - ordering / limit offset (how is this accomplished)
 
+### Dot Notation
+
+- basic
+- star default serialization
+- bracket shorthand notation
+
 ### Internals and Optimization
 
 - optimized to only fetch what is necessary
