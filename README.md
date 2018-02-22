@@ -4,6 +4,8 @@
 
 # Painless-SQLAlchemy
 
+Released on [pypi](https://pypi.python.org/pypi/Painless-SQLAlchemy). Install with
+
 `pip install painless-sqlalchemy`
 
 ### What is Painless-SQLAlchemy?
@@ -90,25 +92,86 @@ Teacher.serialize(
 
 # Documentation
 
+### Model Definitions
+
+All your Models need to inherit from `Model.py`. Examples are given in [conftest.py](tests/conftest.py)
+
 ### Filter
 
-- parameters
+`Model.filter(...)`
+
+Returns SQLAlchemy query that has necessary joins / filters applied.
+
+#### Parameters
+
+`attributes`: dict *or* SQLAlchemy filter using ref
+
+`query`: Optional (pre-filtered) query used as base
+
+`skip_nones`: Skip None-values dict entries iff true
+
 - resolution for and / or clauses (information stored on query)
 
 #### Dictionary Filtering
 
+#### Relationships and Lists
 - list filtering on to many vs to one relationship / column
+- optimization compared to clause filtering
 - None values
 
 #### Clause Filtering
 
-- ref
+- ref, how to use it and what it does
 
 ### Serialize
 
-- parameters
+`Model.serialize(...)`
+
+Returns JSON serializable representation of fetched data.
+
+#### Parameters
+
+`to_return`: list of fields to return
+
+`filter_by`: dict of SQLAlchemy clause to filter by
+
+`limit`: maximum amount of objects fetched
+
+`offset`: offset value for the result
+
+`query`: Optional (pre-filtered) query used as base
+
+`skip_nones`: Skip filter_by entries that have a "None" value
+
+`order_by`: enforce result ordering, multiple via tuple
+
+`session`: Explict session to use for query
+
+`expose_all`: Whether to Return not exposed fields
+
+`params`: Query parameters
+
+#### Column Exposure
 - exposure of columns
 - only loading what is required (eager loading)
+
+#### MapColumn
 - MapColumn
+
+#### Default Serialization
 - default serialization
+- pro / con for defining all fields / relationships
+
+#### Limit and Offset
 - ordering / limit offset (how is this accomplished)
+
+### Dot Notation
+
+- basic
+- star default serialization
+- bracket shorthand notation
+
+### Internals and Optimization
+
+- optimized to only fetch what is necessary
+- optimized to only make necessary joins (when possible to do this automatically)
