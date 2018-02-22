@@ -1,5 +1,6 @@
 import pytest
-from sqlalchemy import and_, or_, func
+from sqlalchemy import and_, or_, func, case
+from sqlalchemy.dialects.postgresql import INTERVAL
 from faker import Faker
 from painless_sqlalchemy.elements.ColumnReference import ref
 from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
@@ -161,3 +162,16 @@ class TestModelFilter(AbstractDatabaseTest):
         assert Student.filter(
             ref('created') <= func.now()
         ).first() is not None
+
+    def test_filter_ref_case(self, Student):
+        assert len(Student.filter(
+            case([(
+                ref('created') <=
+                func.now() - func.cast('2 YEARS', INTERVAL),
+                'senior'
+            ), (
+                ref('created') <=
+                func.now() - func.cast('1 YEAR', INTERVAL),
+                'junior'
+            )], else_='freshman') == 'freshman'
+        ).all()) == 3
