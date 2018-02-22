@@ -173,7 +173,7 @@ class TestModelFilter(AbstractDatabaseTest):
             )], else_='freshman') == 'freshman'
         ).all()) == 3
 
-    def test_ref_filter(self, Student):
+    def test_filter_ref(self, Student):
         assert Student.filter(
             ref('id') == self.student1.id
         ).one().id == self.student1.id
