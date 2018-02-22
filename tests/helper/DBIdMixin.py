@@ -1,5 +1,5 @@
 from sqlalchemy import inspect
-from painless_sqlalchemy.Model import Model
+from painless_sqlalchemy.core.Model import Model
 
 
 class DBIdMixin(object):

@@ -1,6 +1,6 @@
 from sqlalchemy import inspect
 from sqlalchemy.orm import Session, sessionmaker
-from painless_sqlalchemy.BaseModel import BaseModel, engine
+from painless_sqlalchemy.core.BaseModel import BaseModel, engine
 
 
 class ModelAction(BaseModel):

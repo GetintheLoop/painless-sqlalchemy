@@ -1,6 +1,6 @@
 from collections import namedtuple
 from sqlalchemy.orm import class_mapper, ColumnProperty
-from painless_sqlalchemy.Model import Model
+from painless_sqlalchemy.core.Model import Model
 
 
 class AbstractExtendedTest(object):

@@ -9,7 +9,7 @@ from sqlalchemy.sql.elements import (
     Grouping, ClauseList, Null, False_, True_, UnaryExpression, Case, Cast,
     TextClause)
 from sqlalchemy.util import NoneType
-from painless_sqlalchemy.ModelAction import ModelAction
+from painless_sqlalchemy.core.ModelAction import ModelAction
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 from painless_sqlalchemy.elements.ColumnReference import ColumnReference
 
