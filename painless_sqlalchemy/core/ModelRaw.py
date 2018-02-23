@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+_Base = declarative_base()
 
 
-class ModelRaw(Base):
+class ModelRaw(_Base):
     # prevent creation of table
     __abstract__ = True
 

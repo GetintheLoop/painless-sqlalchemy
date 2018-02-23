@@ -1,7 +1,6 @@
 import functools
 from sqlalchemy import and_
 from sqlalchemy.dialects.postgresql import insert
-from painless_sqlalchemy.core.ModelRaw import Base
 from tests.conftest import db
 
 
@@ -35,7 +34,7 @@ class DBTestUtilMixin(object):
             List defined database tables.
             :return Dict mapping {table name -> table}
         """
-        return {t.name: t for t in Base.metadata.tables.values()}
+        return {t.name: t for t in db.Model.metadata.tables.values()}
 
     @classmethod
     def _get_dump(cls):
