@@ -1,6 +1,7 @@
 import pytest
-from sqlalchemy import and_, or_, func, case
+from sqlalchemy import and_, or_, func, case, exists
 from sqlalchemy.dialects.postgresql import INTERVAL
+from sqlalchemy.orm import outerjoin
 from faker import Faker
 from painless_sqlalchemy.elements.ColumnReference import ref
 from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
@@ -172,6 +173,20 @@ class TestModelFilter(AbstractDatabaseTest):
                 'junior'
             )], else_='freshman') == 'freshman'
         ).all()) == 3
+
+    def test_filter_ref_select(self, Teacher, Student, teacher_to_student):
+        teacher = Teacher.filter(
+            exists([1]).select_from(
+                outerjoin(Student, teacher_to_student)
+            ).where(
+                and_(
+                    Student.name == self.student1.name,
+                    teacher_to_student.c.teacher_id == Teacher.id
+                )
+            ).correlate_except(Student)
+        ).all()
+        assert len(teacher) == 1
+        assert self.get(teacher, 'id', self.teacher1.id) is not None
 
     def test_filter_ref(self, Student):
         assert Student.filter(
