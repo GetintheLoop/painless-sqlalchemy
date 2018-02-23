@@ -3,7 +3,7 @@ import functools
 from sqlalchemy import inspect, func
 from sqlalchemy.orm import load_only, undefer, joinedload
 from sqlalchemy.sql.elements import Label
-from painless_sqlalchemy.core.Model import Model
+from painless_sqlalchemy.core.ModelRaw import ModelRaw
 from painless_sqlalchemy.core.ModelFilter import ModelFilter
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 from painless_sqlalchemy.util import DictUtil
@@ -186,7 +186,7 @@ class ModelSerialization(ModelFilter):
                     for f in DictUtil.flatten_dict(end):
                         result += cls._expand(key[:-1] + f)
                 else:
-                    assert issubclass(end, Model)
+                    assert issubclass(end, ModelRaw)
                     for f in end.default_serialization:
                         result += cls._expand(key[:-1] + f)
             else:  # ordinary field, no expansion needed
