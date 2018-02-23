@@ -4,7 +4,7 @@ import sqlalchemy
 from sqlalchemy import (
     Column, String, Table, ForeignKey, Integer, func, DateTime)
 from sqlalchemy.orm import relationship, column_property
-from painless_sqlalchemy.core.BaseModel import Base, engine, session
+from painless_sqlalchemy.core.ModelRaw import Base, engine, session
 from painless_sqlalchemy.core.Model import Model
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 
