@@ -1,7 +1,7 @@
 import os
 import warnings
 import pytest
-from painless_sqlalchemy.core.BaseModel import engine
+from painless_sqlalchemy.core.ModelRaw import engine
 from tests.helper.AbstractExtendedTest import AbstractExtendedTest
 from tests.helper.DBIdMixin import DBIdMixin
 from tests.helper.DBTestUtilMixin import DBTestUtilMixin
