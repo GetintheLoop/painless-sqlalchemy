@@ -16,8 +16,11 @@ class Painless(object):
         self.engine = create_engine(db_uri)
         self.session = scoped_session(
             sessionmaker(autocommit=False, bind=self.engine))
-        self.Model = Model
+
         Model.query = self.session.query_property()
+        Model.session = self.session
+        Model.engine = self.engine
+        self.Model = Model
 
     def make_session(self, bind=None):
         """

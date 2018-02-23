@@ -1,6 +1,6 @@
 from sqlalchemy import inspect
 from sqlalchemy.orm import Session, sessionmaker
-from painless_sqlalchemy.core.ModelRaw import ModelRaw, engine
+from painless_sqlalchemy.core.ModelRaw import ModelRaw
 
 
 class ModelAction(ModelRaw):
@@ -19,7 +19,7 @@ class ModelAction(ModelRaw):
         """
         session = Session.object_session(self)
         if not session:
-            session = sessionmaker(bind=engine)()
+            session = sessionmaker(bind=self.engine)()
         return session
 
     def save(self):
