@@ -17,7 +17,7 @@ class ModelRaw(Base):
 
     default_serialization = ("id",)
 
-    query = session.query_property()
+    query = None
 
     # Id is always required but can be overwritten
     id = Column(Integer, primary_key=True)
