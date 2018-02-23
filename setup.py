@@ -29,7 +29,8 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
-        'SQLAlchemy>=1.2.0'
+        'SQLAlchemy>=1.2.0',
+        'psycopg2-binary>=2.7'
     ],
     keywords=['SQLAlchemy', 'Serialization', 'Query', 'Simple', 'Abstraction'],
     classifiers=[]
