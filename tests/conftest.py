@@ -4,18 +4,22 @@ import sqlalchemy
 from sqlalchemy import (
     Column, String, Table, ForeignKey, Integer, func, DateTime)
 from sqlalchemy.orm import relationship, column_property
-from painless_sqlalchemy.core.ModelRaw import Base, engine, session
-from painless_sqlalchemy.core.Model import Model
+from painless_sqlalchemy import Painless
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 
 table_hierarchy = [
     'student', 'teacher', 'classroom', 'school'
 ]
 
+db = Painless('postgresql://postgres:password@localhost:5432/painless_tmp')
+
+engine = db.engine
+session = db.session
+
 
 @pytest.fixture(scope='session')
 def School():
-    class School(Model):
+    class School(db.Model):
         __tablename__ = 'school'
         id = Column(Integer, primary_key=True, info={"exposed": True})
 
@@ -29,7 +33,7 @@ def School():
 
 @pytest.fixture(scope='session')
 def Classroom(School):
-    class Classroom(Model):
+    class Classroom(db.Model):
         __tablename__ = 'classroom'
 
         school_id = Column(Integer, ForeignKey(School.id))
@@ -49,7 +53,7 @@ def Classroom(School):
 
 @pytest.fixture(scope='session')
 def Teacher(Classroom):
-    class Teacher(Model):
+    class Teacher(db.Model):
         __tablename__ = 'teacher'
 
         name = Column(String(64), index=True, nullable=False)
@@ -71,7 +75,7 @@ def Teacher(Classroom):
 
 @pytest.fixture(scope='session')
 def Student(Teacher):
-    class Student(Model):
+    class Student(db.Model):
         __tablename__ = 'student'
 
         name = Column(String(64), index=True, nullable=False)
@@ -109,7 +113,7 @@ def teacher_to_student(Teacher, Student):
     # teacher_to_student linkage table
     return Table(
         'teacher_to_student',
-        Base.metadata,
+        db.Model.metadata,
         Column('teacher_id', ForeignKey(Teacher.id, ondelete='CASCADE'),
                primary_key=True),
         Column('student_id', ForeignKey(Student.id, ondelete='CASCADE'),
@@ -133,22 +137,22 @@ def recreate_db():
     engine.dispose()
     session.close()
 
-    uri, db = engine.url.__str__().rsplit("/", 1)
+    uri, db_name = engine.url.__str__().rsplit("/", 1)
 
     _engine = sqlalchemy.engine.create_engine(uri + "/postgres")
     conn = _engine.connect()
     conn.execute(
         "SELECT pg_terminate_backend(pid) "
-        "FROM pg_stat_activity WHERE datname = '%s';" % db
+        "FROM pg_stat_activity WHERE datname = '%s';" % db_name
     )
     conn.execute("commit")
-    conn.execute('DROP DATABASE IF EXISTS "%s";' % db)
+    conn.execute('DROP DATABASE IF EXISTS "%s";' % db_name)
     conn.execute("commit")
-    conn.execute('CREATE DATABASE "%s";' % db)
+    conn.execute('CREATE DATABASE "%s";' % db_name)
     conn.close()
 
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
+    db.Model.metadata.drop_all(engine)
+    db.Model.metadata.create_all(engine)
 
 
 def pytest_itemcollected(item):

@@ -1,7 +1,7 @@
 import functools
 from sqlalchemy import and_
 from sqlalchemy.dialects.postgresql import insert
-from painless_sqlalchemy.core.ModelRaw import Base, session, engine
+from tests.conftest import db
 
 
 class DBTestUtilMixin(object):
@@ -12,8 +12,8 @@ class DBTestUtilMixin(object):
             Commit Entities to database.
             :param args: SQLAlchemy Models
         """
-        session.add_all(args)
-        session.commit()
+        db.session.add_all(args)
+        db.session.commit()
 
     @staticmethod
     def check_constraint(err, constraint):
@@ -34,7 +34,7 @@ class DBTestUtilMixin(object):
             List defined database tables.
             :return Dict mapping {table name -> table}
         """
-        return {t.name: t for t in Base.metadata.tables.values()}
+        return {t.name: t for t in db.Model.metadata.tables.values()}
 
     @classmethod
     def _get_dump(cls):
@@ -45,7 +45,7 @@ class DBTestUtilMixin(object):
         result = []
         tables = cls._get_tables()
         for tbl in tables:
-            data = engine.execute(tables[tbl].select()).fetchall()
+            data = db.engine.execute(tables[tbl].select()).fetchall()
             for a in data:
                 result.append("%s %s" % (
                     tbl,
@@ -108,19 +108,19 @@ class DBTestUtilMixin(object):
         table = cls._get_relationship_table(*kwargs.keys())
         values = {k + "_id": v for k, v in kwargs.items()}
         if meta is None:
-            session.execute(insert(table).values(**values))
+            db.session.execute(insert(table).values(**values))
         else:
             # check that no keys are shared across meta and data
             assert len(set(values.keys()) & set(meta.keys())) == 0
             constraint_keys = values.keys()
             values.update(meta)
-            session.execute(
+            db.session.execute(
                 insert(table).values(**values).on_conflict_do_update(
                     index_elements=constraint_keys,
                     set_=meta
                 )
             )
-        session.commit()
+        db.session.commit()
 
     @classmethod
     def unlink(cls, **kwargs):
@@ -133,7 +133,7 @@ class DBTestUtilMixin(object):
             getattr(target.c, k + "_id") == v
             for k, v in kwargs.items()
         ]
-        session.query(target).filter(
+        db.session.query(target).filter(
             and_(*args)
         ).delete(synchronize_session=False)
-        session.commit()
+        db.session.commit()

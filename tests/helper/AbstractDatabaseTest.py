@@ -1,11 +1,10 @@
 import os
 import warnings
 import pytest
-from painless_sqlalchemy.core.ModelRaw import engine
 from tests.helper.AbstractExtendedTest import AbstractExtendedTest
 from tests.helper.DBIdMixin import DBIdMixin
 from tests.helper.DBTestUtilMixin import DBTestUtilMixin
-from tests.conftest import recreate_db, table_hierarchy
+from tests.conftest import recreate_db, table_hierarchy, db
 
 # check if we are running in batch test mode
 batch_testing = 'BATCH_RUN' in os.environ and os.environ['BATCH_RUN'] == "1"
@@ -85,11 +84,11 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
 
         if batch_testing:
             if len(queries) > 0:
-                engine.execute("".join([q[0] for q in queries]))
+                db.engine.execute("".join([q[0] for q in queries]))
         else:  # pragma: no cover
             # execute the queries
             for query in queries:
-                result = engine.execute(query[0])
+                result = db.engine.execute(query[0])
                 if query[1] is not None:
                     assert result.rowcount == query[1], query[0]
         assert len(dict_) == 0, "Undefined Tables Provided: %s" % dict_
