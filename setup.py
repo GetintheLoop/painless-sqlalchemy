@@ -20,7 +20,12 @@ setup(
     maintainer_email='painless@blackflux.com',
     description='Simplified filtering and serialization for SQLAlchemy',
     long_description=__doc__,
-    packages=['painless_sqlalchemy'],
+    packages=[
+        'painless_sqlalchemy',
+        'painless_sqlalchemy.core',
+        'painless_sqlalchemy.elements',
+        'painless_sqlalchemy.util',
+    ],
     zip_safe=False,
     platforms='any',
     install_requires=[
