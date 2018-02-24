@@ -132,9 +132,13 @@ class TestModelFilter(AbstractDatabaseTest):
         assert Teacher.filter({
             'students.id': [self.student1.id, self.student2.id]
         }).first() is not None
+        self.unlink(student=self.student2.id, teacher=self.teacher1.id)
         assert Teacher.filter({
-            'students.id': [self.student1.id, self.student3.id]
+            'students.id': [self.student1.id, self.student2.id]
         }).first() is None
+
+        # revert
+        self.link(student=self.student2.id, teacher=self.teacher1.id)
 
     def test_filter_by_empty_list(self, Student):
         assert Student.filter({'id': []}).first() is None
