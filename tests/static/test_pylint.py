@@ -40,7 +40,7 @@ class TestPylint(object):
                         continue
                     if re.match(
                         r"^\sYour code has been rated at \d+\.\d+/10 "
-                        r"\(previous run: \d+\.\d+/10, -?\+\d+\.\d+\)$",
+                        r"\(previous run: \d+\.\d+/10, [+\-]\d+\.\d+\)$",
                         log
                     ):
                         continue
