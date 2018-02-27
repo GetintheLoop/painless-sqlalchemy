@@ -1,3 +1,4 @@
+from uuid import uuid4
 import pytest
 from sqlalchemy import and_
 from faker import Faker
@@ -252,3 +253,25 @@ class TestModelSerialization(AbstractDatabaseTest):
             "OVER (ORDER BY teacher.name, teacher.id)"
             in query._order_by[0].table.__str__()
         )
+
+    def test_bindparam(self, Student):
+        context1 = uuid4().hex
+        context2 = uuid4().hex
+        assert Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id},
+            params={'context': context1}
+        )[0]['contextual_id'] == Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id},
+            params={'context': context1}
+        )[0]['contextual_id']
+        assert Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id},
+            params={'context': context1}
+        )[0]['contextual_id'] != Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id},
+            params={'context': context2}
+        )[0]['contextual_id']
