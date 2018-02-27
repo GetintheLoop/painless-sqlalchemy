@@ -14,8 +14,8 @@ def list_project_files(exclude=None):
     exclude_regex = []
     for excluded in [path.join(ROOT_DIR, excluded) for excluded in exclude]:
         escaped = re.escape(excluded)
-        escaped = escaped.replace(r"\*\*", r".*")
-        escaped = escaped.replace(r"\*", r"[^\/]*")
+        escaped = escaped.replace("\*\*", ".*")  # pylint: disable=W1401
+        escaped = escaped.replace("\*", "[^\/]*")  # pylint: disable=W1401
         exclude_regex.append(re.compile(escaped))
 
     result = []
