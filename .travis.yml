@@ -20,7 +20,7 @@ script:
   - python run_tests.py --batch
 
 after_success:
-  if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then coveralls; fi
+  if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then coveralls; fi
 
 deploy:
   provider: pypi
@@ -30,4 +30,4 @@ deploy:
   on:
     branch: master
     tags: true
-    condition: $TRAVIS_PYTHON_VERSION == 3.5
+    condition: $TRAVIS_PYTHON_VERSION == 3.6

@@ -1,5 +1,5 @@
 ## Test Requirements
-* Python 3.5
+* Python 3.6
 * PostgreSQL 9.6
 * Ubuntu 16.04
 
@@ -13,7 +13,7 @@ Install `virtualenv`
     $ sudo apt-get install python-dev
     
 ##### CREATE ENVIRONMENT
-    $ virtualenv -p /usr/bin/python3.5 env
+    $ virtualenv -p /usr/bin/python3.6 env
     
     # activate the new environment
     $ source env/bin/activate
