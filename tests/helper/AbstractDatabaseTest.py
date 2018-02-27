@@ -106,7 +106,7 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
         cls._register_entities(dict_, **kwargs)
 
     @classmethod
-    def register(cls, *args, **kwargs):
+    def register(cls, *args, **kwargs):  # pylint: disable=E0202
         """
             Register database Models for deletion.
             :param args: Models to be registered
@@ -122,7 +122,7 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
         return args[0] if len(args) == 1 else args
 
     @classmethod
-    def checkin(cls, *args, **kwargs):
+    def checkin(cls, *args, **kwargs):  # pylint: disable=E0202
         """
             Commit and register database Entities.
             - See commit and register functions for details.

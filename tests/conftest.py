@@ -1,4 +1,5 @@
 # pylint: disable-msg=W0621
+# pylint: disable-msg=W0613
 import warnings
 import pytest
 import sqlalchemy

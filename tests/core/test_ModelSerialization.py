@@ -231,14 +231,14 @@ class TestModelSerialization(AbstractDatabaseTest):
         assert students[0]['first_name'] == self.student1.name.split(' ')[0]
 
     def test_id_ordering_is_default(self, Teacher):
-        query, json_to_return = Teacher._ser()
+        query, _ = Teacher._ser()
         assert (
             "OVER (ORDER BY teacher.id)"
             in query._order_by[0].table.__str__()
         )
 
     def test_id_ordering_fallback_created(self, Teacher):
-        query, json_to_return = Teacher._ser(
+        query, _ = Teacher._ser(
             order_by=(Teacher.name, Teacher.classroom_id)
         )
         assert (
@@ -247,7 +247,7 @@ class TestModelSerialization(AbstractDatabaseTest):
         )
 
     def test_id_ordering_fallback_exists(self, Teacher):
-        query, json_to_return = Teacher._ser(
+        query, _ = Teacher._ser(
             order_by=(Teacher.name, Teacher.id)
         )
         assert (
