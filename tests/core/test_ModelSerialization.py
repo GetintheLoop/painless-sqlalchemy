@@ -1,3 +1,5 @@
+import hashlib
+from uuid import uuid4
 import pytest
 from sqlalchemy import and_
 from faker import Faker
@@ -252,3 +254,34 @@ class TestModelSerialization(AbstractDatabaseTest):
             "OVER (ORDER BY teacher.name, teacher.id)"
             in query._order_by[0].table.__str__()
         )
+
+    def test_bindparam(self, Student):
+        context1 = uuid4().hex
+        context2 = uuid4().hex
+        context1_id = Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id},
+            params={'context': context1}
+        )[0]['contextual_id']
+        context2_id = Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id},
+            params={'context': context2}
+        )[0]['contextual_id']
+        assert context1_id != context2_id
+        # validate hashes
+        assert hashlib.md5(
+            (context1 + str(self.student1.id)).encode()
+        ).hexdigest() == context1_id
+        assert hashlib.md5(
+            (context2 + str(self.student1.id)).encode()
+        ).hexdigest() == context2_id
+
+    def test_empty_bindparam(self, Student):
+        no_context_id = Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id}
+        )[0]['contextual_id']
+        assert hashlib.md5(
+            (str(self.student1.id)).encode()
+        ).hexdigest() == no_context_id
