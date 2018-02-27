@@ -178,7 +178,7 @@ class ModelSerialization(ModelFilter):
         else:
             path = key.split(".")
             if path[-1] == "*":  # path ends in relationship
-                class_, end = next(
+                _, end = next(
                     (cl, c) for cl, c, last in cls._iterate_path(path[:-1])
                     if last is True
                 )
