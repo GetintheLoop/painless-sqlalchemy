@@ -10,7 +10,7 @@ class TestStructure(object):
 
     def test_class_names_match(self):
         """ Test that test class names are correct."""
-        for root, dirs, files in walk(self.test_dir):
+        for root, _, files in walk(self.test_dir):
             for a_file in files:
                 if a_file.startswith("test_") and a_file.endswith(".py"):
                     filepath = path.join(root, a_file)
@@ -71,7 +71,7 @@ class TestStructure(object):
         """ Check that each test folder has an init file """
         assert path.isfile(path.join(self.test_dir, "__init__.py"))
         # loop over all sub directories
-        for root, dirs, files in walk(self.test_dir):
+        for root, _, files in walk(self.test_dir):
             has_tests = False
             for a_file in files:
                 if a_file.startswith("test_") and a_file.endswith(".py"):
