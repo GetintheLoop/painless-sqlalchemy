@@ -108,11 +108,13 @@ class ModelSerialization(ModelFilter):
                 elif key in rels:
                     # recursively fetch data from other objects
                     if isinstance(value, list):
+                        # pylint: disable-msg=W0212
                         result[key] = [
                             rel_obj._as_dict(rel_obj, dict_[key])
                             for rel_obj in value
                         ]
                     elif isinstance(value, ModelSerialization):
+                        # pylint: disable-msg=W0212
                         result[key] = value._as_dict(value, dict_[key])
                     else:  # if None
                         result[key] = value
@@ -146,6 +148,7 @@ class ModelSerialization(ModelFilter):
             :return list of serialized query results
         """
         attr_hierarchy = cls._get_attr_hierarchy(attributes)
+        # pylint: disable-msg=W0212
         return [res._as_dict(res, attr_hierarchy) for res in query]
 
     @classmethod
@@ -213,12 +216,14 @@ class ModelSerialization(ModelFilter):
                         assert None in attr and len(attr) == 1
                         attr = attr[None]
                     if isinstance(attr, str):  # MapColumn
+                        # pylint: disable-msg=W0212
                         result += [
                             ".".join(chain + attr.split(".")) for attr in
                             class_._get_query_columns([attr])
                         ]
                     elif isinstance(attr, list):  # MapColumn
                         for e in attr:
+                            # pylint: disable-msg=W0212
                             result += [
                                 ".".join(chain + e.split(".")) for e in
                                 class_._get_query_columns([e])

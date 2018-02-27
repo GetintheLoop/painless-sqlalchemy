@@ -63,11 +63,12 @@ class ModelFilter(ModelAction):
         # handle MapColumn map targets
         if isinstance(cur, str):
             assert issubclass(class_, ModelFilter)
-            cur = class_._get_column(cur.split("."))
+            cur = class_._get_column(cur.split("."))  # pylint: disable=W0212
         if isinstance(cur, list):
             assert all(isinstance(e, str) for e in cur)
             assert issubclass(class_, ModelFilter)
             # todo: this should merge list of lists (!)
+            # pylint: disable-msg=W0212
             cur = [class_._get_column(e.split(".")) for e in cur]
         return cur
 
@@ -179,11 +180,13 @@ class ModelFilter(ModelAction):
             clause.element = cls._substitute_clause(data, clause.element)
             return clause
         elif isinstance(clause, FunctionElement):
+            # pylint: disable-msg=W0212
             return getattr(func, clause.name)(*[
                 cls._substitute_clause(data, c)
                 for c in clause.clause_expr.element
             ])
         elif isinstance(clause, Select):
+            # pylint: disable-msg=W0212
             clause._raw_columns = [
                 cls._substitute_clause(data, c) for c in clause._raw_columns]
             return clause
