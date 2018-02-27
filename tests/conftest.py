@@ -1,3 +1,4 @@
+# pylint: disable-msg=W0621
 import warnings
 import pytest
 import sqlalchemy
@@ -12,9 +13,6 @@ table_hierarchy = [
 ]
 
 db = Painless('postgresql://postgres:password@localhost:5432/painless_tmp')
-
-engine = db.engine
-session = db.session
 
 
 @pytest.fixture(scope='session')
@@ -141,10 +139,10 @@ def init_db(School, Classroom, Teacher, Student, teacher_to_student):
 
 
 def recreate_db():
-    engine.dispose()
-    session.close()
+    db.engine.dispose()
+    db.session.close()
 
-    uri, db_name = engine.url.__str__().rsplit("/", 1)
+    uri, db_name = db.engine.url.__str__().rsplit("/", 1)
 
     _engine = sqlalchemy.engine.create_engine(uri + "/postgres")
     conn = _engine.connect()
@@ -158,8 +156,8 @@ def recreate_db():
     conn.execute('CREATE DATABASE "%s";' % db_name)
     conn.close()
 
-    db.Model.metadata.drop_all(engine)
-    db.Model.metadata.create_all(engine)
+    db.Model.metadata.drop_all(db.engine)
+    db.Model.metadata.create_all(db.engine)
 
 
 def pytest_itemcollected(item):
@@ -168,4 +166,4 @@ def pytest_itemcollected(item):
     node = item.obj
     pref = par.__doc__.strip() if par.__doc__ else par.__class__.__name__
     suf = node.__doc__.strip() if node.__doc__ else node.__name__
-    item._nodeid = ': '.join((pref, suf))
+    item._nodeid = ': '.join((pref, suf))  # pylint: disable=W0212
