@@ -1,3 +1,4 @@
+import hashlib
 from uuid import uuid4
 import pytest
 from sqlalchemy import and_
@@ -257,21 +258,28 @@ class TestModelSerialization(AbstractDatabaseTest):
     def test_bindparam(self, Student):
         context1 = uuid4().hex
         context2 = uuid4().hex
-        assert Student.serialize(
-            to_return=['contextual_id'],
-            filter_by={'id': self.student1.id},
-            params={'context': context1}
-        )[0]['contextual_id'] == Student.serialize(
+        context1_id = Student.serialize(
             to_return=['contextual_id'],
             filter_by={'id': self.student1.id},
             params={'context': context1}
         )[0]['contextual_id']
-        assert Student.serialize(
-            to_return=['contextual_id'],
-            filter_by={'id': self.student1.id},
-            params={'context': context1}
-        )[0]['contextual_id'] != Student.serialize(
+        context2_id = Student.serialize(
             to_return=['contextual_id'],
             filter_by={'id': self.student1.id},
             params={'context': context2}
         )[0]['contextual_id']
+        no_context_id = Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id}
+        )[0]['contextual_id']
+        assert context1_id != context2_id
+        # validate hashes
+        assert hashlib.md5(
+            (context1 + str(self.student1.id)).encode()
+        ).hexdigest() == context1_id
+        assert hashlib.md5(
+            (context2 + str(self.student1.id)).encode()
+        ).hexdigest() == context2_id
+        assert hashlib.md5(
+            (str(self.student1.id)).encode()
+        ).hexdigest() == no_context_id
