@@ -268,10 +268,6 @@ class TestModelSerialization(AbstractDatabaseTest):
             filter_by={'id': self.student1.id},
             params={'context': context2}
         )[0]['contextual_id']
-        no_context_id = Student.serialize(
-            to_return=['contextual_id'],
-            filter_by={'id': self.student1.id}
-        )[0]['contextual_id']
         assert context1_id != context2_id
         # validate hashes
         assert hashlib.md5(
@@ -280,6 +276,12 @@ class TestModelSerialization(AbstractDatabaseTest):
         assert hashlib.md5(
             (context2 + str(self.student1.id)).encode()
         ).hexdigest() == context2_id
+
+    def test_empty_bindparam(self, Student):
+        no_context_id = Student.serialize(
+            to_return=['contextual_id'],
+            filter_by={'id': self.student1.id}
+        )[0]['contextual_id']
         assert hashlib.md5(
             (str(self.student1.id)).encode()
         ).hexdigest() == no_context_id
