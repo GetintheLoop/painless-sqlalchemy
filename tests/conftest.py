@@ -2,7 +2,7 @@ import warnings
 import pytest
 import sqlalchemy
 from sqlalchemy import (
-    Column, String, Table, ForeignKey, Integer, func, DateTime)
+    Column, String, Table, ForeignKey, Integer, func, DateTime, bindparam)
 from sqlalchemy.orm import relationship, column_property
 from painless_sqlalchemy import Painless
 from painless_sqlalchemy.elements.MapColumn import MapColumn
@@ -78,6 +78,13 @@ def Student(Teacher):
     class Student(db.Model):
         __tablename__ = 'student'
 
+        id = Column(Integer, primary_key=True)
+        contextual_id = column_property(
+            func.md5(
+                bindparam('context', value='', type_=String) +
+                func.cast(id, String)
+            )
+        )
         name = Column(String(64), index=True, nullable=False)
         address = Column(String(128), index=False, nullable=True)
         phone = Column(String(35), nullable=True)
