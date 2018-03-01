@@ -247,7 +247,7 @@ However notice that filtering by computed fields can be very expensive.
 
 # Internals and Optimization
 
-#### Load as Required
+### Load as Required
 
 When using serialize only necessary fields are queried. There are multiple steps here used to accomplish this. First determine required columns:
 
@@ -262,7 +262,7 @@ Then apply filtering separately:
 
 Note that primary columns are automatically loaded by SQLAlchemy.
 
-#### Join as Required
+### Join as Required
 
 When using `filter()` only necessary joins are made. So if we are filtering 
 by `school.id` and `school.name`, we only need to join `school` once.
@@ -274,7 +274,7 @@ For example when a `to-many` relationship is used in an `and` cause, we can't
 re-use the relationship since all conditions would then have to be met
 on the same target, which is not desirable in most cases.
 
-#### Limit and Offset
+### Limit and Offset
 
 Limit and offset functionality is not trivial since many rows are returned from 
 SQLAlchemy and it is not clear where one model ends and one model begins.
