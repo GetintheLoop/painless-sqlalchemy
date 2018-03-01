@@ -218,18 +218,8 @@ However exposure can be explicitly set by passing `info={"exposed": True/False}`
 into the `Column` constructor.
 
 #### Eager Loading
-When using serialize only necessary column are loaded. This includes all
-columns that are required to generate the result as well as all
-columns required to resolve joins. This feature makes `serialize()` much more
-efficient than manually loading and serializing models.
-
-#### Limit and Offset
-Limit and offset functionality is provided for `serialize()`.
-
-This is not trivial functionality since many rows are returned from 
-SQLAlchemy and it is not clear where one model ends and one model begins.
-Currently window function and nested querying are used. Depending on
-database version this can be inefficient for large tables.
+When using serialize only necessary column are loaded. This feature makes 
+`serialize()` much more efficient than manually loading and serializing models.
 
 ### MapColumn
 Custom serializations can be easily created using `MapColumn`. 
@@ -252,11 +242,12 @@ However notice that filtering by computed fields can be very expensive.
 
 # Internals and Optimization
 
-#### Fetch as Required
+#### Load as Required
 
 When using serialize only necessary fields are queried. There are multiple steps here used to accomplish this. First determine required columns:
-1) Expand columns, make them unique, filter not exposed, handle MapColumns
-2) Add column required for relationship joins 
+
+- Expand columns, make them unique, filter not exposed, handle MapColumns
+- Gather columns required for relationship joins 
 
 Then apply filtering separately:
 
@@ -277,3 +268,11 @@ boolean clauses are used. We can not simply remove all redundancy.
 For example when a `to-many` relationship is used in an `and` cause, we can't
 re-use the relationship since all conditions would then have to be met
 on the same target, which is not desirable in most cases.
+
+#### Limit and Offset
+
+Limit and offset functionality is not trivial since many rows are returned from 
+SQLAlchemy and it is not clear where one model ends and one model begins.
+
+Currently window function and nested querying are used. Depending on
+database version this can be inefficient for large tables.
