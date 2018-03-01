@@ -135,7 +135,7 @@ of automatic joins, using a single filter call is preferred.
 This method is preferred to clause filtering when possible, since it's easier
 to read and better optimized in certain cases compared to clause filtering.
 
-The dictionary contains simple key-value lookups. Keys are expected in dot notation.
+The dictionary contains simple key-value lookups. Keys are expected in simple dot notation.
 The values can be lists or simple values. 
 
 ##### None Values
