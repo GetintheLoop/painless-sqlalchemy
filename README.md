@@ -30,7 +30,7 @@ Plese open a github issue.
 
 Examples use Models described in [conftest.py](tests/conftest.py).
 
-### Filter
+## Filter()
 
 *Looking for all Teachers teaching a specific Student?*
 ```python
@@ -60,7 +60,7 @@ Student.filter(or_(
 )).all()
 ```
 
-### Serialize
+## Serialize()
 
 *Let's get all teachers and their students:*
 ```python
@@ -94,11 +94,11 @@ Teacher.serialize(
 
 # Documentation
 
-### Model Definitions
+## Model Definitions
 
 All your Models need to inherit from `Model.py`. Examples are given in [conftest.py](tests/conftest.py)
 
-### Dot Notation
+## Dot Notation
 
 #### Simple
 
@@ -114,7 +114,7 @@ a students teachers can be referenced as `teachers(id,name)`.
 To reference the default serialization of a Model a `*` can be used. 
 E.g. teacher default serialization can be references from student as as `teachers.*`.
 
-### Filter()
+## Filter()
 
 `Model.filter(...)`
 
@@ -166,7 +166,7 @@ to the query.
 The clause is analysed and only joins that are necessary are being made.
 In most cases we can prevent redundant joints. Optimization information is stored on the query. 
 
-### Serialize()
+## Serialize()
 
 `Model.serialize(...)`
 
@@ -221,7 +221,7 @@ into the `Column` constructor.
 When using serialize only necessary column are loaded. This feature makes 
 `serialize()` much more efficient than manually loading and serializing models.
 
-### Advanced Columns
+## Advanced Columns
 
 We can define custom mapping for data the does not directly correspond to a 
 database column entry.
@@ -247,7 +247,7 @@ However notice that filtering by computed fields can be very expensive.
 
 # Internals and Optimization
 
-### Load as Required
+## Load as Required
 
 When using serialize only necessary fields are queried. There are multiple steps here used to accomplish this. First determine required columns:
 
@@ -262,7 +262,7 @@ Then apply filtering separately:
 
 Note that primary columns are automatically loaded by SQLAlchemy.
 
-### Join as Required
+## Join as Required
 
 When using `filter()` only necessary joins are made. So if we are filtering 
 by `school.id` and `school.name`, we only need to join `school` once.
@@ -274,7 +274,7 @@ For example when a `to-many` relationship is used in an `and` cause, we can't
 re-use the relationship since all conditions would then have to be met
 on the same target, which is not desirable in most cases.
 
-### Limit and Offset
+## Limit and Offset
 
 Limit and offset functionality is not trivial since many rows are returned from 
 SQLAlchemy and it is not clear where one model ends and one model begins.
