@@ -221,7 +221,12 @@ into the `Column` constructor.
 When using serialize only necessary column are loaded. This feature makes 
 `serialize()` much more efficient than manually loading and serializing models.
 
-### MapColumn
+### Advanced Columns
+
+We can define custom mapping for data the does not directly correspond to a 
+database column entry.
+
+#### MapColumn
 Custom serializations can be easily created using `MapColumn`. 
 If we want to create a `contact_info` serialization on a student we can write:
 ```python
@@ -233,7 +238,7 @@ contact_info = MapColumn({
 ```
 Note that `to-one` relationships can also be referenced, but `to-many` relationships are [not supported](https://github.com/GetintheLoop/painless-sqlalchemy/issues/38). Filtering by `MapColumn` is also [not possible](https://github.com/GetintheLoop/painless-sqlalchemy/issues/37).
 
-### column_property
+#### column_property
 To serialize entries that don't come straight from database columns, we
 can use column_properties. These are fully supported for `filter()` and `serialize()`.
 However notice that filtering by computed fields can be very expensive.
