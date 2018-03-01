@@ -220,7 +220,7 @@ into the `Column` constructor.
 #### Eager Loading
 When using serialize only necessary column are loaded. This includes all
 columns that are required to generate the result as well as all
-columns required to resolve joins. This property makes `serialize()` much more
+columns required to resolve joins. This feature makes `serialize()` much more
 efficient than manually loading and serializing models.
 
 #### MapColumn
