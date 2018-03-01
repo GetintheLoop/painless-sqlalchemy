@@ -152,7 +152,7 @@ by at least one relationship target (`and`).
 - For a `to-one` relationship or simple column only one element from the 
 list has to be matched (`or`). 
 
-When using list values, the entries are expected to be unique (due to
+When using list values, their entries are expected to be unique (due to
 optimization).
 
 #### Clause Filtering
