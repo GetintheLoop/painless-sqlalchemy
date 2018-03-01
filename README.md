@@ -147,9 +147,9 @@ clause filtering.
 
 Filter values can be lists when `attribtues` is a dictionary. 
 In this case the behaviour depends on the type of relationship / column that is filtered:
-- For a to-many relationship every value in the list has to be matched
+- For a `to-many` relationship every value in the list has to be matched
 by at least one relationship target (`and`).
-- For a to-one relationship or simple column only one element from the 
+- For a `to-one` relationship or simple column only one element from the 
 list has to be matched (`or`). 
 
 When using list values, the entries are expected to be unique (due to
