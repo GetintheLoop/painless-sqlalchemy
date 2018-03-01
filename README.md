@@ -113,7 +113,7 @@ a students teachers can be referenced as `teachers(id,name)`.
 
 To reference the default serialization of a Model a `*` can be used. E.g. teacher default serialization can be references from student as as `teachers.*`.
 
-### Filter
+### Filter()
 
 `Model.filter(...)`
 
@@ -166,7 +166,7 @@ to the query.
 The clause is analysed and only joins that are necessary are being made.
 In most cases we can prevent redundant joints. Optimization information is stored on the query. 
 
-### Serialize
+### Serialize()
 
 `Model.serialize(...)`
 
