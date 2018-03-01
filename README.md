@@ -236,7 +236,7 @@ contact_info = MapColumn({
 Note that `to-one` relationships can also be referenced, but `to-many` relationships are [not supported](https://github.com/GetintheLoop/painless-sqlalchemy/issues/38). Filtering by `MapColumn` is also [not possible](https://github.com/GetintheLoop/painless-sqlalchemy/issues/37).
 
 #### Limit and Offset
-Simple limit and offset is provided for `serialize()`.
+Limit and offset functionality is provided for `serialize()`.
 
 This is not trivial functionality since many rows are returned from 
 SQLAlchemy and it is not clear where one model end and one model begins.
