@@ -126,7 +126,7 @@ of automatic joins, using a single filter call is preferred.
 
 `attributes`: dict *or* SQLAlchemy filter using `ref` (optional)
 
-`query`: Optional (pre-filtered) query used as input (optional)
+`query`: SQLAlchemy query used as base, can be pre-filtered (optional)
 
 `skip_nones`: Skip None-values when using dict (optional, default `false`)
 
