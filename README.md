@@ -90,6 +90,8 @@ Teacher.serialize(
 )
 ```
 
+---------------------
+
 # Documentation
 
 ### Model Definitions
@@ -246,7 +248,9 @@ To serialize entries that don't come straight from database columns, we
 can use column_properties. These are fully supported for `filter()` and `serialize()`.
 However notice that filtering by computed fields can be very expensive.
 
-### Internals and Optimization
+---------------------
+
+# Internals and Optimization
 
 #### Fetch as Required
 
