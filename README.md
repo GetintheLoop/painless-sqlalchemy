@@ -111,7 +111,8 @@ can be referenced as `teachers.name`.
 Multiple fields can be referenced by using brackets. E.g. the name and id of 
 a students teachers can be referenced as `teachers(id,name)`.
 
-To reference the default serialization of a Model a `*` can be used. E.g. teacher default serialization can be references from student as as `teachers.*`.
+To reference the default serialization of a Model a `*` can be used. 
+E.g. teacher default serialization can be references from student as as `teachers.*`.
 
 ### Filter()
 
@@ -152,8 +153,7 @@ by at least one relationship target (`and`).
 - For a `to-one` relationship or simple column only one element from the 
 list has to be matched (`or`). 
 
-When using list values, their entries are expected to be unique (due to
-optimization).
+Filtering by lists is optimized, hence list entries must be unique.
 
 #### Clause Filtering
 
