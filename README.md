@@ -162,9 +162,7 @@ to the query.
 ##### Optimization
 
 The clause is analysed and only joins that are necessary are being made.
-For example, in most cases we can prevent redundant joints, however for a
-to-many relationship and an `and` clause a separate join is required. 
-Optimization information is stored on the query.
+In most cases we can prevent redundant joints. Optimization information is stored on the query. 
 
 ### Serialize
 
