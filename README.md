@@ -204,7 +204,7 @@ an entry to the dot notation.
 Using explicit serialization opposed to the default serialization should
 be preferred. Also be careful when defining default serialization containing `to-many` relationships or referencing
 default serialization from other default serialization as the resulting queries
-can get very expensive easily.
+can quickly get very expensive.
  
 However when testing and writing proof of concept the default serialization is very helpful.
 
