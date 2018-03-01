@@ -244,7 +244,7 @@ Currently window function and nested querying are used. Depending on
 database version this can be inefficient for large tables.
 
 ### column_property
-To serialize entries that don't come straight from database column, you
+To serialize entries that don't come straight from database columns, you
 can use column_properties. These are fully supported for `filter()` and `serialize()`.
 However notice that filtering by computed fields can be very expensive.
 
