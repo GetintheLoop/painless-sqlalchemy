@@ -239,7 +239,7 @@ Note that `to-one` relationships can also be referenced, but `to-many` relations
 Limit and offset functionality is provided for `serialize()`.
 
 This is not trivial functionality since many rows are returned from 
-SQLAlchemy and it is not clear where one model end and one model begins.
+SQLAlchemy and it is not clear where one model ends and one model begins.
 Currently window function and nested querying are used. Depending on
 database version this can be inefficient for large tables.
 
