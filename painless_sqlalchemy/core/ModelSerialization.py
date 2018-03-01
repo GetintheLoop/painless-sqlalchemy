@@ -315,6 +315,7 @@ class ModelSerialization(ModelFilter):
         if expose_all is not True:
             to_return = list(filter(cls._is_exposed_column, to_return))
 
+        # todo: should only expire column that use param
         # remove duplicated and store so we know what to populate
         json_to_populate = list(set(to_return))
         # obtain all columns that need fetching from db

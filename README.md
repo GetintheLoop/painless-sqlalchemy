@@ -96,32 +96,77 @@ Teacher.serialize(
 
 All your Models need to inherit from `Model.py`. Examples are given in [conftest.py](tests/conftest.py)
 
+### Dot Notation
+
+#### Simple
+
+Dot notation is a simple and intuitive way to define relationship paths by
+joining relationship names using dots. E.g. the teacher name of a student
+can be referenced as `teacher.name`.
+
+#### Extended
+
+Multiple fields can be referenced by using brackets, e.g. the name and id of 
+a students teacher can be referenced as `teacher(id,name)`.
+
+#### Star
+
+To reference the default serialization of a Model a `*` can be used,
+students teacher default serialization can be references as `teacher.*`.
+
 ### Filter
 
 `Model.filter(...)`
 
-Returns SQLAlchemy query that has necessary joins / filters applied.
+Returns SQLAlchemy query with necessary joins and passed filtering applied.
+
+*Info*: Chainable using `query` parameter. However to reduce amount 
+of automatic joins, using a single filter call is preferred.
 
 #### Parameters
 
-`attributes`: dict *or* SQLAlchemy filter using ref
+`attributes`: dict *or* SQLAlchemy filter using ref (optional)
 
-`query`: Optional (pre-filtered) query used as base
+`query`: Optional (pre-filtered) query used as input (optional)
 
-`skip_nones`: Skip None-values dict entries iff true
-
-- resolution for and / or clauses (information stored on query)
+`skip_nones`: Skip None-values when using dict (optional, default `false`)
 
 #### Dictionary Filtering
 
-#### Relationships and Lists
-- list filtering on to many vs to one relationship / column
-- optimization compared to clause filtering
-- None values
+This method is preferred to clause filtering when possible, since it's easier
+to read and better optimized in certain cases compared to clause filtering.
+
+The dictionary contains simple key-value lookups. Keys are expected in dot notation.
+The values can be lists or simple values. 
+
+##### None Values
+None values are filtered from the `attributes` dictionary if `skip_nones` is used. 
+Convenient when None values should be ignored. Only works for dictionaries.
+
+##### Relationships and Lists
+
+Filter values can be lists when `attribtues` is a dictionary. 
+In this case the behaviour depends on the type of relationship / column that is filtered:
+- For a to-many relationship every value in the list has to be matched
+by at least one relationship target (`and`).
+- For a to-one relationship or simple column only one element from the 
+list has to be matched (`or`). 
+
+When using list values, the entries are expected to be unique (due to
+optimization).
 
 #### Clause Filtering
 
-- ref, how to use it and what it does
+Instead of a dictionary, an SQLAlchemy clause can be passed as `attribtues`.
+Referenced column using the `ref` constructor will be automatically joined 
+to the query.
+
+##### Optimization
+
+The clause is analysed and only joins that are necessary are being made.
+For example, in most cases we can prevent redundant joints, however for a
+to-many relationship and an `and` clause a separate join is required. 
+Optimization information is stored on the query.
 
 ### Serialize
 
@@ -131,47 +176,105 @@ Returns JSON serializable representation of fetched data.
 
 #### Parameters
 
-`to_return`: list of fields to return
+`to_return`: list of fields to return, allows extended dot notation (optional)
 
-`filter_by`: dict of SQLAlchemy clause to filter by
+`filter_by`: see identical parameter on `filter()` (optional)
 
-`limit`: maximum amount of objects fetched
+`limit`: maximum amount of objects fetched (optional)
 
-`offset`: offset value for the result
+`offset`: offset value for objects fetched (optional)
 
-`query`: Optional (pre-filtered) query used as base
+`query`: see identical parameter on `filter()` (optional)
 
-`skip_nones`: Skip filter_by entries that have a "None" value
+`skip_nones`: see identical parameter on `filter()` (optional)
 
-`order_by`: enforce result ordering, multiple via tuple
+`order_by`: result ordering, multiple via tuple, defaults to id ordering (optional)
 
-`session`: Explict session to use for query
+`session`: Explict session to use for query (optional)
 
-`expose_all`: Whether to Return not exposed fields
+`expose_all`: Whether to Return not exposed fields (optional)
 
-`params`: Query parameters
-
-#### Column Exposure
-- exposure of columns
-- only loading what is required (eager loading)
-
-#### MapColumn
-- MapColumn
+`params`: Query parameters (optional)
 
 #### Default Serialization
-- default serialization
-- pro / con for defining all fields / relationships
+When no `to_return` is passed, the default serialization for the model is used.
+Can be customized per Model by overwriting `default_serialization` (defaults to `id`).
+
+Default serialization can also be referenced using the `*` or appending it as
+an entry to the dot notation.
+
+Using an explicit serialization opposed to the default serialization should
+be preferred. Also be careful when defining default serialization or referencing
+default serialization from other default serialization as the resulting queries
+can get very expensive easily.
+ 
+However when testing and writing proof of concept the default serialization is very helpful.
+
+#### Column Exposure
+Not exposed columns are not returned from `serialize()` unless the `expose_all` is
+used. This is to reduce the risk of leaking secret information. For example
+when storing a password hash it should be set to not exposed.
+
+By default primary keys are not exposed and all other fields are exposed.
+However exposure can be explicitly set by passing `info={"exposed": True/False}`
+into the `Column` constructor.
+
+#### Eager Loading
+When using serialize only necessary column are loaded. This includes all
+columns that are required to generate the result as well as all
+columns required to resolve joins. This property makes `serialize()` much more
+efficient than manually loading and serializing models.
+
+#### MapColumn
+Custom serializations can be easily created using `MapColumn`. 
+If we want to create a `contact_info` serialization on a student we can write:
+```python
+contact_info = MapColumn({
+    'phone': 'phone',
+    'home_phone': 'home_phone',
+    'email': 'email'
+})
+```
+To-one relationships can also be referenced, however to-many do not current work.
+Note that one can not filter by `MapColumn` entries.
 
 #### Limit and Offset
-- ordering / limit offset (how is this accomplished)
+Simple limit and offset is provided for `serialize()`.
 
-### Dot Notation
+This is not trivial functionality since many rows are returned from 
+SQLAlchemy and it is not clear where one model end and one model begins.
+Currently window function and nested querying are used. Depending on
+database version this can be inefficient for large tables.
 
-- basic
-- star default serialization
-- bracket shorthand notation
+### column_property
+To serialize entries that don't come straight from database column, you
+can use column_properties. These are fully supported for `filter()` and `serialize()`.
+However notice that filtering by computed fields can be very expensive.
 
 ### Internals and Optimization
 
-- optimized to only fetch what is necessary
-- optimized to only make necessary joins (when possible to do this automatically)
+#### Fetch as Required
+
+When using serialize only necessary fields are queried. There are multiple steps here used to accomplish this. First determine required columns:
+1) Expand columns, make them unique, filter not exposed, handle MapColumns
+2) Add column required for relationship joins 
+
+Then apply filtering separately:
+
+- load only required relationships
+- load only required columns
+- load only required column_property
+
+Note that primary columns are automatically loaded by SQLAlchemy.
+
+#### Join as Required
+
+When using `filter()` only necessary joins are made. So if you are filtering 
+by `teacher.id` and `teacher.name` we only need to join `teacher` once.
+
+While the above case is trivial, this gets very interesting when nested
+boolean clauses are used. We can not simply remove all redundancy.
+
+For example when a `to-many` relationship is used in an `and` cause, we can't
+re-use the relationship since all conditions would then have to be met
+on the same target, which is not desirable in most cases.
