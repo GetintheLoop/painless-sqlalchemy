@@ -124,7 +124,7 @@ of automatic joins, using a single filter call is preferred.
 
 #### Parameters
 
-`attributes`: dict *or* SQLAlchemy filter using ref (optional)
+`attributes`: dict *or* SQLAlchemy filter using `ref` (optional)
 
 `query`: Optional (pre-filtered) query used as input (optional)
 
