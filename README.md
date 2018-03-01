@@ -244,7 +244,7 @@ Currently window function and nested querying are used. Depending on
 database version this can be inefficient for large tables.
 
 ### column_property
-To serialize entries that don't come straight from database columns, you
+To serialize entries that don't come straight from database columns, we
 can use column_properties. These are fully supported for `filter()` and `serialize()`.
 However notice that filtering by computed fields can be very expensive.
 
@@ -266,7 +266,7 @@ Note that primary columns are automatically loaded by SQLAlchemy.
 
 #### Join as Required
 
-When using `filter()` only necessary joins are made. So if you are filtering 
+When using `filter()` only necessary joins are made. So if we are filtering 
 by `teacher.id` and `teacher.name` we only need to join `teacher` once.
 
 While the above case is trivial, this gets very interesting when nested
