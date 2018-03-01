@@ -54,7 +54,7 @@ Student.filter({
 a specific teacher or with a gmail address?*
 
 ```python
-Student.filter(_or(
+Student.filter(or_(
     ref('teachers.id') == teacher_id,
     ref('email').ilike("%@gmail.com")
 )).all()
