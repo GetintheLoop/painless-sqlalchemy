@@ -223,7 +223,15 @@ columns that are required to generate the result as well as all
 columns required to resolve joins. This feature makes `serialize()` much more
 efficient than manually loading and serializing models.
 
-#### MapColumn
+#### Limit and Offset
+Limit and offset functionality is provided for `serialize()`.
+
+This is not trivial functionality since many rows are returned from 
+SQLAlchemy and it is not clear where one model ends and one model begins.
+Currently window function and nested querying are used. Depending on
+database version this can be inefficient for large tables.
+
+### MapColumn
 Custom serializations can be easily created using `MapColumn`. 
 If we want to create a `contact_info` serialization on a student we can write:
 ```python
@@ -234,14 +242,6 @@ contact_info = MapColumn({
 })
 ```
 Note that `to-one` relationships can also be referenced, but `to-many` relationships are [not supported](https://github.com/GetintheLoop/painless-sqlalchemy/issues/38). Filtering by `MapColumn` is also [not possible](https://github.com/GetintheLoop/painless-sqlalchemy/issues/37).
-
-#### Limit and Offset
-Limit and offset functionality is provided for `serialize()`.
-
-This is not trivial functionality since many rows are returned from 
-SQLAlchemy and it is not clear where one model ends and one model begins.
-Currently window function and nested querying are used. Depending on
-database version this can be inefficient for large tables.
 
 ### column_property
 To serialize entries that don't come straight from database columns, we
