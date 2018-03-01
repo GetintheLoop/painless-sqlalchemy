@@ -209,7 +209,7 @@ can quickly get very expensive.
 However when testing and writing proof of concept the default serialization is very helpful.
 
 #### Column Exposure
-Not exposed columns are not returned from `serialize()` unless the `expose_all` is
+Not exposed columns are not returned from `serialize()` unless `expose_all` is
 used. This is to reduce the risk of leaking secret information. For example
 when storing a password hash it should be set to not exposed.
 
