@@ -101,18 +101,17 @@ All your Models need to inherit from `Model.py`. Examples are given in [conftest
 #### Simple
 
 Dot notation is a simple and intuitive way to define relationship paths by
-joining relationship names using dots. E.g. the teacher name of a student
-can be referenced as `teacher.name`.
+joining relationship names using dots. E.g. the teacher names of a student
+can be referenced as `teachers.name`.
 
 #### Extended
 
-Multiple fields can be referenced by using brackets, e.g. the name and id of 
-a students teacher can be referenced as `teacher(id,name)`.
+Multiple fields can be referenced by using brackets. E.g. the name and id of 
+a students teachers can be referenced as `teachers(id,name)`.
 
 #### Star
 
-To reference the default serialization of a Model a `*` can be used,
-students teacher default serialization can be references as `teacher.*`.
+To reference the default serialization of a Model a `*` can be used. E.g. teacher default serialization can be references from student as as `teachers.*`.
 
 ### Filter
 
