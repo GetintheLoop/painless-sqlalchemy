@@ -202,7 +202,7 @@ Default serialization can also be referenced using the `*` or appending it as
 an entry to the dot notation.
 
 Using explicit serialization opposed to the default serialization should
-be preferred. Also be careful when defining default serialization or referencing
+be preferred. Also be careful when defining default serialization containing `to-many` relationships or referencing
 default serialization from other default serialization as the resulting queries
 can get very expensive easily.
  
