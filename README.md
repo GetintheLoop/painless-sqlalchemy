@@ -267,7 +267,7 @@ Note that primary columns are automatically loaded by SQLAlchemy.
 #### Join as Required
 
 When using `filter()` only necessary joins are made. So if we are filtering 
-by `school.id` and `school.name` we only need to join `school` once.
+by `school.id` and `school.name`, we only need to join `school` once.
 
 While the above case is trivial, this gets very interesting when nested
 boolean clauses are used. We can not simply remove all redundancy.
