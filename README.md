@@ -233,7 +233,7 @@ contact_info = MapColumn({
     'email': 'email'
 })
 ```
-Note that `to-one` relationships can also be referenced, but `to-many` relationships [are not supported](https://github.com/GetintheLoop/painless-sqlalchemy/issues/38). Filtering by `MapColumn` is also [not possible](https://github.com/GetintheLoop/painless-sqlalchemy/issues/37).
+Note that `to-one` relationships can also be referenced, but `to-many` relationships are [not supported](https://github.com/GetintheLoop/painless-sqlalchemy/issues/38). Filtering by `MapColumn` is also [not possible](https://github.com/GetintheLoop/painless-sqlalchemy/issues/37).
 
 #### Limit and Offset
 Simple limit and offset is provided for `serialize()`.
