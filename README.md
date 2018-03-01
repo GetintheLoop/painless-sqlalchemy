@@ -233,8 +233,7 @@ contact_info = MapColumn({
     'email': 'email'
 })
 ```
-To-one relationships can also be referenced, however to-many do not current work.
-Note that one can not filter by `MapColumn` entries.
+Note that `to-one` relationships can also be referenced, but `to-many` relationships are not supported. Filtering by `MapColumn` is also not possible.
 
 #### Limit and Offset
 Simple limit and offset is provided for `serialize()`.
