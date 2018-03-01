@@ -140,7 +140,8 @@ The values can be lists or simple values.
 
 ##### None Values
 None values are filtered from the `attributes` dictionary if `skip_nones` is used. 
-Convenient when None values should be ignored. Only works for dictionaries.
+Convenient when None values should be ignored. Parameter can not be used for
+clause filtering.
 
 ##### Relationships and Lists
 
