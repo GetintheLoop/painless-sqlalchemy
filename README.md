@@ -201,7 +201,7 @@ Can be customized per Model by overwriting `default_serialization` (defaults to 
 Default serialization can also be referenced using the `*` or appending it as
 an entry to the dot notation.
 
-Using an explicit serialization opposed to the default serialization should
+Using explicit serialization opposed to the default serialization should
 be preferred. Also be careful when defining default serialization or referencing
 default serialization from other default serialization as the resulting queries
 can get very expensive easily.
