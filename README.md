@@ -109,8 +109,6 @@ can be referenced as `teachers.name`.
 Multiple fields can be referenced by using brackets. E.g. the name and id of 
 a students teachers can be referenced as `teachers(id,name)`.
 
-#### Star
-
 To reference the default serialization of a Model a `*` can be used. E.g. teacher default serialization can be references from student as as `teachers.*`.
 
 ### Filter
