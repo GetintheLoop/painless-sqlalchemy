@@ -4,12 +4,12 @@ from sqlalchemy.dialects.postgresql import INTERVAL
 from sqlalchemy.orm import outerjoin
 from faker import Faker
 from painless_sqlalchemy.elements.ColumnReference import ref
-from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
+from tests.AbstractTest import AbstractTest
 
 fake = Faker()
 
 
-class TestModelFilter(AbstractDatabaseTest):
+class TestModelFilter(AbstractTest):
 
     @classmethod
     @pytest.fixture(scope='class', autouse=True)

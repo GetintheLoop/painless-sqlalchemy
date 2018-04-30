@@ -1,12 +1,12 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
-from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
 from faker import Faker
+from tests.AbstractTest import AbstractTest
 
 fake = Faker()
 
 
-class TestModelAction(AbstractDatabaseTest):
+class TestModelAction(AbstractTest):
 
     @classmethod
     @pytest.fixture(scope='class', autouse=True)

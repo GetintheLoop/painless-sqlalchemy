@@ -342,7 +342,7 @@ class ModelSerialization(ModelFilter):
             if order_by != cls.id:
                 order_by = order_by, cls.id
             else:
-                order_by = order_by,
+                order_by = (order_by, )
         assert isinstance(order_by, tuple)
 
         # join columns in order_by where necessary

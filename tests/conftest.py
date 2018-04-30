@@ -131,7 +131,8 @@ def teacher_to_student(Teacher, Student):
 def init_db(School, Classroom, Teacher, Student, teacher_to_student):
     recreate_db()
 
-    from tests.helper.AbstractDatabaseTest import batch_testing
+    from painless_sqlalchemy.util.testing.AbstractDatabaseTest import (
+        batch_testing)
     if not batch_testing:  # pragma: no cover
         warnings.warn(
             "Running in Check Mode. This is expensive and should "

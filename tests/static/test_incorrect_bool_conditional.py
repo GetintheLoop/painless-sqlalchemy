@@ -20,4 +20,4 @@ class TestIncorrectBoolConditional(object):
                     if match is not None:  # pragma: no cover
                         matches.append('%s: %s' % (
                             f.name.split('/')[-1], match.string.strip()))
-        assert 0 == len(matches), 'Invalid assert(s):\n' + '\n'.join(matches)
+        assert len(matches) == 0, 'Invalid assert(s):\n' + '\n'.join(matches)

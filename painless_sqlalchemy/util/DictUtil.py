@@ -14,8 +14,6 @@ def flatten_dict(input_, prefix=None, join_with=".", filter_none=True):
             result.update(flatten_dict(v, prefix, join_with, filter_none))
             prefix.pop()
         return result
-    else:
-        if filter_none is True and input_ is None:
-            return {}
-        else:
-            return {join_with.join(prefix): input_}
+    if filter_none is True and input_ is None:
+        return {}
+    return {join_with.join(prefix): input_}

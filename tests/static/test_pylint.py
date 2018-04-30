@@ -20,7 +20,7 @@ class TestPylint(object):
         pool = ThreadPool(multiprocessing.cpu_count())
         processes = [pool.apply_async(
             lambda f: epylint.py_run(
-                '%s' % f,
+                '%s --rcfile=%s' % (f, os.path.join(ROOT_DIR, ".pylintrc")),
                 return_std=True
             ),
             [file_]
