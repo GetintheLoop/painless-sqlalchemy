@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
-from tests.AbstractTest import AbstractTest
 from faker import Faker
+from tests.AbstractTest import AbstractTest
 
 fake = Faker()
 
