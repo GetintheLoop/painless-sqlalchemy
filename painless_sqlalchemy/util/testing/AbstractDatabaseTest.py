@@ -1,10 +1,10 @@
 import os
 import warnings
 import pytest
-from tests.helper.AbstractExtendedTest import AbstractExtendedTest
-from tests.helper.DBIdMixin import DBIdMixin
-from tests.helper.DBTestUtilMixin import DBTestUtilMixin
-from tests.conftest import recreate_db, table_hierarchy, db
+from painless_sqlalchemy.util.testing.AbstractExtendedTest import (
+    AbstractExtendedTest)
+from painless_sqlalchemy.util.testing.DBIdMixin import DBIdMixin
+from painless_sqlalchemy.util.testing.DBTestUtilMixin import DBTestUtilMixin
 
 # check if we are running in batch test mode
 batch_testing = 'BATCH_RUN' in os.environ and os.environ['BATCH_RUN'] == "1"
@@ -16,6 +16,7 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
     # entities that need to be removed
     _func_entities = {}
     _class_entities = {}
+    _meta = {}
 
     @classmethod
     def _register_entities(cls, dict_, **kwargs):
@@ -48,7 +49,7 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
         # build the queries
         queries = []
         trigger_query = 'ALTER TABLE "%s" %s TRIGGER USER;'
-        for tbl in table_hierarchy:
+        for tbl in cls._meta["table_hierarchy"]:
             if tbl not in dict_:
                 continue
             row_ids = ",".join(dict_[tbl])
@@ -84,11 +85,12 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
 
         if batch_testing:
             if len(queries) > 0:
-                db.engine.execute("".join([q[0] for q in queries]))
+                cls._meta["db"].engine.execute("".join([
+                    q[0] for q in queries]))
         else:  # pragma: no cover
             # execute the queries
             for query in queries:
-                result = db.engine.execute(query[0])
+                result = cls._meta["db"].engine.execute(query[0])
                 if query[1] is not None:
                     assert result.rowcount == query[1], query[0]
         assert len(dict_) == 0, "Undefined Tables Provided: %s" % dict_
@@ -171,7 +173,7 @@ class AbstractDatabaseTest(AbstractExtendedTest, DBTestUtilMixin, DBIdMixin):
     @pytest.fixture(scope='class', autouse=True)
     def setup_class(cls):
         if not batch_testing:  # pragma: no cover
-            recreate_db()
+            cls._meta["recreate_db"]()
             cls._snapshot_db('test_class')
 
     @classmethod

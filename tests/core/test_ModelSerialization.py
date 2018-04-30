@@ -5,12 +5,12 @@ from sqlalchemy import and_
 from faker import Faker
 from painless_sqlalchemy.elements.ColumnReference import ref
 from painless_sqlalchemy.util.DictUtil import flatten_dict
-from tests.helper.AbstractDatabaseTest import AbstractDatabaseTest
+from tests.AbstractTest import AbstractTest
 
 fake = Faker()
 
 
-class TestModelSerialization(AbstractDatabaseTest):
+class TestModelSerialization(AbstractTest):
 
     @classmethod
     @pytest.fixture(scope='class', autouse=True)
