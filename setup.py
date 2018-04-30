@@ -25,6 +25,7 @@ setup(
         'painless_sqlalchemy.core',
         'painless_sqlalchemy.elements',
         'painless_sqlalchemy.util',
+        'painless_sqlalchemy.util.testing',
     ],
     zip_safe=False,
     platforms='any',
