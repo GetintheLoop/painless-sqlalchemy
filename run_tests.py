@@ -1,6 +1,6 @@
 import os
-import pytest
 import sys
+import pytest
 
 
 def run_tests():
