@@ -4,7 +4,10 @@ services:
   - postgresql
 
 addons:
-  postgresql: "9.6"
+  postgresql: "10"
+
+env:
+  postgresEndpoint: "localhost:5432"
 
 python:
   - "2.7"
