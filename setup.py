@@ -7,11 +7,12 @@ Links
 `````
 * `github <https://github.com/GetintheLoop/painless-sqlalchemy>`_
 """
+import os
 from setuptools import setup
 
 setup(
     name='Painless-SQLAlchemy',
-    version='0.6.0',
+    version='0.6.1',
     url='https://github.com/GetintheLoop/painless-sqlalchemy',
     license='MIT',
     author='Lukas Siemon',
@@ -20,13 +21,7 @@ setup(
     maintainer_email='painless@blackflux.com',
     description='Simplified filtering and serialization for SQLAlchemy',
     long_description=__doc__,
-    packages=[
-        'painless_sqlalchemy',
-        'painless_sqlalchemy.core',
-        'painless_sqlalchemy.elements',
-        'painless_sqlalchemy.util',
-        'painless_sqlalchemy.util.testing',
-    ],
+    packages=[x[0] for x in os.walk("painless_sqlalchemy")],
     zip_safe=False,
     platforms='any',
     install_requires=[
