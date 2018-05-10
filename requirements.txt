@@ -7,4 +7,4 @@ pycodestyle==2.4.0
 python-coveralls==2.9.1
 faker==0.8.13
 pylint==1.8.4
-py-gardener==0.3.0
+py-gardener==0.5.1
