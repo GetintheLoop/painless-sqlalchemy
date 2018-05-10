@@ -17,5 +17,6 @@ def run_tests():
         os.environ['BATCH_RUN'] = "1"
     return pytest.main(args)
 
+
 if __name__ == '__main__':
     sys.exit(run_tests())
