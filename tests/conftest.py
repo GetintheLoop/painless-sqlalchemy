@@ -1,5 +1,6 @@
 # pylint: disable-msg=W0621
 # pylint: disable-msg=W0613
+import os
 import warnings
 import pytest
 import sqlalchemy
@@ -13,7 +14,14 @@ table_hierarchy = [
     'student', 'teacher', 'classroom', 'school'
 ]
 
-db = Painless('postgresql://postgres:password@localhost:5432/painless_tmp')
+uri = "postgresql://{user}:{password}@{endpoint}/{db}".format(
+    endpoint=os.environ.get("postgresEndpoint", "pg10:5432"),
+    user=os.environ.get("postgresUser", "postgres"),
+    password=os.environ.get("postgresPassword", "password"),
+    db=os.environ.get("postgresDatabase", "test")
+)
+
+db = Painless(uri)
 
 
 @pytest.fixture(scope='session')

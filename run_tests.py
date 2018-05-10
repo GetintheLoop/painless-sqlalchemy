@@ -15,8 +15,8 @@ def run_tests():
         args.append('-s')
     if '--batch' in sys.argv:
         os.environ['BATCH_RUN'] = "1"
-    pytest.main(args)
+    return pytest.main(args)
 
 
 if __name__ == '__main__':
-    run_tests()
+    sys.exit(run_tests())
