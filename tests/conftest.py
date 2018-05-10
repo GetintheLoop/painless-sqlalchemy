@@ -13,7 +13,7 @@ table_hierarchy = [
     'student', 'teacher', 'classroom', 'school'
 ]
 
-db = Painless('postgresql://postgres:password@localhost:5432/painless_tmp')
+db = Painless('postgresql://postgres:password@pg10:5432/test')
 
 
 @pytest.fixture(scope='session')
