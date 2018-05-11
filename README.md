@@ -243,6 +243,30 @@ To serialize entries that don't come straight from database columns, we
 can use column_properties. These are fully supported for `filter()` and `serialize()`.
 However notice that filtering by computed fields can be very expensive.
 
+## Advanced Functions
+
+## Expand()
+
+`Model.expand(...)`
+
+Expand string representation of fields. E.g.
+```python
+Student.expand('teachers.classroom(id,school_id),id')
+```
+would return `['teachers.classroom.id', 'teachers.classroom.school_id', 'id']`.
+
+A path ending in `*` gets expanded to the default serialization.
+
+## Has()
+
+`Model.has(...)`
+
+Check if a specific field exists for a model. E.g.
+```python
+Student.has('teachers.classroom.id')
+```
+would return `True`. Does not allow input that still needs to be expanded.
+
 ---------------------
 
 # Internals and Optimization
