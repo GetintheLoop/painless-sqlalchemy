@@ -32,6 +32,24 @@ class TestModelSerialization(AbstractTest):
         cls.classroom = cls.persist(classroom)
         cls.school = cls.persist(school)
 
+    def test_has_unknown_simple(self, Teacher):
+        assert not Teacher.has("%s" % uuid4().hex)
+
+    def test_has_unknown_relationship(self, Teacher):
+        assert not Teacher.has("classroom.%s" % uuid4().hex)
+
+    def test_has_unknown_map_column(self, Teacher):
+        assert not Teacher.has("students.contact_info")
+
+    def test_has_known_simple(self, Teacher):
+        assert Teacher.has("id")
+
+    def test_has_known_relationship(self, Teacher):
+        assert Teacher.has("classroom.id")
+
+    def test_has_known_map_column(self, Teacher):
+        assert Teacher.has("students.contact_info.phone")
+
     def test_serialize(self, Teacher):
         teacher = Teacher.serialize(
             to_return=['id'],

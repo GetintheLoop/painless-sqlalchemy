@@ -12,7 +12,7 @@ from setuptools import setup
 
 setup(
     name='Painless-SQLAlchemy',
-    version='0.6.1',
+    version='0.7.0',
     url='https://github.com/GetintheLoop/painless-sqlalchemy',
     license='MIT',
     author='Lukas Siemon',
