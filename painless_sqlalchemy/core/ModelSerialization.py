@@ -1,7 +1,7 @@
 import re
 import functools
 from sqlalchemy import inspect, func
-from sqlalchemy.orm import load_only, undefer, joinedload
+from sqlalchemy.orm import load_only, undefer, joinedload, ColumnProperty
 from sqlalchemy.sql.elements import Label
 from painless_sqlalchemy.core.ModelRaw import ModelRaw
 from painless_sqlalchemy.core.ModelFilter import ModelFilter
@@ -152,7 +152,24 @@ class ModelSerialization(ModelFilter):
         return [res._as_dict(res, attr_hierarchy) for res in query]
 
     @classmethod
-    def _expand(cls, key):
+    def has(cls, key):
+        """
+                Check if specific field exists on model
+            :return: Return true iff model field (not relationship-ending)
+        """
+        try:
+            cols = cls._get_column(key.split("."))
+            if not isinstance(cols, list):
+                cols = [cols]
+            return all(
+                isinstance(getattr(col, 'property', None), ColumnProperty)
+                for col in cols
+            )
+        except (AttributeError, KeyError, AssertionError):
+            return False
+
+    @classmethod
+    def expand(cls, key):
         """
                 Recursively expand given paths
                 - support bracket notation e.g. "rel(field1,field2)"
@@ -177,7 +194,7 @@ class ModelSerialization(ModelFilter):
         result = []
         if "," in key:  # contains multiple keys
             for k in key.split(","):
-                result += cls._expand(k)
+                result += cls.expand(k)
         else:
             path = key.split(".")
             if path[-1] == "*":  # path ends in relationship
@@ -187,11 +204,11 @@ class ModelSerialization(ModelFilter):
                 )
                 if isinstance(end, dict):
                     for f in DictUtil.flatten_dict(end):
-                        result += cls._expand(key[:-1] + f)
+                        result += cls.expand(key[:-1] + f)
                 else:
                     assert issubclass(end, ModelRaw)
                     for f in end.default_serialization:
-                        result += cls._expand(key[:-1] + f)
+                        result += cls.expand(key[:-1] + f)
             else:  # ordinary field, no expansion needed
                 result.append(key)
 
@@ -308,7 +325,7 @@ class ModelSerialization(ModelFilter):
         # expand relationships to default fields
         expanded = []
         for path in to_return:
-            expanded += cls._expand(path)
+            expanded += cls.expand(path)
         to_return = expanded
 
         # remove not exposed columns
