@@ -15,3 +15,6 @@ class TestGardener(StaticTestBase):
         "node_modules",
         "env"
     ]
+    OPTIONS = {
+        'max-line-length': 120
+    }

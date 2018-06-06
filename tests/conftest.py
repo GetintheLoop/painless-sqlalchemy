@@ -5,10 +5,11 @@ import warnings
 import pytest
 import sqlalchemy
 from sqlalchemy import (
-    Column, String, Table, ForeignKey, Integer, func, DateTime, bindparam)
+    Column, String, ForeignKey, Integer, func, DateTime, bindparam)
 from sqlalchemy.orm import relationship, column_property
 from painless_sqlalchemy import Painless
 from painless_sqlalchemy.elements.MapColumn import MapColumn
+from painless_sqlalchemy.util import TableUtil
 
 table_hierarchy = [
     'student', 'teacher', 'classroom', 'school'
@@ -125,14 +126,7 @@ def Student(Teacher):
 @pytest.fixture(scope='session')
 def teacher_to_student(Teacher, Student):
     # teacher_to_student linkage table
-    return Table(
-        'teacher_to_student',
-        db.Model.metadata,
-        Column('teacher_id', ForeignKey(Teacher.id, ondelete='CASCADE'),
-               primary_key=True),
-        Column('student_id', ForeignKey(Student.id, ondelete='CASCADE'),
-               primary_key=True)
-    )
+    return TableUtil.many_to_many("teacher", "student", cascade=True)
 
 
 @pytest.fixture(scope='session', autouse=True)
