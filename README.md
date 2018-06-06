@@ -269,6 +269,19 @@ would return `True`. Does not allow input that still needs to be expanded.
 
 ---------------------
 
+# Utility Functionality
+
+## Many to Many Relationships
+
+A function to conveniently generate many to many relationship tables is exposed in `TableUtil.many_to_many`.
+
+## Testing Data Models
+
+Generic functionality to write database tests is exposed through `util.testing.*`. For an example
+please consider the tests written for this project.
+
+---------------------
+
 # Internals and Optimization
 
 ## Load as Required
