@@ -6,21 +6,20 @@ from painless_sqlalchemy.util.LocationUtil import validate_latlong
 
 
 class LocationType(AbstractGeometry, AbstractType):
-    """ LongLat column for PostGIS. Use long-lat tuple to set value. """
+    """ LongLat Column Type """
 
     python_type = list
     geometry_type = "POINT"
 
     @classmethod
     def as_postgis(cls, area):
-        location = cls.rec_round(area)  # round elements
+        location = cls.rec_round(area)
         # flip location since PostGIS stores them longitude, latitude
         string = "%s(%s %s)" % (cls.geometry_type, location[1], location[0])
         return WKTElement(string, srid=cls.srid)
 
     def result_processor(self, dialect, coltype):
         def process(value):
-            """ Process json and output as float tuple """
             result = None
             if value is not None:
                 value = json.loads(value)

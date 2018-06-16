@@ -298,6 +298,8 @@ location = Column(LocationType)
 
 Stored as [Point](https://postgis.net/docs/ST_Point.html) geometry in the database. Assumes coordinates to be on earth. Consistency is partially enforced through the database. However [SRID](https://postgis.net/docs/ST_SetSRID.html) are expected to be correct.
 
+Floats are rounded to 9 digits in application layer logic to prevent rounding error induced bugs.
+
 ## Advanced Functions
 
 ## Expand()
