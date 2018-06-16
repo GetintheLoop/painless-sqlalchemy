@@ -9,7 +9,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, column_property
 from painless_sqlalchemy import Painless
 from painless_sqlalchemy.columns.CIText import CIText
-from painless_sqlalchemy.columns.ColorType import ColorType
+from painless_sqlalchemy.columns.HexColorType import HexColorType
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 from painless_sqlalchemy.util import TableUtil
 
@@ -46,7 +46,7 @@ def Classroom(School):
     class Classroom(db.Model):
         __tablename__ = 'classroom'
 
-        color = Column(ColorType, nullable=True)
+        color = Column(HexColorType, nullable=True)
 
         school_id = Column(Integer, ForeignKey(School.id))
         school = relationship(

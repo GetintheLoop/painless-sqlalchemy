@@ -90,6 +90,11 @@ Teacher.serialize(
 )
 ```
 
+# Much More
+
+Various other improvements and abstractions over SQLAlchemy are provided. 
+E.g. CIText and PostGis custom column types are provided for convenience. 
+
 ---------------------
 
 # Documentation
@@ -242,6 +247,12 @@ Note that `to-one` relationships can also be referenced, but `to-many` relations
 To serialize entries that don't come straight from database columns, we
 can use column_properties. These are fully supported for `filter()` and `serialize()`.
 However notice that filtering by computed fields can be very expensive.
+
+## Custom Column Types
+
+#### CIText
+
+#### HexColor
 
 ## Advanced Functions
 

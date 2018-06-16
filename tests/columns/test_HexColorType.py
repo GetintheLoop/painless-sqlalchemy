@@ -5,12 +5,12 @@ from tests.AbstractTest import AbstractTest
 fake = Faker()
 
 
-class TestColorType(AbstractTest):
+class TestHexColorType(AbstractTest):
 
     @classmethod
     @pytest.fixture(scope='class', autouse=True)
     def setup_class(cls, School, Classroom):
-        super(TestColorType, cls).setup_class()
+        super(TestHexColorType, cls).setup_class()
         school = School()
         classroom = Classroom(school=school)
 

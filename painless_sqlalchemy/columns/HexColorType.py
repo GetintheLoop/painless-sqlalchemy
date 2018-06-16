@@ -5,7 +5,7 @@ from painless_sqlalchemy.columns.AbstractType import AbstractType
 HEX_COLOR_REGEX = re.compile(r'^#[0-9a-fA-F]{6}$')
 
 
-class ColorType(Integer, AbstractType):
+class HexColorType(Integer, AbstractType):
     """ Hex Color """
 
     def result_processor(self, dialect, coltype):
