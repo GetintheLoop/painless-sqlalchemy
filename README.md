@@ -288,6 +288,42 @@ however database granularity finer than minute is not considered when loading.
 
 Uses [Time without timezone](https://www.postgresql.org/docs/9.1/static/datatype-datetime.html) database representation to store provided value.
 
+#### PostGIS Types
+
+Require database extension `postgis` and package [GeoAlchemy2](https://github.com/geoalchemy/geoalchemy2). Floats are rounded to 9 digits in application layer logic to prevent rounding error induced bugs.
+
+Assumes coordinates to be on earth. Consistency is partially enforced through the database. However [SRID](https://postgis.net/docs/ST_SetSRID.html) are expected to be correct.
+
+Utility Functions:
+- `haversine(lat1, lon1, lat2, lon2)` computes the distance on earth between gps coordinates `[lat1, lon1]` and `[lat2, lon2]`
+- `point_inside_polygon(x, y, poly)` returns true iff point defined by `x,y` is inside non-overlapping polygon `poly`
+
+##### Location
+
+Gps coordinate as tuple `(latitude, longitude)`. 
+
+```python
+location = Column(LocationType)
+```
+
+Stored as [Point](https://postgis.net/docs/ST_Point.html) geometry in the database.
+
+Raises error in application layer logic if input is invalid.
+
+##### Area
+
+Gps area as list `[(lat1, lon1), (lat2, lon2), ..., (latX, lonX), (lat1, lon1)]`
+
+```python
+location = Column(AreaType)
+```
+
+Stores as [Polygon](https://postgis.net/docs/ST_Polygon.html) geometry in the database.
+
+Enforced to be clock-wise in application layer logic.
+
+Raises error in application layer logic if input is invalid. Can also raise error in database layer logic since pre-check is optimistic.
+
 ## Advanced Functions
 
 ## Expand()
