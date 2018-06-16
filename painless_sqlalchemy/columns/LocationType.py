@@ -8,7 +8,7 @@ from painless_sqlalchemy.util.LocationUtil import validate_latlong
 class LocationType(AbstractGeometry, AbstractType):
     """ LongLat Column Type """
 
-    python_type = list
+    python_type = tuple
     geometry_type = "POINT"
 
     @classmethod
