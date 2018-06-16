@@ -26,6 +26,16 @@ class TestLocationType(AbstractTest):
         assert school.location == location
         school.update(location=None).save()
 
+    def test_storage_string(self, School):
+        location = (0.0, 0.0)
+        location_str = ("0.0", "0.0")
+        school = School.filter().one()
+        school.update(location=location_str).save()
+        assert school.location == location
+        school = School.filter().one()
+        assert school.location == location
+        school.update(location=None).save()
+
     def test_invalid_location(self, School):
         school = School.filter().one()
         with pytest.raises(ValueError) as e:
