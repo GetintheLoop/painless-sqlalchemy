@@ -56,12 +56,12 @@ class TestModelAction(AbstractTest):
         with pytest.raises(AttributeError):
             Student().update(invalid_column=None)
 
-    def test_rollback(self, Teacher):
-        teacher = Teacher.filter({'id': self.teacher.id}).one()
-        teacher.update(classroom_id=-1)
+    def test_rollback(self, Student):
+        student = Student.filter({'id': self.student.id}).one()
+        student.update(name=None)
         with pytest.raises(IntegrityError):
-            teacher.save()
-        teacher.rollback()
-        assert Teacher.filter({
-            'id': teacher.id
-        }).one().classroom_id == self.teacher.classroom_id
+            student.save()
+        student.rollback()
+        assert Student.filter({
+            'id': student.id
+        }).one().name == self.student.name
