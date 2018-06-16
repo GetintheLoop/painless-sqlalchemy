@@ -93,7 +93,7 @@ Teacher.serialize(
 # Much More
 
 Various other improvements and abstractions over SQLAlchemy are provided. 
-E.g. CIText and PostGis custom column types are provided for convenience. 
+E.g. CIText and PostGIS custom column types are provided for convenience. 
 
 ---------------------
 
