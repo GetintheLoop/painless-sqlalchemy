@@ -10,7 +10,6 @@ class LocationType(AbstractGeometry, AbstractType):
 
     python_type = list
     geometry_type = "POINT"
-    srid = 4326  # coordinates on earth
 
     @classmethod
     def as_postgis(cls, area):
@@ -21,7 +20,7 @@ class LocationType(AbstractGeometry, AbstractType):
 
     def result_processor(self, dialect, coltype):
         def process(value):
-            """ Process text and output as float tuple """
+            """ Process json and output as float tuple """
             result = None
             if value is not None:
                 value = json.loads(value)

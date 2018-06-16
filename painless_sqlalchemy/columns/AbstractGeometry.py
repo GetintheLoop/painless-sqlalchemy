@@ -26,22 +26,20 @@ class AbstractGeometry(Geometry, AbstractType):
 
     @classmethod
     def as_postgis(cls, area):
-        raise NotImplementedError("Please Implement this method")
+        raise NotImplementedError()
 
     def column_expression(self, col):
-        """ Return as json, so we can parse it. """
         return func.ST_AsGeoJSON(col, type_=self)
 
     def result_processor(self, dialect, coltype):
-        raise NotImplementedError("Please Implement this method")
+        raise NotImplementedError()
 
     def bind_processor(self, dialect):
         def process(bindvalue):
             if bindvalue is None:
                 return None
-            bindvalue = self.as_postgis(bindvalue)
-            return 'SRID=%d;%s' % (self.srid, bindvalue.data)
+            return 'SRID=%d;%s' % (self.srid, self.as_postgis(bindvalue).data)
         return process
 
     def validator(self, attr_name):
-        raise NotImplementedError("Please Implement this method")
+        raise NotImplementedError()
