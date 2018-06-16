@@ -52,6 +52,8 @@ def validate_latlong(latlong):
     :param latlong: Location to check
     :return: tuple (lat, long)
     """
+    if not isinstance(latlong, (tuple, list)) or len(latlong) != 2:
+        raise ValueError("Invalid latlong format.")
     return validate_latitude(latlong[0]), validate_longitude(latlong[1])
 
 
