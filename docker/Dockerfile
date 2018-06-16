@@ -12,7 +12,7 @@ RUN yum install git vi -y \
   && . /user/.nvm/nvm.sh \
   && nvm install 9 \
   && npm install -g grunt serverless npm-check-updates \
-  && npm install -g npm@5.6.0
+  && npm install -g npm@6.1.0
 
 # allow npm cache access for user
 RUN mkdir /.npm
