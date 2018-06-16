@@ -6,7 +6,7 @@ HEX_COLOR_REGEX = re.compile(r'^#[0-9a-fA-F]{6}$')
 
 
 class ColorType(Integer, AbstractType):
-    """ Expects #-prefixed hex color as input """
+    """ Hex Color """
 
     def result_processor(self, dialect, coltype):
         def process(value):

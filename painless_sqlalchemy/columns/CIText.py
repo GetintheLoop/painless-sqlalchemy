@@ -4,7 +4,7 @@ from painless_sqlalchemy.columns.AbstractType import AbstractType
 
 
 class CIText(Concatenable, UserDefinedType, AbstractType):
-    """ Lower case CIText """
+    """ CIText with option to enforce lower case. """
 
     def __init__(self, length, force_lower):
         self.length = length
