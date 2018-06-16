@@ -20,13 +20,12 @@ class LocationType(AbstractGeometry, AbstractType):
 
     def result_processor(self, dialect, coltype):
         def process(value):
-            result = None
-            if value is not None:
-                value = json.loads(value)
-                assert value['type'].upper() == self.geometry_type
-                # flip back, since they are stored longitude, latitude
-                result = value['coordinates'][1], value['coordinates'][0]
-            return result
+            if value is None:
+                return None
+            value = json.loads(value)
+            assert value['type'].upper() == self.geometry_type
+            # flip back, since they are stored longitude, latitude
+            return value['coordinates'][1], value['coordinates'][0]
         return process
 
     def validator(self, attr_name):
