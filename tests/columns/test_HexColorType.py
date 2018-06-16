@@ -29,5 +29,6 @@ class TestHexColorType(AbstractTest):
 
     def test_invalid(self, Classroom):
         classroom = Classroom.filter().one()
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as e:
             classroom.update(color="#777").save()
+        assert e.value.__str__().startswith("Invalid format for attr ")
