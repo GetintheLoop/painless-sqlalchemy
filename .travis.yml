@@ -6,6 +6,8 @@ services:
 addons:
   postgresql: "9.6"
 
+sudo: true
+
 env:
   postgresEndpoint: "localhost:5432"
 
@@ -19,7 +21,7 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - psql -U postgres -c "create extension postgis"
+  - sudo apt-get install postgresql-9.6-postgis-2.3 postgis -y -q
 
 script:
   - python run_tests.py --batch
