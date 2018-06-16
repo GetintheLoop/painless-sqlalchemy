@@ -300,7 +300,7 @@ Utility Functions:
 
 ##### Location
 
-Column type for gps coordinate as tuple `(latitude, longitude)`. 
+Gps coordinate as tuple `(latitude, longitude)`. 
 
 ```python
 location = Column(LocationType)
@@ -308,6 +308,21 @@ location = Column(LocationType)
 
 Stored as [Point](https://postgis.net/docs/ST_Point.html) geometry in the database.
 
+Raises error in application layer logic if input is invalid.
+
+##### Area
+
+Gps area as list `[(lat1, lon1), (lat2, lon2), ..., (latX, lonX), (lat1, lon1)]`
+
+```python
+location = Column(AreaType)
+```
+
+Stores as [Polygon](https://postgis.net/docs/ST_Polygon.html) geometry in the database.
+
+Enforced to be clock-wise in application layer logic.
+
+Raises error in application layer logic if input is invalid. Can also raise error in database layer logic since pre-check is optimistic.
 
 ## Advanced Functions
 
