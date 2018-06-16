@@ -22,6 +22,7 @@ class TestColorType(AbstractTest):
         color = "#007700"
         classroom = Classroom.filter().one()
         classroom.update(color=color).save()
+        assert classroom.color == color
         classroom = Classroom.filter().one()
         assert classroom.color == color
         classroom.update(color=None).save()
