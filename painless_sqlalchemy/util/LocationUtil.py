@@ -57,62 +57,6 @@ def validate_latlong(latlong):
     return validate_latitude(latlong[0]), validate_longitude(latlong[1])
 
 
-def is_valid_latitude(latitude):
-    """
-        Check if latitude is valid
-    :param latitude: Latitude to check
-    :return: True iff latitude is valid
-    """
-    try:
-        validate_latitude(latitude)
-    except ValueError:
-        return False
-    return True
-
-
-def is_valid_longitude(longitude):
-    """
-        Check if longitude is valid
-    :param longitude: Longitude to check
-    :return: True iff longitude is valid
-    """
-    try:
-        validate_longitude(longitude)
-    except ValueError:
-        return False
-    return True
-
-
-def is_valid_latlong(latlong):
-    """
-        Check if latlong location is valid.
-    :param latlong: Location to check
-    :return: True iff valid tuple
-    """
-    return (
-        len(latlong) == 2 and
-        is_valid_latitude(latlong[0]) and
-        is_valid_longitude(latlong[1])
-    )
-
-
-def is_valid_latlongrect(rect):
-    """
-        Check if four points form valid location rectangle.
-    :param rect: Location rectangle to check
-    :return: True iff valid tuple
-    """
-    return (
-        len(rect) == 4 and
-        is_valid_latitude(rect[0]) and
-        is_valid_longitude(rect[1]) and
-        is_valid_latitude(rect[2]) and
-        is_valid_longitude(rect[3]) and
-        validate_latitude(rect[0]) < validate_latitude(rect[2]) and
-        validate_longitude(rect[1]) < validate_longitude(rect[3])
-    )
-
-
 def haversine(lat1, lon1, lat2, lon2):
     """
     Calculate the great circle distance between two points

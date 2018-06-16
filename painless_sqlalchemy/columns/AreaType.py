@@ -1,6 +1,5 @@
 import json
 from geoalchemy2 import WKTElement
-from sqlalchemy import func
 from painless_sqlalchemy.columns.AbstractType import AbstractType
 from painless_sqlalchemy.columns.AbstractGeometry import AbstractGeometry
 from painless_sqlalchemy.util.LocationUtil import validate_latlong
@@ -37,17 +36,6 @@ class AreaType(AbstractGeometry, AbstractType):
             ])
         )
         return WKTElement(string, srid=cls.srid)
-
-    @classmethod
-    def get_envelope(cls, rect):
-        """ PostGIS envelope for gps rectangle (lat, long, lat, long) """
-        assert isinstance(rect, list)
-        assert len(rect) == 4
-        return func.ST_Envelope(cls.as_postgis([
-            (rect[0], rect[1]), (rect[0], rect[3]),
-            (rect[2], rect[3]), (rect[2], rect[1]),
-            (rect[0], rect[1])
-        ]))
 
     def result_processor(self, dialect, coltype):
         def process(value):
