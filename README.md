@@ -283,7 +283,8 @@ Column type for 24-hour time of format "HH:MM". Valid range is "00:00" to "23:59
 opening = Column(TimeType)
 ```
 
-Will raise ValueError if invalid input is provided. Data consistency is not fully enforced in the database layer.
+Will raise ValueError if invalid input is provided. Data consistency is enforced, 
+however database granularity finer than minute is not considered when loading.
 
 Uses [Time without timezone](https://www.postgresql.org/docs/9.1/static/datatype-datetime.html) database representation to store provided value.
 
