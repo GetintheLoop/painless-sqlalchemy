@@ -10,6 +10,7 @@ from sqlalchemy.orm import relationship, column_property
 from painless_sqlalchemy import Painless
 from painless_sqlalchemy.columns.CIText import CIText
 from painless_sqlalchemy.columns.HexColorType import HexColorType
+from painless_sqlalchemy.columns.TimeType import TimeType
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 from painless_sqlalchemy.util import TableUtil
 
@@ -32,6 +33,9 @@ def School():
     class School(db.Model):
         __tablename__ = 'school'
         id = Column(Integer, primary_key=True, info={"exposed": True})
+
+        opening = Column(TimeType, nullable=True)
+        closing = Column(TimeType, nullable=True)
 
         classrooms = relationship(
             'Classroom',

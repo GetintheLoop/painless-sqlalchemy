@@ -271,10 +271,21 @@ Column type for Hex Color of format "#RRGGBB".
 color = Column(HexColorType)
 ```
 
-Will raise a ValueError if invalid input is provided. Data consistency is not enforced in the database layer.
+Will raise ValueError if invalid input is provided. Data consistency is not enforced in the database layer.
 
 Uses Integer database representation to store provided value.
 
+#### Time
+
+Column type for 24-hour time of format "HH:MM". Valid range is "00:00" to "23:59".
+
+```python
+opening = Column(TimeType)
+```
+
+Will raise ValueError if invalid input is provided. Data consistency is not fully enforced in the database layer.
+
+Uses [Time without timezone](https://www.postgresql.org/docs/9.1/static/datatype-datetime.html) database representation to store provided value.
 
 ## Advanced Functions
 
