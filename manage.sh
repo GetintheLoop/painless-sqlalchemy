@@ -6,7 +6,7 @@ sudo docker run \
   -e POSTGRES_PASSWORD=password \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_DB=test \
-  -d postgres:10
+  -d mdillon/postgis:10
 
 sudo docker build -t lambda-environment-python -f docker/Dockerfile . &&
 sudo docker run \

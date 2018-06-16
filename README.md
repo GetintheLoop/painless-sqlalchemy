@@ -90,6 +90,11 @@ Teacher.serialize(
 )
 ```
 
+# Much More
+
+Various other improvements and abstractions over SQLAlchemy are provided. 
+E.g. CIText and PostGIS custom column types are provided for convenience. 
+
 ---------------------
 
 # Documentation
@@ -242,6 +247,34 @@ Note that `to-one` relationships can also be referenced, but `to-many` relations
 To serialize entries that don't come straight from database columns, we
 can use column_properties. These are fully supported for `filter()` and `serialize()`.
 However notice that filtering by computed fields can be very expensive.
+
+## Custom Column Types
+
+#### CIText
+
+Column type for [CIText](https://www.postgresql.org/docs/current/static/citext.html). Requires database extension `citext` to be created.
+
+```python
+email = Column(CIText(64, True))
+```
+
+Constructor takes two parameters, the maximum length of the citext and
+a boolean flag `enforce_lower`. 
+
+If the boolean flag is set to true, all input is forced to lower case in application layer (data already in the database is not changed). If the flag is set to false, the field behaves like an ordinary CIText and saves case as provided.
+
+#### HexColor
+
+Column type for Hex Color of format "#RRGGBB".
+
+```python
+color = Column(HexColorType)
+```
+
+Will raise a ValueError if invalid input is provided. Data consistency is not enforced in the database layer.
+
+Uses Integer database representation to store provided value.
+
 
 ## Advanced Functions
 

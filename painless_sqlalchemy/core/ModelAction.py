@@ -1,9 +1,9 @@
 from sqlalchemy import inspect
 from sqlalchemy.orm import Session, sessionmaker
-from painless_sqlalchemy.core.ModelRaw import ModelRaw
+from painless_sqlalchemy.core.ModelValidation import ModelValidation
 
 
-class ModelAction(ModelRaw):
+class ModelAction(ModelValidation):
     """ ORM Action Abstraction """
 
     __abstract__ = True

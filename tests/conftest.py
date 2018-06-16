@@ -8,6 +8,8 @@ from sqlalchemy import (
     Column, String, ForeignKey, Integer, func, DateTime, bindparam)
 from sqlalchemy.orm import relationship, column_property
 from painless_sqlalchemy import Painless
+from painless_sqlalchemy.columns.CIText import CIText
+from painless_sqlalchemy.columns.HexColorType import HexColorType
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 from painless_sqlalchemy.util import TableUtil
 
@@ -43,6 +45,8 @@ def School():
 def Classroom(School):
     class Classroom(db.Model):
         __tablename__ = 'classroom'
+
+        color = Column(HexColorType, nullable=True)
 
         school_id = Column(Integer, ForeignKey(School.id))
         school = relationship(
@@ -97,7 +101,7 @@ def Student(Teacher):
         address = Column(String(128), index=False, nullable=True)
         phone = Column(String(35), nullable=True)
         home_phone = Column(String(35), nullable=True)
-        email = Column(String(64), nullable=True)
+        email = Column(CIText(64, True), nullable=True)
 
         created = Column(DateTime, server_default='now()')
 
@@ -158,6 +162,13 @@ def recreate_db():
     conn.execute('DROP DATABASE IF EXISTS "%s";' % db_name)
     conn.execute("commit")
     conn.execute('CREATE DATABASE "%s";' % db_name)
+    conn.close()
+
+    # create extensions
+    _engine = sqlalchemy.engine.create_engine(uri + "/" + db_name)
+    conn = _engine.connect()
+    for ext in ["postgis", "postgis_topology", "uuid-ossp", "citext", "pgcrypto", "btree_gist"]:
+        conn.execute("CREATE EXTENSION \"%s\";" % ext)
     conn.close()
 
     db.Model.metadata.drop_all(db.engine)
