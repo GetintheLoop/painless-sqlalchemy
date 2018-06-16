@@ -288,6 +288,16 @@ however database granularity finer than minute is not considered when loading.
 
 Uses [Time without timezone](https://www.postgresql.org/docs/9.1/static/datatype-datetime.html) database representation to store provided value.
 
+#### Location
+
+Column type for gps coordinate as tuple `(latitude, longitude)`. Requires database extension `postgis` and package [GeoAlchemy2](https://github.com/geoalchemy/geoalchemy2)
+
+```python
+location = Column(LocationType)
+```
+
+Stored as [Point](https://postgis.net/docs/ST_Point.html) geometry in the database. Assumes coordinates to be on earth. Consistency is partially enforced through the database. However [SRID](https://postgis.net/docs/ST_SetSRID.html) are expected to be correct.
+
 ## Advanced Functions
 
 ## Expand()
