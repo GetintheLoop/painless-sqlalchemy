@@ -295,7 +295,7 @@ Require database extension `postgis` and package [GeoAlchemy2](https://github.co
 Assumes coordinates to be on earth. Consistency is partially enforced through the database. However [SRID](https://postgis.net/docs/ST_SetSRID.html) are expected to be correct.
 
 Utility Functions:
-- `haversine(lat1, lon1, lat2, lon2)` computes the distance between `[lat1, lon1]` and `[lat2, lon2]`
+- `haversine(lat1, lon1, lat2, lon2)` computes the distance on earth between gps coordinates `[lat1, lon1]` and `[lat2, lon2]`
 - `point_inside_polygon(x, y, poly)` returns true iff point defined by `x,y` is inside non-overlapping polygon `poly`
 
 ##### Location
