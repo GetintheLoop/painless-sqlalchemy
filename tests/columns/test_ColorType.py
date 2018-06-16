@@ -30,4 +30,4 @@ class TestColorType(AbstractTest):
     def test_invalid(self, Classroom):
         classroom = Classroom.filter().one()
         with pytest.raises(ValueError):
-            classroom.update(color="#77777777").save()
+            classroom.update(color="#777").save()
