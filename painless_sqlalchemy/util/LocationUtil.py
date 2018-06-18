@@ -61,7 +61,7 @@ def haversine(lat1, lon1, lat2, lon2):
     """
     Calculate the great circle distance between two points
     on the earth (specified in decimal degrees).
-    Returns distance in km.
+    Returns distance in m.
 
     Important: Result is an approximation
     """
@@ -72,7 +72,7 @@ def haversine(lat1, lon1, lat2, lon2):
     dlat = lat2 - lat1
     a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
     c = 2 * asin(sqrt(a))
-    r = 6371
+    r = 6371 * 1000
     return c * r
 
 
