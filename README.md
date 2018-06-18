@@ -320,7 +320,7 @@ location = Column(AreaType(True))
 
 Stores as [Polygon](https://postgis.net/docs/ST_Polygon.html) geometry in the database.
 
-Takes optional boolean `clockwise` argument (defaults to `True`). If set to `True` this will enforced polygons to be clock-wise in application layer logic. If set to `False` it will enforce counter clockwise and if set to `None` polygons are stored as given.
+Takes boolean `clockwise` argument. If set to `True` this will enforced polygons to be clock-wise in application layer logic. If set to `False` it will enforce counter clockwise and if set to `None` polygons are stored as given.
 
 Raises error in application layer logic if input is invalid. Open Polygons, Polygons with identical, consecutive points and Polygons with too few unique points are considered invalid.
 

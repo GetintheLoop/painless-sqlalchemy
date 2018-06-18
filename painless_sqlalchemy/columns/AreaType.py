@@ -11,7 +11,7 @@ class AreaType(AbstractGeometry, AbstractType):
     python_type = list
     geometry_type = "POLYGON"
 
-    def __init__(self, clockwise=True, *args, **kwargs):
+    def __init__(self, clockwise, *args, **kwargs):
         super().__init__(*args, **kwargs)
         assert clockwise is True or clockwise is False or clockwise is None
         self.clockwise = clockwise
