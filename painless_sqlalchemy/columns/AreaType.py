@@ -17,7 +17,7 @@ class AreaType(AbstractGeometry, AbstractType):
         self.clockwise = clockwise
 
     @staticmethod
-    def ensure_direction(area, clockwise):  # reference: http://tiny.cc/eacajy
+    def as_directed(area, clockwise):  # reference: http://tiny.cc/eacajy
         # check if clockwise
         direction = 0
         for i in range(len(area) - 1):
@@ -31,7 +31,7 @@ class AreaType(AbstractGeometry, AbstractType):
 
     def as_postgis(self, area):
         area = self.rec_round(area)
-        area = area if self.clockwise is None else self.ensure_direction(area, self.clockwise)
+        area = area if self.clockwise is None else self.as_directed(area, self.clockwise)
         string = "%s((%s))" % (
             self.geometry_type,
             ",".join([
