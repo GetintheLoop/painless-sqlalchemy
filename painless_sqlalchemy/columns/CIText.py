@@ -6,12 +6,12 @@ from painless_sqlalchemy.columns.AbstractType import AbstractType
 class CIText(Concatenable, UserDefinedType, AbstractType):
     """ CIText with option to enforce lower case. """
 
+    python_type = str
+    postgres_type = "CITEXT"
+
     def __init__(self, length, force_lower):
         self.length = length
         self.force_lower = force_lower
-
-    python_type = str
-    postgres_type = "CITEXT"
 
     def get_col_spec(self):
         return self.postgres_type
