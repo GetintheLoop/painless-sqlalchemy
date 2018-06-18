@@ -315,12 +315,12 @@ Raises error in application layer logic if input is invalid.
 Gps area as list `[(lat1, lon1), (lat2, lon2), ..., (latX, lonX), (lat1, lon1)]`
 
 ```python
-location = Column(AreaType)
+location = Column(AreaType(True))
 ```
 
 Stores as [Polygon](https://postgis.net/docs/ST_Polygon.html) geometry in the database.
 
-Enforced to be clock-wise in application layer logic.
+Takes optional boolean `clockwise` argument (defaults to `True`). If set to `True` this will enforced polygons to be clock-wise in application layer logic. If set to `False` it will enforce counter clockwise and if set to `None` polygons are stored as given.
 
 Raises error in application layer logic if input is invalid. Open Polygons, Polygons with identical, consecutive points and Polygons with too few unique points are considered invalid.
 

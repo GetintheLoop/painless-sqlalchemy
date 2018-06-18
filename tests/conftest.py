@@ -37,7 +37,7 @@ def School():
         id = Column(Integer, primary_key=True, info={"exposed": True})
 
         location = Column(LocationType, nullable=True)
-        area = Column(AreaType, nullable=True)
+        area = Column(AreaType(True), nullable=True)
 
         opening = Column(TimeType, nullable=True)
         closing = Column(TimeType, nullable=True)

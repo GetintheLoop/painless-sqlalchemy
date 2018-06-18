@@ -11,8 +11,13 @@ class AreaType(AbstractGeometry, AbstractType):
     python_type = list
     geometry_type = "POLYGON"
 
-    @classmethod
-    def enforce_clockwise(cls, area):  # reference: http://tiny.cc/eacajy
+    def __init__(self, clockwise=True, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        assert clockwise is True or clockwise is False or clockwise is None
+        self.clockwise = clockwise
+
+    @staticmethod
+    def ensure_direction(area, clockwise):  # reference: http://tiny.cc/eacajy
         # check if clockwise
         direction = 0
         for i in range(len(area) - 1):
@@ -22,20 +27,20 @@ class AreaType(AbstractGeometry, AbstractType):
                 area[i + 1][1] + area[i][1]
             )
         # reverse if counter clockwise
-        return area[::-1] if direction < 0 else area
+        return area[::-1] if (direction < 0 == clockwise) else area
 
-    @classmethod
-    def as_postgis(cls, area):
-        area = cls.rec_round(area)  # round elements
-        area = cls.enforce_clockwise(area)  # enforce orientation
+    def as_postgis(self, area):
+        area = self.rec_round(area)
+        if self.clockwise is not None:
+            area = self.ensure_direction(area, self.clockwise)
         string = "%s((%s))" % (
-            cls.geometry_type,
+            self.geometry_type,
             ",".join([
                 # flip location since PostGIS stores them longitude, latitude
                 "%s %s" % (a[1], a[0]) for a in area
             ])
         )
-        return WKTElement(string, srid=cls.srid)
+        return WKTElement(string, srid=self.srid)
 
     def result_processor(self, dialect, coltype):
         def process(value):
