@@ -35,14 +35,20 @@ class TestAreaType(AbstractTest):
             school.update(area="invalid").save()
         assert e.value.__str__().startswith("Invalid Polygon Entry given for attr ")
 
-    def test_open_poly(self, School):
+    def test_open(self, School):
         school = School.filter().one()
         with pytest.raises(ValueError) as e:
             school.update(area=[[0, 0], [1, 0], [1, 1], [0, 1]]).save()
         assert e.value.__str__().startswith("Open Polygon given for attr ")
 
-    def test_degenerate_poly(self, School):
+    def test_degenerate(self, School):
         school = School.filter().one()
         with pytest.raises(ValueError) as e:
             school.update(area=[[0, 0], [1, 0], [0, 0]]).save()
         assert e.value.__str__().startswith("Degenerate Polygon given for attr ")
+
+    def test_consecutive_identical(self, School):
+        school = School.filter().one()
+        with pytest.raises(ValueError) as e:
+            school.update(area=[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0], [0, 0]]).save()
+        assert e.value.__str__().startswith("Consecutive, identical Point detected for attr ")

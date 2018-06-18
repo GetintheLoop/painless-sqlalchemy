@@ -57,7 +57,11 @@ class AreaType(AbstractGeometry, AbstractType):
                     raise ValueError("Invalid Polygon Entry given for attr \"%s\"." % attr_name)
                 if value[0][0] != value[-1][0] or value[0][1] != value[-1][1]:
                     raise ValueError("Open Polygon given for attr \"%s\"." % attr_name)
-                if len(set(["%s %s" % (v[1], v[0]) for v in value])) < 3:
+                rounded = self.rec_round(value)
+                if len(set(["%s %s" % (v[1], v[0]) for v in rounded])) < 3:
                     raise ValueError("Degenerate Polygon given for attr \"%s\"." % attr_name)
+                for i in range(0, len(rounded) - 1):
+                    if rounded[i][0] == rounded[i + 1][0] and rounded[i][1] == rounded[i + 1][1]:
+                        raise ValueError("Consecutive, identical Point detected for attr \"%s\"." % attr_name)
             return True
         return validate

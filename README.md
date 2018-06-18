@@ -322,7 +322,7 @@ Stores as [Polygon](https://postgis.net/docs/ST_Polygon.html) geometry in the da
 
 Enforced to be clock-wise in application layer logic.
 
-Raises error in application layer logic if input is invalid. Can also raise error in database layer logic since pre-check is optimistic.
+Raises error in application layer logic if input is invalid. Open Polygons, Polygons with identical, consecutive points and Polygons with too few unique points are considered invalid.
 
 ## Advanced Functions
 
