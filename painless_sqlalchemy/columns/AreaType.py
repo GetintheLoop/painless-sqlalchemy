@@ -27,12 +27,11 @@ class AreaType(AbstractGeometry, AbstractType):
                 area[i + 1][1] + area[i][1]
             )
         # reverse if counter clockwise
-        return area[::-1] if (direction < 0 == clockwise) else area
+        return area[::-1] if (direction < 0 is clockwise) else area
 
     def as_postgis(self, area):
         area = self.rec_round(area)
-        if self.clockwise is not None:
-            area = self.ensure_direction(area, self.clockwise)
+        area = area if self.clockwise is None else self.ensure_direction(area, self.clockwise)
         string = "%s((%s))" % (
             self.geometry_type,
             ",".join([
