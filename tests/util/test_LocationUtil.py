@@ -31,7 +31,7 @@ class TestLocationUtil(unittest.TestCase):
         pos1 = [49.880134, -119.443606]
         pos2 = [47.6779496, 9.1732384]
         dist = LocationUtil.haversine(pos1[0], pos1[1], pos2[0], pos2[1])
-        assert dist == 8102.26550449619
+        assert dist == 8102.26550449619 * 1000
 
     def test_valid_lat_long(self):
         for (latitude, longitude) in self.valid_lat_long:
