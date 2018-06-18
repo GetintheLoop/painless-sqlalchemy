@@ -1,8 +1,12 @@
 {
   "defaultBranch": "master",
+  "contribBranch": "dev",
+  "repository": {
+    "url": "https://github.com/getintheLoop/painless-sqlalchemy.git"
+  },
   "branches": {
     "dev": {
-      "protection": "$full",
+      "protection": "$full-strict",
       "create": true,
       "upstream": "master"
     },
@@ -21,9 +25,15 @@
     }
   },
   "protection": {
+    "$full-strict": {
+      "@": "$full",
+      "required_status_checks": {
+        "strict": true
+      }
+    },
     "$full": {
       "required_status_checks": {
-        "strict": true,
+        "strict": false,
         "contexts": [
           "continuous-integration/travis-ci"
         ]

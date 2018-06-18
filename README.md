@@ -90,6 +90,11 @@ Teacher.serialize(
 )
 ```
 
+# Much More
+
+Various other improvements and abstractions over SQLAlchemy are provided. 
+E.g. CIText and PostGIS custom column types are provided for convenience. 
+
 ---------------------
 
 # Documentation
@@ -242,6 +247,82 @@ Note that `to-one` relationships can also be referenced, but `to-many` relations
 To serialize entries that don't come straight from database columns, we
 can use column_properties. These are fully supported for `filter()` and `serialize()`.
 However notice that filtering by computed fields can be very expensive.
+
+## Custom Column Types
+
+#### CIText
+
+Column type for [CIText](https://www.postgresql.org/docs/current/static/citext.html). Requires database extension `citext` to be created.
+
+```python
+email = Column(CIText(64, True))
+```
+
+Constructor takes two parameters, the maximum length of the citext and
+a boolean flag `enforce_lower`. 
+
+If the boolean flag is set to true, all input is forced to lower case in application layer (data already in the database is not changed). If the flag is set to false, the field behaves like an ordinary CIText and saves case as provided.
+
+#### HexColor
+
+Column type for Hex Color of format "#RRGGBB".
+
+```python
+color = Column(HexColorType)
+```
+
+Will raise ValueError if invalid input is provided. Data consistency is not enforced in the database layer.
+
+Uses Integer database representation to store provided value.
+
+#### Time
+
+Column type for 24-hour time of format "HH:MM". Valid range is "00:00" to "23:59".
+
+```python
+opening = Column(TimeType)
+```
+
+Will raise ValueError if invalid input is provided. Data consistency is enforced, 
+however database granularity finer than minute is not considered when loading.
+
+Uses [Time without timezone](https://www.postgresql.org/docs/9.1/static/datatype-datetime.html) database representation to store provided value.
+
+#### PostGIS Types
+
+Require database extension `postgis` and package [GeoAlchemy2](https://github.com/geoalchemy/geoalchemy2). Floats are rounded to 9 digits in application layer logic to prevent rounding error induced bugs.
+
+Assumes coordinates to be on earth. Consistency is partially enforced through the database. However [SRID](https://postgis.net/docs/ST_SetSRID.html) are expected to be correct.
+
+Utility Functions:
+- `haversine(lat1, lon1, lat2, lon2)` computes the distance on earth between gps coordinates `[lat1, lon1]` and `[lat2, lon2]`
+- `point_inside_polygon(x, y, poly)` returns true iff point defined by `x,y` is inside non-overlapping polygon `poly`
+
+##### Location
+
+Gps coordinate as tuple `(latitude, longitude)`. 
+
+```python
+location = Column(LocationType)
+```
+
+Stored as [Point](https://postgis.net/docs/ST_Point.html) geometry in the database.
+
+Raises error in application layer logic if input is invalid.
+
+##### Area
+
+Gps area as list `[(lat1, lon1), (lat2, lon2), ..., (latX, lonX), (lat1, lon1)]`
+
+```python
+location = Column(AreaType(True))
+```
+
+Stores as [Polygon](https://postgis.net/docs/ST_Polygon.html) geometry in the database.
+
+Takes boolean `clockwise` argument. If set to `True` this will enforced polygons to be clock-wise in application layer logic. If set to `False` it will enforce counter clockwise and if set to `None` polygons are stored as given.
+
+Raises error in application layer logic if input is invalid. Open Polygons, Polygons with identical, consecutive points and Polygons with too few unique points are considered invalid.
 
 ## Advanced Functions
 

@@ -12,7 +12,7 @@ from setuptools import setup
 
 setup(
     name='Painless-SQLAlchemy',
-    version='0.7.1',
+    version='0.8.0',
     url='https://github.com/GetintheLoop/painless-sqlalchemy',
     license='MIT',
     author='Lukas Siemon',
@@ -28,6 +28,9 @@ setup(
         'SQLAlchemy>=1.2.0',
         'psycopg2-binary>=2.7'
     ],
-    keywords=['SQLAlchemy', 'Serialization', 'Query', 'Simple', 'Abstraction'],
+    extras_require={
+        'postgis': ["GeoAlchemy2>=0.4.2"]
+    },
+    keywords=['SQLAlchemy', 'Serialization', 'Query', 'Simple', 'Abstraction', 'PostGis', 'Columns'],
     classifiers=[]
 )
