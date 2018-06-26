@@ -30,7 +30,7 @@ class TestTimeZoneType(AbstractTest):
 
     def test_invalid_format(self, School):
         school = School.filter().one()
-        timezone = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
+        timezone = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(12))
         with pytest.raises(ValueError) as e:
             school.update(timezone=timezone).save()
         assert e.value.__str__() == 'Invalid Time Zone "%s".' % timezone

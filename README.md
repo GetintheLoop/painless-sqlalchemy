@@ -14,7 +14,9 @@ Painless-SQLAlchemy adds simplified querying and serialization to SQLAlchemy.
      
 ### Supported Databases
 
-Tests run Postgres 9.6.X. MySQL should work, but is not tested yet.
+Tests run Postgres 9.6.X. 
+
+Project could be adapted to work with MySQL.
 
 ### Run Tests
 
