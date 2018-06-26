@@ -14,7 +14,9 @@ Painless-SQLAlchemy adds simplified querying and serialization to SQLAlchemy.
      
 ### Supported Databases
 
-Tests run Postgres 9.6.X. MySQL should work, but is not tested yet.
+Tests run Postgres 9.6.X. 
+
+Project could be adapted to work with MySQL.
 
 ### Run Tests
 
@@ -287,6 +289,19 @@ Will raise ValueError if invalid input is provided. Data consistency is enforced
 however database granularity finer than minute is not considered when loading.
 
 Uses [Time without timezone](https://www.postgresql.org/docs/9.1/static/datatype-datetime.html) database representation to store provided value.
+
+#### Time Zone
+
+Column type for time zone. Valid values are all values found [here](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) that are also valid postgres timezones.
+
+```python
+timezone = Column(TimeZoneType)
+```
+
+Will raise ValueError if invalid input is provided. Data consistency is not enforced.
+Unknown timezone will be loaded as "None".
+
+Uses [TEXT](https://www.postgresql.org/docs/9.1/static/datatype-character.html) to store time zone in database.
 
 #### PostGIS Types
 
