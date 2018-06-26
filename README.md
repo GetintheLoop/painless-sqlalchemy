@@ -288,6 +288,19 @@ however database granularity finer than minute is not considered when loading.
 
 Uses [Time without timezone](https://www.postgresql.org/docs/9.1/static/datatype-datetime.html) database representation to store provided value.
 
+#### Time Zone
+
+Column type for time zone. Valid values are all values found [here](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) that are also valid postgres timezones.
+
+```python
+timezone = Column(TimeZoneType)
+```
+
+Will raise ValueError if invalid input is provided. Data consistency is not enforced.
+Unknown timezone will be loaded as "None".
+
+Uses [TEXT](https://www.postgresql.org/docs/9.1/static/datatype-character.html) to store time zone in database.
+
 #### PostGIS Types
 
 Require database extension `postgis` and package [GeoAlchemy2](https://github.com/geoalchemy/geoalchemy2). Floats are rounded to 9 digits in application layer logic to prevent rounding error induced bugs.

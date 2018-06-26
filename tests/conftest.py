@@ -13,6 +13,7 @@ from painless_sqlalchemy.columns.CIText import CIText
 from painless_sqlalchemy.columns.HexColorType import HexColorType
 from painless_sqlalchemy.columns.LocationType import LocationType
 from painless_sqlalchemy.columns.TimeType import TimeType
+from painless_sqlalchemy.columns.TimeZoneType import TimeZoneType
 from painless_sqlalchemy.elements.MapColumn import MapColumn
 from painless_sqlalchemy.util import TableUtil
 
@@ -38,6 +39,7 @@ def School():
 
         location = Column(LocationType, nullable=True)
         area = Column(AreaType(True), nullable=True)
+        timezone = Column(TimeZoneType, nullable=True)
 
         opening = Column(TimeType, nullable=True)
         closing = Column(TimeType, nullable=True)
