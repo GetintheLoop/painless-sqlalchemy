@@ -2,7 +2,7 @@ from sqlalchemy import DateTime, Column, func
 from painless_sqlalchemy.util.TableUtil import many_to_many
 
 
-class TestTableUtil(object):
+class TestTableUtil():
 
     def test_many_to_many(self):
         result = many_to_many("table_a", "table_b", extra_cols=[

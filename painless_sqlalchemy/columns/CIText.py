@@ -17,19 +17,19 @@ class CIText(Concatenable, UserDefinedType, AbstractType):
         return self.postgres_type
 
     def bind_processor(self, dialect):
-        default = super(CIText, self).bind_processor(dialect)
+        super(CIText, self).bind_processor(dialect)
 
         def process(bindvalue):
-            result = default(bindvalue) if callable(default) else bindvalue  # pylint: disable=not-callable
+            result = bindvalue
             assert result is None or len(result) <= self.length
             return None if result is None else (result.lower() if self.force_lower else result)
         return process
 
     def result_processor(self, dialect, coltype):
-        default = super(CIText, self).result_processor(dialect, coltype)
+        super(CIText, self).result_processor(dialect, coltype)
 
         def process(bindvalue):
-            result = default(bindvalue) if callable(default) else bindvalue  # pylint: disable=not-callable
+            result = bindvalue
             assert result is None or len(result) <= self.length
             return None if result is None else (result.lower() if self.force_lower else result)
         return process
