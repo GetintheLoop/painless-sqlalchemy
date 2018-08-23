@@ -39,7 +39,7 @@ class TestLocationType(AbstractTest):
     def test_invalid_location(self, School):
         school = School.filter().one()
         with pytest.raises(ValueError) as e:
-            school.update(location=[180, 90]).save()
+            school.update(location=[90, 180]).save()
         assert e.value.__str__().startswith("Invalid location given for attr ")
 
     def test_invalid_type(self, School):

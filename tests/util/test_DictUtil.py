@@ -1,7 +1,7 @@
 from painless_sqlalchemy.util.DictUtil import flatten_dict
 
 
-class TestDictUtil(object):
+class TestDictUtil():
 
     def test_flatten_dict(self):
         assert flatten_dict({

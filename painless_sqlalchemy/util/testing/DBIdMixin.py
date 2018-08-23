@@ -2,7 +2,7 @@ from sqlalchemy import inspect
 from painless_sqlalchemy.core.Model import Model
 
 
-class DBIdMixin(object):
+class DBIdMixin():
 
     @classmethod
     def extract(cls, *args, **kwargs):

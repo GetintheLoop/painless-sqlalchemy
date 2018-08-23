@@ -54,6 +54,7 @@ disable=print-statement,
         R0913,
         R0914,
         R0915,
+        W0511,  # fixme
         parameter-unpacking,
         unpacking-in-except,
         old-raise-syntax,

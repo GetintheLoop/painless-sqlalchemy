@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from painless_sqlalchemy.core.Model import Model
 
 
-class Painless(object):
+class Painless():
 
     def __init__(self, db_uri, engine_options=None, session_options=None):
         if engine_options is None:

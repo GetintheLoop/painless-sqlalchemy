@@ -3,7 +3,7 @@ from sqlalchemy import and_
 from sqlalchemy.dialects.postgresql import insert
 
 
-class DBTestUtilMixin(object):
+class DBTestUtilMixin():
 
     @classmethod
     def commit(cls, *args):
