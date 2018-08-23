@@ -157,8 +157,7 @@ class ModelFilter(ModelAction):
                 and_info['depth'] -= 1
             return clause
         elif isinstance(clause, Annotated):
-            clause.proxy_set = set([
-                cls._substitute_clause(data, c) for c in clause.proxy_set])
+            clause.proxy_set = set(cls._substitute_clause(data, c) for c in clause.proxy_set)
             return clause
         elif isinstance(clause, ClauseList):
             clause.clauses = [

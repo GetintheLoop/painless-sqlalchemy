@@ -3,7 +3,7 @@ from sqlalchemy.orm import class_mapper, ColumnProperty
 from painless_sqlalchemy.core.Model import Model
 
 
-class AbstractExtendedTest(object):
+class AbstractExtendedTest():
     @staticmethod
     def get(list_, key_, value_):
         """

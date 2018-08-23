@@ -20,18 +20,6 @@ def _validate_coordinate(coordinate, valid_range):
     return coordinate
 
 
-def validate_latitude(latitude):
-    """
-        Check if latitude is valid.
-    :param latitude: Latitude to check
-    :return: the latitude if valid, otherwise throws error
-    """
-    try:
-        return _validate_coordinate(latitude, 90)
-    except Exception as e:
-        raise ValueError("Invalid latitude given.", e)
-
-
 def validate_longitude(longitude):
     """
         Check if longitude is valid.
@@ -44,20 +32,32 @@ def validate_longitude(longitude):
         raise ValueError("Invalid longitude given.", e)
 
 
-def validate_latlong(latlong):
+def validate_latitude(latitude):
     """
-        Check if latlong location is valid.
+        Check if latitude is valid.
+    :param latitude: Latitude to check
+    :return: the latitude if valid, otherwise throws error
+    """
+    try:
+        return _validate_coordinate(latitude, 90)
+    except Exception as e:
+        raise ValueError("Invalid latitude given.", e)
+
+
+def validate_longlat(longlat):
+    """
+        Check if longlat location is valid.
 
         Throws error if not
-    :param latlong: Location to check
+    :param longlat: Location to check
     :return: tuple (lat, long)
     """
-    if not isinstance(latlong, (tuple, list)) or len(latlong) != 2:
-        raise ValueError("Invalid latlong format.")
-    return validate_latitude(latlong[0]), validate_longitude(latlong[1])
+    if not isinstance(longlat, (tuple, list)) or len(longlat) != 2:
+        raise ValueError("Invalid longlat format.")
+    return validate_longitude(longlat[0]), validate_latitude(longlat[1])
 
 
-def haversine(lat1, lon1, lat2, lon2):
+def haversine(lon1, lat1, lon2, lat2):
     """
     Calculate the great circle distance between two points
     on the earth (specified in decimal degrees).
