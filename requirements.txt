@@ -1,6 +1,6 @@
 SQLAlchemy==1.2.7
 pytest==3.5.1
-pytest-cov==2.5.1
+pytest-cov==2.7.1
 psycopg2==2.7.4
 psycopg2-binary==2.7.4
 pycodestyle==2.4.0
