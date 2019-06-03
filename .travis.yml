@@ -3,6 +3,9 @@ language: python
 services:
   - postgresql
 
+before_install:
+  - sudo touch /.dockerenv
+
 addons:
   postgresql: "9.6"
   apt:
