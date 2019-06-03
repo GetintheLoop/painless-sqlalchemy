@@ -3,16 +3,16 @@
 Painless-SQLAlchemy
 ----------------
 Easy serialization and filtering for SQLAlchemy.
-Links
-`````
-* `github <https://github.com/GetintheLoop/painless-sqlalchemy>`_
+
+Links:
+* [github](https://github.com/GetintheLoop/painless-sqlalchemy)
 """
 import os
 from setuptools import setup
 
 setup(
     name='Painless-SQLAlchemy',
-    version='1.0.1',
+    version='1.0.2',
     url='https://github.com/GetintheLoop/painless-sqlalchemy',
     license='MIT',
     author='Lukas Siemon',
@@ -21,6 +21,7 @@ setup(
     maintainer_email='painless@blackflux.com',
     description='Simplified filtering and serialization for SQLAlchemy',
     long_description=__doc__,
+    long_description_content_type="text/markdown",
     packages=[x[0] for x in os.walk("painless_sqlalchemy")],
     zip_safe=False,
     platforms='any',
