@@ -10,6 +10,7 @@ class CIText(Concatenable, UserDefinedType, AbstractType):
     postgres_type = "CITEXT"
 
     def __init__(self, length, force_lower):
+        super().__init__()
         self.length = length
         self.force_lower = force_lower
 

@@ -156,16 +156,16 @@ class ModelFilter(ModelAction):
                 clause.clauses = result
                 and_info['depth'] -= 1
             return clause
-        elif isinstance(clause, Annotated):
+        if isinstance(clause, Annotated):
             clause.proxy_set = set(cls._substitute_clause(data, c) for c in clause.proxy_set)
             return clause
-        elif isinstance(clause, ClauseList):
+        if isinstance(clause, ClauseList):
             clause.clauses = [
                 cls._substitute_clause(data, c)
                 for c in clause.clauses
             ]
             return clause
-        elif isinstance(clause, Case):
+        if isinstance(clause, Case):
             clause.value = cls._substitute_clause(data, clause.value)
             clause.whens = [(
                 cls._substitute_clause(data, x),
@@ -173,44 +173,43 @@ class ModelFilter(ModelAction):
             ) for x, y in clause.whens]
             clause.else_ = cls._substitute_clause(data, clause.else_)
             return clause
-        elif isinstance(clause, (
+        if isinstance(clause, (
             Grouping, UnaryExpression, FromGrouping, Label
         )):
             clause.element = cls._substitute_clause(data, clause.element)
             return clause
-        elif isinstance(clause, FunctionElement):
+        if isinstance(clause, FunctionElement):
             # pylint: disable-msg=W0212
             return getattr(func, clause.name)(*[
                 cls._substitute_clause(data, c)
                 for c in clause.clause_expr.element
             ])
-        elif isinstance(clause, Select):
+        if isinstance(clause, Select):
             # pylint: disable-msg=W0212
             clause._raw_columns = [
                 cls._substitute_clause(data, c) for c in clause._raw_columns]
             return clause
-        elif isinstance(clause, BinaryExpression):
+        if isinstance(clause, BinaryExpression):
             clause.left = cls._substitute_clause(data, clause.left)
             clause.right = cls._substitute_clause(data, clause.right)
             return clause
-        elif isinstance(clause, tuple):
+        if isinstance(clause, tuple):
             return tuple(cls._substitute_clause(data, c) for c in clause)
-        elif isinstance(clause, ColumnReference):
+        if isinstance(clause, ColumnReference):
             query, attr = cls._get_joined_attr(
                 data['query'], clause.name.split("."))
             data['query'] = query
             return attr.self_group()
-        elif isinstance(clause, (
+        if isinstance(clause, (
             BindParameter, InstrumentedAttribute,
             Null, True_, False_, NoneType, TextClause, ColumnClause
         )):
             return clause
-        elif isinstance(clause, Cast):
-            clause.clause = cls._substitute_clause(data, clause.clause)
-            return clause
-        else:  # pragma: no cover
+        if not isinstance(clause, Cast):  # pragma: no cover
             print(type(clause), clause)
             raise NotImplementedError
+        clause.clause = cls._substitute_clause(data, clause.clause)
+        return clause
 
     @classmethod
     def _is_to_many(cls, path):
