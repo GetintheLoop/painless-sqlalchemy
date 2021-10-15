@@ -13,7 +13,7 @@ class AreaType(AbstractGeometry, AbstractType):
 
     def __init__(self, clockwise, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        assert clockwise is True or clockwise is False or clockwise is None
+        assert clockwise == True or clockwise == False or clockwise is None
         self.clockwise = clockwise
 
     @staticmethod
@@ -27,7 +27,7 @@ class AreaType(AbstractGeometry, AbstractType):
                 area[i + 1][1] + area[i][1]
             )
         # reverse if counter clockwise
-        return area[::-1] if (direction < 0 is clockwise) else area
+        return area[::-1] if (direction < 0 == clockwise) else area
 
     def as_postgis(self, area):
         area = self.rec_round(area)
