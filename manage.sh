@@ -15,6 +15,7 @@ docker run \
   -v $(pwd):/user/project \
   -v ~/.aws:/user/.aws \
   -v ~/.npmrc:/user/.npmrc \
+  -v ~/.cache:/user/.cache \
   -it lambda-environment-python
 
 docker stop pg10 -t 0
