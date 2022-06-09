@@ -1,4 +1,4 @@
-FROM lambci/lambda:build-python3.6
+FROM public.ecr.aws/sam/build-python3.9
 
 WORKDIR /user
 
