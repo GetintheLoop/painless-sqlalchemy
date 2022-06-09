@@ -13,7 +13,7 @@ class AreaType(AbstractGeometry, AbstractType):
 
     def __init__(self, clockwise, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        assert clockwise == True or clockwise == False or clockwise is None
+        assert clockwise is True or clockwise is False or clockwise is None
         self.clockwise = clockwise
 
     @staticmethod
