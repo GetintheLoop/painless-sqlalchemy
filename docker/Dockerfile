@@ -2,7 +2,7 @@ FROM public.ecr.aws/sam/build-python3.9
 
 WORKDIR /user
 
-RUN yum install git vi -y
+RUN yum install git vi dbus-python -y
 
 # set home directory allow access to "user" folder
 ENV HOME /user
