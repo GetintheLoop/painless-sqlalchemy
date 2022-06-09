@@ -1,3 +1,11 @@
+Start docker
+
+> . manage.sh
+
+Run tests
+
+> python run_tests.py
+
 Install twine
 
 > pip install twine
