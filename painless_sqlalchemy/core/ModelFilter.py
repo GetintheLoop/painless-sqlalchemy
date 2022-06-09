@@ -33,6 +33,7 @@ class ModelFilter(ModelAction):
         cur = cls
         for attr in path:
             if isinstance(cur, dict):
+                # pylint: disable=E1136
                 cur = cur[attr]
             else:
                 class_ = cur

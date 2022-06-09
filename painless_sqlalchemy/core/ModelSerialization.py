@@ -369,6 +369,7 @@ class ModelSerialization(ModelFilter):
 
         # we only need foreign key and request columns
         # Note: Primary keys are loaded automatically by sqlalchemy
+        # pylint: disable=E1101
         fks = [col.name for col in cls.__table__.columns if col.foreign_keys]
         eager_cols = [col for col in to_fetch if "." not in col]
         to_load = [getattr(cls, e) for e in list(set(fks + eager_cols))]
